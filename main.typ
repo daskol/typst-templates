@@ -4,7 +4,7 @@
 #show: icml2024.with(
   title: [
     Submission and Formatting Instructions for \
-    International Conference on Machine Learning (ICML 2023)
+    International Conference on Machine Learning (ICML 2024)
   ],
   authors: (),
   abstract: [
@@ -13,6 +13,8 @@
     Gross violations will trigger corrections at the camera-ready phase.
   ],
   bibliography-file: "main.bib",
+  header: [Submission and Formatting Instructions for ICML 2024],
+  accepted: false,
 )
 
 = Electronic Submission
@@ -170,7 +172,7 @@ paper, but all final versions must be produced for US letter size. Do not write
 anything on the margins.
 
 The paper body should be set in 10 point type with a vertical spacing of 11
-points. Please use Times typeface throughout the text.}
+points. Please use Times typeface throughout the text.
 
 == Title
 
@@ -222,15 +224,188 @@ Each distinct affiliations should be listed once. If an author has multiple
 affiliations, multiple superscripts should be placed after the name, separated
 by thin spaces. If the authors would like to highlight equal contribution by
 multiple first authors, those authors should have an asterisk placed after
-their name in superscript, and the term `\textsuperscript{*}Equal contribution`
-should be placed in the footnote block ahead of the list of affiliations. A
-list of corresponding authors and their emails (in the format Full Name
-\textless{}email\@domain.com\textgreater{}) can follow the list of
-affiliations. Ideally only one or two names should be listed.
+their name in superscript, and the term "\*Equal contribution" should be placed
+in the footnote block ahead of the list of affiliations. A list of
+corresponding authors and their emails (in the format Full Name
+\<email\@domain.com>) can follow the list of affiliations. Ideally only one or
+two names should be listed.
 
 A sample file with author names is included in the ICML2024 style file package.
 Turn on the `[accepted]` option to the stylefile to see the names rendered. All
 of the guidelines above are implemented by the #LaTeX style file.
+
+== Abstract
+
+The paper abstract should begin in the left column, 0.4~inches below the final
+address. The heading 'Abstract' should be centered, bold, and in 11~point type.
+The abstract body should use 10~point type, with a vertical spacing of
+11~points, and should be indented 0.25~inches more than normal on left-hand and
+right-hand margins. Insert 0.4~inches of blank space after the body. Keep your
+abstract brief and self-contained, limiting it to one paragraph and roughly
+4--6 sentences. Gross violations will require correction at the camera-ready
+phase.
+
+== Partitioning the Text
+
+You should organize your paper into sections and paragraphs to help readers
+place a structure on the material and understand its contributions.
+
+=== Sections and Subsections
+
+Section headings should be numbered, flush left, and set in 11~pt bold type
+with the content words capitalized. Leave 0.25~inches of space before the
+heading and 0.15~inches after the heading.
+
+Similarly, subsection headings should be numbered, flush left, and set in 10~pt
+bold type with the content words capitalized. Leave 0.2~inches of space before
+the heading and 0.13~inches afterward.
+
+Finally, subsubsection headings should be numbered, flush left, and set in
+10~pt small caps with the content words capitalized. Leave 0.18~inches of space
+before the heading and 0.1~inches after the heading.
+
+Please use no more than three levels of headings.
+
+=== Paragraphs and Footnotes
+
+Within each section or subsection, you should further partition the paper into
+paragraphs. Do not indent the first line of a given paragraph, but insert a
+blank line between succeeding ones.
+
+You can use footnotes#footnote[Footnotes should be complete sentences.] to
+provide readers with additional information about a topic without interrupting
+the flow of the paper. Indicate footnotes with a number in the text where the
+point is most relevant. Place the footnote in 9~point type at the bottom of the
+column in which it appears. Precede the first footnote in a column with a
+horizontal rule of 0.8~inches.#footnote[Multiple footnotes can appear in each
+column, in the same order as they appear in the text, but spread them across
+columns and pages if possible.]
+
+== Figures
+
+You may want to include figures in the paper to illustrate your approach and
+results. Such artwork should be centered, legible, and separated from the text.
+Lines should be dark and at least 0.5~points thick for purposes of
+reproduction, and text should not appear on a gray background.
+
+Label all distinct components of each figure. If the figure takes the form of a
+graph, then give a name for each axis and include a legend that briefly
+describes each curve. Do not include a title inside the figure; instead, the
+caption should serve this function.
+
+Number figures sequentially, placing the figure number and caption #emph[after]
+the graphics, with at least 0.1~inches of space before the caption and
+0.1~inches after it, as in @icml-historical. The figure caption should be set
+in 9~point type and centered unless it runs two or more lines, in which case it
+should be flush left. You may float figures to the top or bottom of a column,
+and you may set wide figures across both columns (use the environment
+`figure*` in #LaTeX). Always place two-column figures at the top or bottom of
+the page.
+
+#figure(
+  image("icml-numpapers.svg"),
+  caption: [
+    Historical locations and number of accepted papers for International
+    Machine Learning Conferences (ICML 1993 -- ICML 2008) and International
+    Workshops on Machine Learning (ML 1988 -- ML 1992). At the time this figure
+    was produced, the number of accepted papers for ICML 2008 was unknown and
+    instead estimated.
+  ],
+  placement: top,
+) <icml-historical>
+
+== Algorithms
+
+If you are using \LaTeX, please use the "algorithm" and "algorithmic"
+environments to format pseudocode. These require the corresponding stylefiles,
+algorithm.sty and algorithmic.sty, which are supplied with this package.
+@alg-example shows an example.
+
+#figure(
+  ```tex
+  \begin{algorithm}[tb]
+     \caption{Bubble Sort}
+     \label{alg:example}
+  \begin{algorithmic}
+  ```
+) <alg-example>
+
+== Tables
+
+You may also want to include tables that summarize material. Like figures,
+these should be centered, legible, and numbered consecutively. However, place
+the title #emph[above] the table with at least 0.1~inches of space before the
+title and the same after it, as in @sample-table. The table title should be set
+in 9~point type and centered unless it runs two or more lines, in which case it
+should be flush left.
+
+#figure(
+  table(
+    columns: (1fr, auto, auto),
+    inset: 10pt,
+    align: horizon,
+    [], [*Area*], [*Parameters*],
+    $ pi h (D^2 - d^2) / 4 $,
+    $ sqrt(2) / 12 a^3 $,
+    [$a$: edge length]
+  ),
+  caption: [
+    Classification accuracies for naive Bayes and flexible Bayes on various
+    data sets.
+  ],
+  placement: top,
+) <sample-table>
+
+Tables contain textual material, whereas figures contain graphical material.
+Specify the contents of each row and column in the table's topmost row. Again,
+you may float tables to a column's top or bottom, and set wide tables across
+both columns. Place two-column tables at the top or bottom of the page.
+
+== Theorems and such
+
+The preferred way is to number definitions, propositions, lemmas, etc.
+consecutively, within sections, as shown below.
+
+#definition[
+  A function $f: X arrow Y$ is injective if for any $x,y in X$ different,
+  $f(x) != f(y)$.
+] <def-inj>
+
+Using @def-inj we immediate get the following result:
+
+#proposition[
+  If $f$ is injective mapping a set $X$ to another set $Y$, the cardinality of
+  $Y$ is at least as large as that of $X$
+]
+#proof[
+  Left as an exercise to the reader.
+]
+
+@lem-usefullemma stated next will prove to be useful.
+
+#lemma[
+  For any $f: X arrow Y$ and $g: Y arrow Z$ injective functions, $f circle.stroked.tiny g$ is injective.
+] <lem-usefullemma>
+
+#theorem[
+  If $f: X arrow Y$ is bijective, the cardinality of $X$ and $Y$ are the same.
+] <thm-bigtheorem>
+
+An easy corollary of @thm-bigtheorem is the following:
+
+#corollary[
+  If $f: X arrow Y$ is bijective, the cardinality of $X$ is at least as large
+  as that of $Y$.
+]
+
+#assumption[
+  The set $X$ is finite.
+] <ass-xfinite>
+
+#remark[
+  According to some, it is only the finite case (cf. @ass-xfinite) that
+  is interesting.
+]
 
 == Citations and References
 
@@ -260,21 +435,42 @@ publications @langley00, book chapters @Newell81, books @DudaHart2nd, edited
 volumes @MachineLearningI, technical reports @mitchell80, and dissertations
 @kearns89.
 
-Alphabetize references by the surnames of the first authors, with
-single author entries preceding multiple author entries. Order
-references for the same authors by year of publication, with the
-earliest first. Make sure that each reference includes all relevant
-information (e.g., page numbers).
+Alphabetize references by the surnames of the first authors, with single author
+entries preceding multiple author entries. Order references for the same
+authors by year of publication, with the earliest first. Make sure that each
+reference includes all relevant information (e.g., page numbers).
 
 Please put some effort into making references complete, presentable, and
-consistent, e.g. use the actual current name of authors.
-If using bibtex, please protect capital letters of names and
-abbreviations in titles, for example, use \{B\}ayesian or \{L\}ipschitz
-in your .bib file.
+consistent, e.g. use the actual current name of authors. If using bibtex,
+please protect capital letters of names and abbreviations in titles, for
+example, use #box[\{B\}ayesian] or #box[\{L\}ipschitz] in your .bib file.
 
 = Accessibility
 
 Authors are kindly asked to make their submissions as accessible as possible
 for everyone including people with disabilities and sensory or neurological
 differences. Tips of how to achieve this and what to pay attention to will be
-provided on the conference website \url{http://icml.cc/}.
+provided on the conference website #link("http://icml.cc/").
+
+= Software and Data
+
+If a paper is accepted, we strongly encourage the publication of software and
+data with the camera-ready version of the paper whenever appropriate. This can
+be done by including a URL in the camera-ready copy. However, *do not* include
+URLs that reveal your institution or identity in your submission for review.
+Instead, provide an anonymous URL or upload the material as "Supplementary
+Material" into the OpenReview reviewing system. Note that reviewers are not
+required to look at this material when writing their review.
+
+// Acknowledgements should only appear in the accepted version.
+= Acknowledgements
+
+*Do not* include acknowledgements in the initial version of the paper submitted
+for blind review.
+
+If a paper is accepted, the final camera-ready version can (and probably
+should) include acknowledgements. In this case, please place such
+acknowledgements in an unnumbered section at the end of the paper. Typically,
+this will include thanks to reviewers who gave useful comments, to colleagues
+who contributed to the ideas, and to funding agencies and corporate sponsors
+that provided financial support.

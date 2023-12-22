@@ -59,6 +59,78 @@
   return author_names
 }
 
+#let statement(kind: "statement", supplement: none, content) = {
+  if supplement == none {
+    supplement = upper(kind.first()) + lower(kind.slice(1))
+  }
+  figure(
+    kind: kind,
+    supplement: [#supplement],
+    numbering: "1",
+    content,
+  )
+}
+
+#let statement_render(supplement_fn: strong, body_fn: emph, it) = {
+  block(above: 11.5pt, below: 11.5pt, {
+    supplement_fn({
+      it.supplement
+      if it.numbering != none {
+        [ ]
+
+        // Render prefix (heading) part of a counter.
+        let prefix = locate(loc => {
+          let index = counter(heading).at(loc)
+          let prefix = index.slice(0, -1)  // Ignore the last level.
+          let header = query(selector(heading).before(loc), loc,).at(-1)
+          return numbering(header.numbering, ..prefix)
+        })
+        [#prefix]
+
+        // Render last digit of a counter.
+        let ix = locate(loc => {
+          let ix_assump = counter(figure.where(kind: "assumption")).at(loc)
+          let ix_state= counter(figure.where(kind: "statement")).at(loc)
+          let ix_notice= counter(figure.where(kind: "notice")).at(loc)
+          let index = ix_assump.first() + ix_state.first() + ix_notice.first()
+          return numbering(it.numbering, index)
+        })
+        [#ix]
+      }
+      [.]
+    })
+    body_fn(it.body)
+  })
+}
+
+#let notice_render(it) = statement_render(
+  supplement_fn: emph,
+  body_fn: body => body,
+  it)
+
+#let assumption(content) = {
+  statement(kind: "assumption", supplement: [Assumption], content)
+}
+
+#let corollary(content) = { statement(supplement: [Colorary], content) }
+#let definition(content) = { statement(supplement: [Definition], content) }
+#let lemma(content) = { statement(supplement: [Lemma], content) }
+#let proposition(content) = { statement(supplement: [Proposition], content) }
+#let theorem(content) = { statement(supplement: [Theorem], content) }
+
+#let note(content) = { statement(kind: "notice", supplement: [Note], content) }
+#let remark(content) = {
+  statement(kind: "notice", supplement: [Remark], content)
+}
+
+// And a definition for a proof.
+#let proof(body) = block(spacing: 11.5pt, {
+  emph[Proof.]
+  [ ] + body
+  h(1fr)
+  box(scale(160%, origin: bottom + right, sym.square.stroked))
+})
+
 /**
  * icml2024
  */
@@ -67,9 +139,14 @@
   authors: (),
   abstract: none,
   bibliography-file: none,
+  header: none,
   accepted: false,
   body,
 ) = {
+  if header == none {
+    header = title
+  }
+
   let author_names = format_author_names(authors)
   set document(title: title, author: author_names)
 
@@ -102,6 +179,13 @@
       // h(7pt, weak: true
     }
 
+    // Reset "theorem"counters.
+    if it.level == 1 {
+      counter(figure.where(kind: "assumption")).update(0)
+      counter(figure.where(kind: "statement")).update(0)
+      counter(figure.where(kind: "notice")).update(0)
+    }
+
     set align(left)
     if it.level == 1 {
       text(size: font.large, weight: "bold")[
@@ -126,6 +210,12 @@
       ]
     }
   }
+
+  show figure.where(kind: "assumption"): it => {
+    statement_render(body_fn: body => body, it)
+  }
+  show figure.where(kind: "statement"): it => statement_render(it)
+  show figure.where(kind: "notice"): it => notice_render(it)
 
   // Render title.
   text(size: font.Large, weight: "bold")[
@@ -175,4 +265,16 @@
       bibliography(style: "apa", title: "References", bibliography-file)
     }
   ]
+
+  pagebreak()
+  counter(heading).update(0)
+  counter("appendices").update(1)
+  set heading(
+    numbering: (..nums) => {
+      let vals = nums.pos()
+      let value = "ABCDEFGHIJ".at(vals.at(0) - 1)
+      return value + "." + nums.pos().slice(1).map(str).join(".")
+    }
+  )
+  include "appendix.typ"
 }
