@@ -25,6 +25,7 @@
   Large: font-defaults.Large + 0.4pt,  // Actual font size.
   footnote: font-defaults.footnotesize,
   large: font-defaults.large,
+  small: font-defaults.small,
   normal: font-defaults.normalsize,
   script: font-defaults.scriptsize,
 )
@@ -131,6 +132,40 @@
   box(scale(160%, origin: bottom + right, sym.square.stroked))
 })
 
+#let make_figure_caption(it) = {
+  set align(center)
+  block(width: 100%, {
+    set align(left)
+    set text(size: font.small)
+    emph({
+      it.supplement
+      if it.numbering != none {
+        [ ]
+        it.counter.display(it.numbering)
+      }
+      it.separator
+    })
+    [ ]
+    it.body
+  })
+}
+
+#let make_figure(caption_above: false, it) = {
+  // set align(center + top)
+  place(center + top, float: true,
+  block(breakable: false, width: 100%, {
+    if caption_above {
+      it.caption
+    }
+    v(0.1in, weak: true)
+    it.body
+    v(0.1in, weak: true)
+    if not caption_above {
+      it.caption
+    }
+  }))
+}
+
 /**
  * icml2024
  */
@@ -211,6 +246,13 @@
     }
   }
 
+  set figure.caption(separator: [.])
+  show figure: set block(breakable: false)
+  show figure.caption.where(kind: table): it => make_figure_caption(it)
+  show figure.caption.where(kind: image): it => make_figure_caption(it)
+  show figure.where(kind: image): it => make_figure(it)
+  show figure.where(kind: table): it => make_figure(it, caption_above: true)
+
   show figure.where(kind: "assumption"): it => {
     statement_render(body_fn: body => body, it)
   }
@@ -277,4 +319,27 @@
     }
   )
   include "appendix.typ"
+}
+
+// NOTE We provide table support based on tablex package. It does not
+// correspond closely to LaTeX's booktabs but it is the best of what we have at
+// the moment.
+
+#import "@preview/tablex:0.0.7": cellx, hlinex, tablex
+
+// Tickness values are taken from booktabs.
+#let toprule = hlinex(stroke: (thickness: 0.08em))
+#let bottomrule = toprule
+#let midrule = hlinex(stroke: (thickness: 0.05em))
+
+#let map-col(mapper, ix, jx, content, ..args) = {
+  return mapper(ix, jx, content, ..args)
+}
+
+#let map-row(mapper, ix, row, ..args) = {
+  return row.enumerate().map(el => map-col(mapper, ix, ..el, ..args))
+}
+
+#let map-cells(cells, mapper, ..args) = {
+  return cells.enumerate().map(el => map-row(mapper, ..el, ..args)).flatten()
 }

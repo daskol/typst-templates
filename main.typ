@@ -339,15 +339,59 @@ title and the same after it, as in @sample-table. The table title should be set
 in 9~point type and centered unless it runs two or more lines, in which case it
 should be flush left.
 
+#let header = (
+  ([Data set], [Naive], [Flexible], [Better?]),
+)
+#let rows = (
+  ([Breast],    [95.9 ± 0.2], [96.7 ± 0.2], $sqrt(x)$),
+  ([Cleveland], [83.3 ± 0.6], [80.0 ± 0.6], $times$),
+  ([Glass 2],   [61.9 ± 1.4], [83.8 ± 0.7], $sqrt("")$),
+  ([Credit],    [74.8 ± 0.5], [78.3 ± 0.6], [ ]),
+  ([Horse],     [73.3 ± 0.9], [69.7 ± 1.0], $times$),
+  ([Meta],      [67.1 ± 0.6], [76.5 ± 0.5], $sqrt("")$),
+  ([Pima],      [75.1 ± 0.6], [44.9 ± 0.6], [ ]),
+  ([Vehicle],   [73.9 ± 0.5], [61.5 ± 0.4], $sqrt("")$),
+  ([Vehicle],   [73.9 ± 0.5], [61.5 ± 0.4], $sqrt("")$),
+)
+
+#let data-frame = (
+  header: (nocols: 4, norows: 1, data: header),
+  body: (nocols: 4, norows: rows.len(), data: rows),
+)
+
+#let format-cell(ix, jx, content, aux) = {
+  let inset = (
+    left: 0.6em, right: 0.6em,
+    top: 0.2em, bottom: 0.2em,
+  )
+  if ix == 0 {
+    inset.top = 0.5em
+  }
+  if ix == aux.norows - 1 {
+    inset.bottom = 0.5em
+  }
+
+  if jx > 0 and jx < aux.nocols - 1 {
+    inset.left = 0.5em
+    inset.right = 0.5em
+  }
+  return cellx(inset: inset)[
+    #text(size: font.small, smallcaps(content))
+  ]
+}
+
 #figure(
-  table(
-    columns: (1fr, auto, auto),
-    inset: 10pt,
-    align: horizon,
-    [], [*Area*], [*Parameters*],
-    $ pi h (D^2 - d^2) / 4 $,
-    $ sqrt(2) / 12 a^3 $,
-    [$a$: edge length]
+  kind: table,
+  tablex(
+    columns: 4,
+    align: (left + horizon, center + horizon, center + horizon, center + horizon),
+    column-gutter: 0.6em,
+    auto-lines: false,
+    toprule,
+    ..map-cells(header, format-cell, data-frame.header),
+    midrule,
+    ..map-cells(rows, format-cell, data-frame.body),
+    bottomrule,
   ),
   caption: [
     Classification accuracies for naive Bayes and flexible Bayes on various
