@@ -113,8 +113,11 @@
   statement(kind: "assumption", supplement: [Assumption], content)
 }
 
+#let definition(content) = {
+  statement(kind: "assumption", supplement: [Definition], content)
+}
+
 #let corollary(content) = { statement(supplement: [Colorary], content) }
-#let definition(content) = { statement(supplement: [Definition], content) }
 #let lemma(content) = { statement(supplement: [Lemma], content) }
 #let proposition(content) = { statement(supplement: [Proposition], content) }
 #let theorem(content) = { statement(supplement: [Theorem], content) }

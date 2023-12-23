@@ -314,6 +314,8 @@ the page.
   placement: top,
 ) <icml-historical>
 
+Add a dummy text here to get the same figure layout. #lorem(64)
+
 == Algorithms
 
 If you are using \LaTeX, please use the "algorithm" and "algorithmic"
