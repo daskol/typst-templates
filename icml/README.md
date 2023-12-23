@@ -1,4 +1,8 @@
-# Template: International Conference on Machine Learning (ICML) 2024
+# International Conference on Machine Learning (ICML) 2024
+
+## Example Papers
+
+Here are an example paper in [LaTeX][1] and in [Typst][2].
 
 ## Issues
 
@@ -37,3 +41,6 @@
    requires APA-like style but not exact APA. The difference is that ICML
    APA-like style places entry year at the end of reference entry. In order to
    fix the issue, we need to describe ICML bibliography style in CSL-format.
+
+[1]: example-paper.latex.pdf
+[2]: example-paper.typst.pdf
