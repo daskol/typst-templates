@@ -30,24 +30,6 @@
   script: font-defaults.scriptsize,
 )
 
-#let footnote_prologue = [
-  _Proceedings of the 41#super[st] International Conference on Machine
-  Learning_, Vienna, Austria. PMLR 235, 2024. Copyright 2024 by the author(s).
-]
-
-#let footnote_epilogue = [
-  Preliminary work. Under review by the International Conference on Machine
-  Learning (ICML). Do not distribute.
-]
-
-#let footnote_body = [
-  Anonymous Institution, Anonymous City, Anonymous Region, Anonymous Country.
-  Correspondence to: Anonymous Authors \<anon.email\@domain.com\>. \
-
-  // #footnote_prologue
-  #footnote_epilogue
-]
-
 #let format_author_names(authors) = {
   // Formats the author's names in a list with commas and a
   // final "and".
@@ -169,12 +151,119 @@
   }))
 }
 
+#let anonymous-author = (
+  name: "Anonymous Author",
+  email: "anon.email@example.org",
+  affl: ("anonymous-affl", ),
+)
+
+#let anonymous-affl = (
+  department: none,
+  institution: "Anonymous Institution",
+  location: "Anonymous City, Anonymous Region",
+  country: "Anonymous Country",
+)
+
+#let anonymous-notice = [
+  Preliminary work. Under review by the International Conference on Machine
+  Learning (ICML). Do not distribute.
+]
+
+#let public-notice = [
+  _Proceedings of the 41#super[st] International Conference on Machine
+  Learning_, Vienna, Austria. PMLR 235, 2024. Copyright 2024 by the author(s).
+]
+
+#let make-author(author, affl2idx) = {
+  // Sanitize author affilations.
+  let affl = author.at("affl")
+  if type(affl) == str {
+    affl = (affl,)
+  }
+
+  // Make a list of superscript indices.
+  let indices = affl.map(it => str(affl2idx.at(it)))
+  let has-equal-contrib = author.at("equal", default: false)
+  if has-equal-contrib {
+    indices.insert(0, "*")
+  }
+
+  // Render author and affilation references to content.
+  set text(size: font.normal, weight: "regular")
+  return strong(author.name) + super(typographic: false, [
+    #indices.join(" ")
+  ])
+}
+
+#let make-affilations-and-notice(authors, affls) = {
+  let info = ()
+
+  // Add equal contribution notice.
+  let has-equal-contrib = authors.fold(false, (acc, it) => {
+    let equal-contrib = it.at("equal", default: false)
+    return acc or equal-contrib
+  })
+  if has-equal-contrib {
+    info.push(super[\*] + [Equal contribution])
+  }
+
+  // Prepare list of affilations.
+  let ordered-affls = authors.map(it => it.affl).flatten().dedup()
+  let affilations = ordered-affls.enumerate(start: 1).map(pair => {
+    let (ix, it) = pair
+    let affl = affls.at(it, default: none)
+    assert(affl != none, message: "unknown affilation: " + it)
+
+    // Convert structured affilation representation to plain one (array).
+    if type(affl) == dictionary {
+      let keys = ("department", "institution", "location", "country")
+      let parts = ()
+      for key in keys {
+        let val = affl.at(key, default: none)
+        if val != none {
+          parts.push(val)
+        }
+      }
+      affl = parts
+    }
+
+    // Validate affilation representation.
+    assert(type(affl) == array,
+           message: "wrong affilation type: " + type(affl))
+    assert(affl.len() > 0,
+           message: "empty affilation: " + it + " :" + repr(affl))
+
+    // Finally, join parts of affilation.
+    return super(str(ix)) + affl.join(", ")
+  })
+  if affilations != () {
+    info.push(affilations.join([ ]) + [.])
+  }
+
+  // Prepare list of corresponding authors (author which has its email).
+  let correspondents = authors.fold((), (acc, it) => {
+    let email = it.at("email", default: none)
+    if email != none {
+      let mailto = link("mailto:" + it.email, it.email)
+      acc.push([#it.name \<#mailto\>])
+    }
+    return acc
+  })
+  if correspondents != () {
+    info.push([Correspondence to: ] + correspondents.join(", ") + [.])
+  }
+
+  return info
+}
+
 /**
  * icml2024
  */
 #let icml2024(
   title: [],
   authors: (),
+  keywords: (),
+  date: auto,
   abstract: none,
   bibliography-file: none,
   header: none,
@@ -185,12 +274,52 @@
     header = title
   }
 
-  let author_names = format_author_names(authors)
-  set document(title: title, author: author_names)
+  // Sanitize authors and affilations arguments.
+  if not accepted {
+    authors = ((anonymous-author,), (anonymous-affl: anonymous-affl))
+  }
+  let (authors, affls) = authors
+
+  // Configure document metadata.
+  set document(
+    title: title,
+    author: authors.map(it => it.name),
+    keywords: keywords,
+    date: date,
+  )
+
+  // Prepare affilation and notice footnote.
+  let contrib-info = make-affilations-and-notice(authors, affls)
+  let make-contribs() = {
+    set text(size: font.small)
+    set par(leading: 0.5em, justify: true)
+    line(length: 0.8in, stroke: (thickness: 0.05em))
+    block(spacing: 0.45em, {  // Footnote line.
+      h(1.2em)  // BUG: https://github.com/typst/typst/issues/311
+      if contrib-info != () {
+        contrib-info.join([ ])
+        parbreak()
+      }
+      if accepted  {
+        public-notice
+      } else {
+        anonymous-notice
+      }
+    })
+  }
+
+  // Prepare authors and footnote anchors.
+  let ordered-affls = authors.map(it => it.affl).flatten().dedup()
+  let affl2idx = ordered-affls.enumerate(start: 1).fold((:), (acc, it) => {
+    let (ix, affl) = it
+    acc.insert(affl, ix)
+    return acc
+  })
+  let make-authors() = authors.map(it => make-author(it, affl2idx))
 
   set page(
     paper: "us-letter",
-    margin: (left: 0.75in, right: 8.5in - (0.75in + 6.75in + 0.03in), top: 1.0in),
+    margin: (left: 0.75in, right: 8.5in - (0.75in + 6.75in), top: 1.0in),
     header-ascent: 10pt,
     header: locate(loc => {
       // The first page is a title page. It does not have running header.
@@ -307,15 +436,12 @@
 
   v(0.1in - 1pt)
 
-  // Render authors.
   {
+    // Render authors.
     set align(center)
-    set text(weight: "bold")
-    [Anonymous Authors]
-
-    set super(typographic: false, size: font.script)
-    set text(weight: "regular")
-    [#footnote(footnote_body)]
+    make-authors().map(it => {
+      box(inset: (left: 0.5em, right: 0.5em), it)
+    }).join()
   }
 
   v(0.2in)
@@ -331,6 +457,12 @@
     ]
     #pad(left: 2em, right: 2em, abstract)
     #v(0.12in)
+
+    // Place contribution and notice at the bottom of the first column.
+    #place(bottom, float: true, clearance: 0.5em, {
+      set block(spacing: 0pt)
+      make-contribs()
+    })
 
     // Display body.
     #set text(size: font.normal)

@@ -1,12 +1,31 @@
 #import "icml2024.typ": *
 #import "logo.typ": LaTeX, TeX
 
+#let affls = (
+  airi: ("AIRI", "Moscow", "Russia"),
+  skoltech: (
+    department: "AI Center",
+    institution: "Skoltech",
+    location: "Moscow",
+    country: "Russia",
+    ),
+)
+
+#let authors = (
+  (name: "Firstname1 Lastname1",
+   affl: ("skoltech"),
+   email: "author@example.org",
+   equal: true),
+  (name: "Firstname1 Lastname1", affl: ("airi", "skoltech"), equal: true),
+)
+
 #show: icml2024.with(
   title: [
     Submission and Formatting Instructions for \
     International Conference on Machine Learning (ICML 2024)
   ],
-  authors: (),
+  authors: (authors, affls),
+  keywords: ("Machine Learning", "ICML"),
   abstract: [
     This document provides a basic paper template and submission guidelines.
     Abstracts must be a single paragraph, ideally between 4–6 sentences long.
@@ -314,7 +333,7 @@ the page.
   placement: top,
 ) <icml-historical>
 
-Add a dummy text here to get the same figure layout. #lorem(64)
+Add a dummy text here to get the same figure layout. #lorem(100)
 
 == Algorithms
 
