@@ -188,11 +188,23 @@
   set page(
     paper: "us-letter",
     margin: (left: 0.75in, right: 8.5in - (0.75in + 6.75in + 0.03in), top: 1.0in),
+    header-ascent: 10pt,
     header: locate(loc => {
+      // The first page is a title page. It does not have running header.
       let pageno = counter(page).at(loc).first()
-      if pageno == 1 { return }
-      set text(size: font.script)
-      align(center)[title]
+      if pageno == 1 {
+        return
+      }
+
+      // Render running title since the second page.
+      set align(center)
+      set text(size: font.footnote, weight: "bold")
+      block(spacing: 0pt, fill: none, {
+        set block(spacing: 0em)
+        text(size: font.small, header)
+        v(3.5pt) // By default, fancyhdr spaces 4pt.
+        line(length: 100%, stroke: (thickness: 1pt))
+      })
     }),
     footer-descent: 25pt - font.normal,
     footer: locate(loc => {
