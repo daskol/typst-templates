@@ -321,13 +321,33 @@ environments to format pseudocode. These require the corresponding stylefiles,
 algorithm.sty and algorithmic.sty, which are supplied with this package.
 @alg-example shows an example.
 
+#import "@preview/algorithmic:0.1.0"
+#import algorithmic: algorithm
+
+#let Until(cond: none, ..body) = (
+  (strong[repeat]),
+  (change_indent: 4, body: body.pos()),
+  (strong[until ] + cond),
+)
+
 #figure(
-  ```tex
-  \begin{algorithm}[tb]
-     \caption{Bubble Sort}
-     \label{alg:example}
-  \begin{algorithmic}
-  ```
+  kind: "algorithm",
+  supplement: [Algorithm],
+  caption: [Bubble Sort],
+  placement: top,
+  algorithm({
+    import algorithmic: *
+    State[*Input:* data $x_i$, size $m$]
+    Until(cond: [_noChange_ is _true_], {
+      State[Initialize _noChange = true_.]
+      For(cond: [$i=1$ *to* $m-1$], {
+        If(cond: $x_i > x_(i + 1)$, {
+          State[Swap $x_i$ and $x_(i + 1)$]
+          State[_noChange = false_]
+        })
+      })
+    })
+  })
 ) <alg-example>
 
 == Tables
