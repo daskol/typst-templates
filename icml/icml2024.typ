@@ -471,7 +471,11 @@
     // Display the bibliography, if any is given.
     #if bibliography-file != none {
       show bibliography: set text(size: font.normal)
-      bibliography(style: "apa", title: "References", bibliography-file)
+      bibliography(
+        bibliography-file,
+        style: "icml2024.csl",
+        title: "References",
+      )
     }
   ]
 
