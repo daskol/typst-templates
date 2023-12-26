@@ -1,20 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <style xmlns="http://purl.org/net/xbiblio/csl" class="in-text" version="1.0" demote-non-dropping-particle="never" page-range-format="expanded">
   <info>
-    <title>American Psychological Association 7th edition</title>
-    <title-short>APA</title-short>
-    <id>http://www.zotero.org/styles/apa</id>
-    <link href="http://www.zotero.org/styles/apa" rel="self"/>
-    <link href="http://www.zotero.org/styles/apa-6th-edition" rel="template"/>
-    <link href="https://apastyle.apa.org/style-grammar-guidelines/references/examples" rel="documentation"/>
+    <title>International Conference on Machine Learning (ICML 2024)</title>
+    <title-short>ICML 2024</title-short>
+    <id>http://www.zotero.org/styles/icml2024</id>
     <author>
       <name>Brenton M. Wiernik</name>
       <email>zotero@wiernik.org</email>
     </author>
+    <author>
+      <name>Daniel Bershatsky</name>
+      <email>d.bershatsky2@skoltech.ru</email>
+    </author>
     <category citation-format="author-date"/>
     <category field="psychology"/>
     <category field="generic-base"/>
-    <updated>2022-10-02T20:08:41+00:00</updated>
+    <updated>2023-12-27T01:24:56+03:00</updated>
     <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
   <locale xml:lang="en">
@@ -113,18 +114,18 @@
                  software song speech standard thesis webpage
        Legal: bill hearing legal_case legislation regulation treaty
   -->
-  <!-- APA references contain four parts: author, date, title, source -->
+  <!-- ICML references contain four parts: author, title, source, date -->
   <macro name="author-bib">
     <!-- TODO: New creator roles (media, contributor) -->
     <!-- TODO: Add new item types -->
     <names variable="composer" delimiter=", ">
-      <name name-as-sort-order="all" and="symbol" sort-separator=", " initialize-with=". " delimiter=", " delimiter-precedes-last="always"/>
+      <name name-as-sort-order="all" and="text" sort-separator=", " initialize-with=". " delimiter=", " delimiter-precedes-last="always"/>
       <substitute>
         <names variable="author"/>
         <names variable="illustrator"/>
         <names variable="director">
-          <name name-as-sort-order="all" and="symbol" sort-separator=", " initialize-with=". " delimiter=", " delimiter-precedes-last="always"/>
-          <label form="long" prefix=" (" suffix=")" text-case="title"/>
+          <name name-as-sort-order="all" and="text" sort-separator=", " initialize-with=". " delimiter=", " delimiter-precedes-last="always"/>
+          <label form="long" prefix=" (" suffix=")" text-case="lowercase"/>
         </names>
         <choose>
           <if variable="container-title">
@@ -147,16 +148,16 @@
         </choose>
         <!-- TODO: Test for editortranslator and put that first as that becomes available -->
         <names variable="editor" delimiter=", ">
-          <name name-as-sort-order="all" and="symbol" sort-separator=", " initialize-with=". " delimiter=", " delimiter-precedes-last="always"/>
-          <label form="short" prefix=" (" suffix=")" text-case="title"/>
+          <name name-as-sort-order="all" and="text" sort-separator=", " initialize-with=". " delimiter=", " delimiter-precedes-last="always"/>
+          <label form="short" prefix=" (" suffix=")" text-case="lowercase"/>
         </names>
         <names variable="editorial-director">
-          <name name-as-sort-order="all" and="symbol" sort-separator=", " initialize-with=". " delimiter=", " delimiter-precedes-last="always"/>
-          <label form="short" prefix=" (" suffix=")" text-case="title"/>
+          <name name-as-sort-order="all" and="text" sort-separator=", " initialize-with=". " delimiter=", " delimiter-precedes-last="always"/>
+          <label form="short" prefix=" (" suffix=")" text-case="lowercase"/>
         </names>
         <names variable="collection-editor">
-          <name name-as-sort-order="all" and="symbol" sort-separator=", " initialize-with=". " delimiter=", " delimiter-precedes-last="always"/>
-          <label form="short" prefix=" (" suffix=")" text-case="title"/>
+          <name name-as-sort-order="all" and="text" sort-separator=", " initialize-with=". " delimiter=", " delimiter-precedes-last="always"/>
+          <label form="short" prefix=" (" suffix=")" text-case="lowercase"/>
         </names>
         <choose>
           <if variable="title">
@@ -186,7 +187,7 @@
           <if variable="archive container-title DOI publisher URL" match="none">
             <group delimiter=", ">
               <names variable="author">
-                <name and="symbol" delimiter=", " initialize-with=". "/>
+                <name and="text" delimiter=", " initialize-with=". "/>
                 <substitute>
                   <text macro="title-intext"/>
                 </substitute>
@@ -196,7 +197,7 @@
           </if>
           <else>
             <names variable="author" delimiter=", ">
-              <name form="short" and="symbol" delimiter=", " initialize-with=". "/>
+              <name form="short" and="text" delimiter=", " initialize-with=". "/>
               <substitute>
                 <text macro="title-intext"/>
               </substitute>
@@ -206,7 +207,7 @@
       </else-if>
       <else>
         <names variable="composer" delimiter=", ">
-          <name form="short" and="symbol" delimiter=", " initialize-with=". "/>
+          <name form="short" and="text" delimiter=", " initialize-with=". "/>
           <substitute>
             <names variable="author"/>
             <names variable="illustrator"/>
@@ -230,7 +231,7 @@
   </macro>
   <macro name="date-bib">
     <!-- TODO: Add new item types -->
-    <group delimiter=" " prefix="(" suffix=")">
+    <group delimiter=" ">
       <choose>
         <if is-uncertain-date="issued">
           <text term="circa" form="short"/>
@@ -540,7 +541,7 @@
     <!-- TODO: Add new item types -->
     <choose>
       <if variable="container-title" match="any">
-        <group prefix="(" suffix=")">
+        <group>
           <group delimiter="; ">
             <text macro="database-location"/>
             <choose>
@@ -920,7 +921,7 @@
         <if variable="title">
           <names variable="interviewer">
             <name and="symbol" initialize-with=". " delimiter=", "/>
-            <label form="short" prefix=", " text-case="title"/>
+            <label form="short" prefix=", " text-case="lowercase"/>
           </names>
         </if>
       </choose>
@@ -932,12 +933,12 @@
             <if variable="container-title" match="none">
               <group delimiter="; ">
                 <names variable="container-author">
-                  <label form="verb-short" suffix=" " text-case="title"/>
+                  <label form="verb-short" suffix=" " text-case="lowercase"/>
                   <name and="symbol" initialize-with=". " delimiter=", "/>
                 </names>
                 <names variable="editor translator" delimiter="; ">
                   <name and="symbol" initialize-with=". " delimiter=", "/>
-                  <label form="short" prefix=", " text-case="title"/>
+                  <label form="short" prefix=", " text-case="lowercase"/>
                 </names>
               </group>
             </if>
@@ -946,12 +947,12 @@
         <else>
           <group delimiter="; ">
             <names variable="container-author">
-              <label form="verb-short" suffix=" " text-case="title"/>
+              <label form="verb-short" suffix=" " text-case="lowercase"/>
               <name and="symbol" initialize-with=". " delimiter=", "/>
             </names>
             <names variable="editor translator" delimiter="; ">
               <name and="symbol" initialize-with=". " delimiter=", "/>
-              <label form="short" prefix=", " text-case="title"/>
+              <label form="short" prefix=", " text-case="lowercase"/>
             </names>
           </group>
         </else>
@@ -1259,10 +1260,10 @@
         <group delimiter=" ">
           <text term="in" text-case="capitalize-first"/>
           <group delimiter=", ">
-            <names variable="editor translator" delimiter=", &amp; ">
+            <names variable="editor translator" delimiter=", and ">
               <!-- TODO: Change to editortranslator and move editor to substitute -->
               <name and="symbol" initialize-with=". " delimiter=", "/>
-              <label form="short" text-case="title" prefix=" (" suffix=")"/>
+              <label form="short" text-case="lowercase" prefix=" (" suffix=")"/>
               <substitute>
                 <names variable="editorial-director"/>
                 <names variable="collection-editor"/>
@@ -1281,9 +1282,9 @@
                 </if>
               </choose>
             </group>
+            <text macro="parenthetical-container"/>
+            <text macro="bracketed-container"/>
           </group>
-          <text macro="parenthetical-container"/>
-          <text macro="bracketed-container"/>
         </group>
       </if>
     </choose>
@@ -1679,13 +1680,15 @@
         </if>
         <else>
           <group delimiter=" ">
-            <group delimiter=". " suffix=".">
+            <group delimiter=". " suffix=",">
               <text macro="author-bib"/>
-              <text macro="date-bib"/>
               <text macro="title-and-descriptions"/>
               <text macro="container"/>
               <text macro="event"/>
               <text macro="publisher"/>
+            </group>
+            <group suffix=".">
+              <text macro="date-bib"/>
             </group>
             <text macro="access"/>
             <text macro="publication-history"/>
