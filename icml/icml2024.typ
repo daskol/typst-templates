@@ -73,8 +73,8 @@
         // Render last digit of a counter.
         let ix = locate(loc => {
           let ix_assump = counter(figure.where(kind: "assumption")).at(loc)
-          let ix_state= counter(figure.where(kind: "statement")).at(loc)
-          let ix_notice= counter(figure.where(kind: "notice")).at(loc)
+          let ix_state = counter(figure.where(kind: "statement")).at(loc)
+          let ix_notice = counter(figure.where(kind: "notice")).at(loc)
           let index = ix_assump.first() + ix_state.first() + ix_notice.first()
           return numbering(it.numbering, index)
         })
@@ -107,6 +107,35 @@
 #let note(content) = { statement(kind: "notice", supplement: [Note], content) }
 #let remark(content) = {
   statement(kind: "notice", supplement: [Remark], content)
+}
+
+// Render reference to theorem-like figures (definitions, lemmas, theorems, and
+// so on).
+#let render-ref-statement(it) = {
+  // Ignore all elements that are not figures and not theorem-like figures.
+  let el = it.element
+  if el == none or el.func() != figure {
+    return it
+  } else if el.kind not in ("assumption", "notice", "statement") {
+    return it
+  }
+
+  // Reference number for theorem-like figures has form
+  // "<section>.<number>". So, we get the section number if there is any.
+  let loc = el.location()
+  let ix_heading = counter(heading).at(loc)
+  let prefix = ix_heading.at(0, default: 0)
+
+  // And now we compute a number of a theorem-like figure in the section.
+  let ix_assump = counter(figure.where(kind: "assumption")).at(loc)
+  let ix_state = counter(figure.where(kind: "statement")).at(loc)
+  let ix_notice = counter(figure.where(kind: "notice")).at(loc)
+  let suffix = ix_assump.first() + ix_state.first() + ix_notice.first()
+
+  // Finally, render it as a content.
+  el.supplement
+  [~]
+  numbering("1.1", prefix, suffix)
 }
 
 // And a definition for a proof.
@@ -402,6 +431,7 @@
   }
   show figure.where(kind: "statement"): it => statement_render(it)
   show figure.where(kind: "notice"): it => notice_render(it)
+  show ref: it => render-ref-statement(it)
 
   // Configure algorithm rendering.
   counter(figure.where(kind: "algorithm")).update(0)
