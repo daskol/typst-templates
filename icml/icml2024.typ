@@ -80,7 +80,7 @@
         })
         [#ix]
       }
-      [.]
+      [. ]
     })
     body_fn(it.body)
   })
@@ -431,7 +431,24 @@
   }
   show figure.where(kind: "statement"): it => statement_render(it)
   show figure.where(kind: "notice"): it => notice_render(it)
-  show ref: it => render-ref-statement(it)
+
+  // Math equation numbering and referencing.
+  set math.equation(numbering: "(1)")
+  show ref: it => {
+    let eq = math.equation
+    let el = it.element
+    if el != none and el.func() == eq {
+      let numb = numbering(
+        "1",
+        ..counter(eq).at(el.location())
+      )
+      let color = rgb(0%, 8%, 45%)  // Originally `mydarkblue`. :D
+      let content = link(el.location(), text(fill: color, numb))
+      [(#content)]
+    } else {
+      render-ref-statement(it)
+    }
+  }
 
   // Configure algorithm rendering.
   counter(figure.where(kind: "algorithm")).update(0)
@@ -543,4 +560,10 @@
 
 #let map-cells(cells, mapper, ..args) = {
   return cells.enumerate().map(el => map-row(mapper, ..el, ..args)).flatten()
+}
+
+// Helper routine for turning off equation numbering.
+#let eq = it => {
+  set math.equation(numbering: none)
+  it
 }
