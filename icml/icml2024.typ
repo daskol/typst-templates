@@ -445,6 +445,26 @@
       let color = rgb(0%, 8%, 45%)  // Originally `mydarkblue`. :D
       let content = link(el.location(), text(fill: color, numb))
       [(#content)]
+    } else if el != none and el.func() == heading {
+      let numb = numbering(
+        el.numbering,
+        ..counter(el.func()).at(el.location()))
+      if numb.at(-1) == "." {
+        numb = numb.slice(0, -1)
+      }
+      let color = rgb(0%, 8%, 45%)  // Originally `mydarkblue`. :D
+      let content = text(fill: color, numb)
+      link(el.location())[#el.supplement~#content]
+    } else if el != none and el.func() == figure {
+      let numb = numbering(
+        el.numbering,
+        ..counter(figure.where(kind: el.kind)).at(el.location()))
+      if numb.at(-1) == "." {
+        numb = numb.slice(0, -1)
+      }
+      let color = rgb(0%, 8%, 45%)  // Originally `mydarkblue`. :D
+      let content = text(fill: color, numb)
+      link(el.location())[#el.supplement~#content]
     } else {
       render-ref-statement(it)
     }
