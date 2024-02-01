@@ -457,7 +457,12 @@
       }
       let color = rgb(0%, 8%, 45%)  // Originally `mydarkblue`. :D
       let content = text(fill: color, numb)
-      link(el.location())[#el.supplement~#content]
+      // If numbering starts with letter then the heading is an appendix.
+      let supplement = el.supplement
+      if numb.at(0) not in ("0", "1", "2", "3", "4", "5", "6", "7", "8", "9") {
+        supplement = [Appendix]
+      }
+      link(el.location())[#supplement~#content]
     } else if el != none and el.func() == figure {
       let numb = numbering(
         el.numbering,
