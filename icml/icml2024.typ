@@ -348,7 +348,10 @@
 
   set page(
     paper: "us-letter",
-    margin: (left: 0.75in, right: 8.5in - (0.75in + 6.75in), top: 1.0in),
+    margin: (left: 0.75in,
+             right: 8.5in - (0.75in + 6.75in),
+             top: 1.0in,
+             bottom: 11in - 1in - 9in),
     header-ascent: 10pt,
     header: locate(loc => {
       // The first page is a title page. It does not have running header.
@@ -586,4 +589,35 @@
 #let eq = it => {
   set math.equation(numbering: none)
   it
+}
+
+// Vertical ruler on left margin of a page.
+
+#let itoa(val) = {
+  if val > 999 {
+    return str(val)
+  } else if val > 99 {
+    return str(val)
+  } else if val > 9 {
+    return "0" + str(val)
+  } else {
+    return "00" + str(val)
+  }
+}
+
+#let vruler(page: 0, offset: 0pt, fill: none) = {
+  let count = 55
+  let numbers = range(page * count, (page + 1) * count)
+  let content = numbers.map(it => itoa(it)).join([ \ ])
+  let sidebar = block(width: 15pt, height: 9in, fill: fill)[
+    #set text(fill: rgb(70%, 70%, 70%))
+    #set par(leading: 5.2pt)
+    #align(right, content)
+  ]
+  return place(
+    top,
+    sidebar,
+    dx: -30pt,
+    dy: offset,
+    float: false)
 }

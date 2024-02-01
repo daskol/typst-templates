@@ -36,6 +36,8 @@
   accepted: false,
 )
 
+#vruler(offset: -1.7in)
+
 = Electronic Submission
 
 Submission to ICML 2023 will be entirely electronic, via
@@ -114,6 +116,8 @@ Authors using *Word* must convert their document to PDF. Most of the latest
 versions of Word have the facility to do this automatically. Submissions will
 not be accepted in Word format or any format other than PDF. Really. We're not
 joking. Don't send Word.
+
+#vruler(page: 1)
 
 Those who use *\LaTeX* should avoid including Type-3 fonts. Those using `latex`
 and `dvips` may need the following two commands:
@@ -225,6 +229,8 @@ required to look at the Supplementary Material when writing their review (they
 are not required to look at more than the first $8$ pages of the submitted
 document).
 
+#vruler(page: 2)
+
 === Camera-Ready Author Information <final-author>
 
 If a paper is accepted, a final camera-ready copy must be prepared. For
@@ -320,6 +326,8 @@ should be flush left. You may float figures to the top or bottom of a column,
 and you may set wide figures across both columns (use the environment
 `figure*` in #LaTeX). Always place two-column figures at the top or bottom of
 the page.
+
+#vruler(page: 3)
 
 #figure(
   image("icml-numpapers.svg"),
@@ -491,6 +499,8 @@ An easy corollary of @thm-bigtheorem is the following:
   According to some, it is only the finite case (cf. @ass-xfinite) that
   is interesting.
 ]
+
+#vruler(page: 4)
 
 == Citations and References
 
