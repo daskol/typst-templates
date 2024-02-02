@@ -626,3 +626,64 @@
     dy: offset,
     float: false)
 }
+
+#let cite-color = rgb(0%, 8%, 45%)
+
+/**
+ * Alternative citing routine.
+ */
+#let refer(..keys, color: cite-color) = {
+  let citations = keys.pos().map(key => cite(key)).join([ ])
+  return [(] + text(fill: color, citations) + [)]
+}
+
+/**
+ * Simple routine for rewriting content. It replaces a sequence of references
+ * that are joined with spaces or line breaks (elements without width).
+ */
+#let rewrite-citations(doc, color: cite-color) = style(styles => {
+  let atoms = doc.children
+  let body = []
+  let ix = 0
+  while ix < atoms.len() {
+    let atom = atoms.at(ix)
+    if atom.func() != ref {
+      body = body + [#atom]
+      ix += 1
+    } else {
+      // Look-a-head for other refs.
+      let refs = (atom, )
+      let jx = ix + 1
+      while jx < atoms.len() {
+        // If the next one content block is a reference then append reference
+        // to the list of references.
+        let lookahead = atoms.at(jx)
+        if lookahead.func() == ref {
+          refs.push(lookahead)
+          jx += 1
+          continue
+        }
+
+        // Now, we assume that if the width of content block is zero then it is
+        // a space or line break. Thus we skip it and make another iteration.
+        let shape = measure(lookahead, styles)
+        if shape.width == 0pt {
+          jx += 1
+          continue
+        }
+
+        // Otherwise, we stop iterations.
+        break
+      }
+
+      // Combine refs into single citation, and wrap it into context with
+      // colored text.
+      let citation = refs.join([])
+      body = body + [(] + text(fill: color, citation) + [)]
+
+      // Advance iterator on number of continues block of citations.
+      ix += jx - ix
+    }
+  }
+  return body
+})
