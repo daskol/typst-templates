@@ -198,6 +198,8 @@
   Learning (ICML). Do not distribute.
 ]
 
+#let arxiv-notice = []
+
 #let public-notice = [
   _Proceedings of the 41#super[st] International Conference on Machine
   Learning_, Vienna, Austria. PMLR 235, 2024. Copyright 2024 by the author(s).
@@ -287,6 +289,10 @@
 
 /**
  * icml2024
+ *
+ * Args:
+ *   accepted: Valid values are `none`, `false`, and `true`. Missing value
+ *   (`none`) is designed to prepare arxiv publication. Default is `false`.
  */
 #let icml2024(
   title: [],
@@ -304,7 +310,7 @@
   }
 
   // Sanitize authors and affilations arguments.
-  if not accepted {
+  if accepted != none and not accepted {
     authors = ((anonymous-author,), (anonymous-affl: anonymous-affl))
   }
   let (authors, affls) = authors
@@ -323,13 +329,16 @@
     set text(size: font.small)
     set par(leading: 0.5em, justify: true)
     line(length: 0.8in, stroke: (thickness: 0.05em))
-    block(spacing: 0.45em, {  // Footnote line.
+    block(spacing: 0.45em, width: 100%, {  // Footnote line.
       h(1.2em)  // BUG: https://github.com/typst/typst/issues/311
       if contrib-info != () {
         contrib-info.join([ ])
         parbreak()
       }
-      if accepted  {
+
+      if accepted == none {
+        arxiv-notice
+      } else if accepted  {
         public-notice
       } else {
         anonymous-notice
