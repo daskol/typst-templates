@@ -12,6 +12,6 @@ template for ICML and are going to add templates for other conferences and
 journals during calendar year.
 
 - [International Conference on Machine Learning (ICML)](icml).
-- Neural Information Processing System (NeurIPS).
+- [Neural Information Processing System (NeurIPS)](neurips).
 - International Conference on Learning Representations (ICLR).
 - Association for the Advancement of Artificial Intelligence (AAAI).
