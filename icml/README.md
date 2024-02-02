@@ -41,6 +41,33 @@ Here are an example paper in [LaTeX][1] and in [Typst][2].
    requires APA-like style but not exact APA. The difference is that ICML
    APA-like style places entry year at the end of reference entry. In order to
    fix the issue, we need to describe ICML bibliography style in CSL-format.
+3. In the original template links are colored with dark blue. We can reproduce
+   appearance with some additional effort. First of all, `icml2024.csl` shoule
+   be updated as follows.
+
+   ```
+   diff --git a/icml/icml2024.csl b/icml/icml2024.csl
+   index 3b9e9a2..3fe9f74 100644
+   --- a/icml/icml2024.csl
+   +++ b/icml/icml2024.csl
+   @@ -1648,7 +1648,8 @@
+          <key macro="date-bib" sort="ascending"/>
+          <key variable="status"/>
+        </sort>
+   -    <layout prefix="(" suffix=")" delimiter="; ">
+   +    <!-- NOTE: Prefix and suffix parentheses are removed. -->
+   +    <layout delimiter="; ">
+          <group delimiter=", ">
+            <text macro="author-intext"/>
+            <text macro="date-intext"/>
+   ```
+
+   Then instead of convenient citation shortcut `@cite-key1 @cite-key2`, one
+   should use special procedure `refer` with variadic arguments.
+
+   ```typst
+   #refer(<cite-key1>, <cite-key2>)
+   ```
 
 [1]: example-paper.latex.pdf
 [2]: example-paper.typst.pdf
