@@ -80,13 +80,13 @@ a camera-ready copy, `preprint`, which creates a preprint for submission to,
 e.g., arXiv, and `nonatbib`, which will not load the `natbib` package for you
 in case of package clash.
 
-*Preprint option* #h(1em, weak: true) If you wish to post a preprint of your
-work online, e.g., on arXiv, using the NeurIPS style, please use the `preprint`
-option. This will create a nonanonymized version of your work with the text
-"Preprint. Work in progress." in the footer. This version may be distributed as
-you see fit, as long as you do not say which conference it was submitted to.
-Please *do not* use the `final` option, which should *only* be used for papers
-accepted to NeurIPS. 
+#paragraph[Preprint option] If you wish to post a preprint of your work online,
+e.g., on arXiv, using the NeurIPS style, please use the `preprint` option. This
+will create a nonanonymized version of your work with the text "Preprint. Work
+in progress." in the footer. This version may be distributed as you see fit, as
+long as you do not say which conference it was submitted to. Please *do not*
+use the `final` option, which should *only* be used for papers accepted to
+NeurIPS.
 
 At submission time, please omit the `final` and `preprint` options. This will
 anonymize your submission and add line numbers to aid review. Please do _not_
@@ -138,9 +138,9 @@ Second-level headings should be in 10-point type.
 
 Third-level headings should be in 10-point type.
 
-*Paragraphs* #h(1em, weak: true) There is also a `\paragraph` command
-available, which sets the heading in bold, flush left, and inline with the
-text, with the heading followed by #1em of space.
+#paragraph[Paragraphs] There is also a `\paragraph` command available, which
+sets the heading in bold, flush left, and inline with the text, with the
+heading followed by #1em of space.
 
 = Citations, figures, tables, references <others>
 

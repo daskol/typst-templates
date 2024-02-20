@@ -372,26 +372,26 @@
     set align(left)
     if it.level == 1 {
       // TODO: font.large?
-      text(size: 12pt, weight: "bold")[
-        #v(0.25in, weak: true)
-        #number
-        *#it.body*
-        #v(0.15in, weak: true)
-      ]
+      text(size: 12pt, weight: "bold", {
+        let ex = 7.95pt
+        v(2.7 * ex, weak: true)
+        [#number *#it.body*]
+        v(2 * ex, weak: true)
+      })
     } else if it.level == 2 {
-      text(size: font.normal, weight: "bold")[
-        #v(0.2in, weak: true)
-        #number
-        *#it.body*
-        #v(0.13in, weak: true)
-      ]
+      text(size: font.normal, weight: "bold", {
+        let ex = 6.62pt
+        v(2.70 * ex, weak: true)
+        [#number *#it.body*]
+        v(2.03 * ex, weak: true)  // Original 1ex.
+      })
     } else if it.level == 3 {
-      text(size: font.normal, weight: "bold")[
-        #v(0.18in, weak: true)
-        #number
-        #it.body
-        #v(0.1in, weak: true)
-      ]
+      text(size: font.normal, weight: "bold", {
+        let ex = 6.62pt
+        v(2.6 * ex, weak: true)
+        [#number *#it.body*]
+        v(1.8 * ex, weak: true)  // Original -1em.
+      })
     }
   }
 
@@ -508,7 +508,7 @@ Address \
   block(width: 100%, fill: luma(230), {
     set text(size: 10pt)
     set text(size: font.normal)
-    set par(leading: 0.43em)  // Original 0.55em (or 0.45em).
+    set par(leading: 0.43em)  // Original 0.55em (or 0.45em?).
 
     // NeurIPS instruction tels that font size of `Abstract` must equal to 12pt
     // but there is not predefined font size.
@@ -521,10 +521,12 @@ Address \
   v(0.43em / 2)  // No idea.
 
   // Render main body
-  {
+  block(width: 100%, {
     // Display body.
     set text(size: font.normal)
     set par(leading: 0.55em)
+    set par(leading: 0.43em)
+    show par: set block(spacing: 1.0em)  // Original 11pt.
     body
 
     // Display the bibliography, if any is given.
@@ -543,7 +545,7 @@ Address \
         ..bibliography-opts,
       )
     }
-  }
+  })
 
   pagebreak()
   counter(heading).update(0)
@@ -556,4 +558,13 @@ Address \
     }
   )
   // include "appendix.typ"
+}
+
+/**
+ * A routine for setting paragraph heading.
+ */
+#let paragraph(body) = {
+  parbreak()
+  [*#body*]
+  h(1em, weak: true)
 }
