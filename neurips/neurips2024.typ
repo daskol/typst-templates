@@ -532,16 +532,16 @@ Address \
     // Display the bibliography, if any is given.
     if bibliography-file != none {
       if "full" not in bibliography-opts {
-        bibliography-opts["full"] = false
+        bibliography-opts.full = false
+      }
+      if "title" not in bibliography-opts {
+        bibliography-opts.title = "References"
       }
       // NOTE It is allowed to reduce font to 9pt (small) but there is not
       // small font of size 9pt in original sty.
       show bibliography: set text(size: font.small)
       bibliography(
         bibliography-file,
-        // style: "icml2024.csl",
-        title: "",
-        full: true,
         ..bibliography-opts,
       )
     }
