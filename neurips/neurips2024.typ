@@ -485,33 +485,40 @@
     line(length: 100%, stroke: bot-rule-width + black)
   })
 
-  v(0.1in - 1pt)
+  v(0.25in)
 
-  {
-    // Render authors.
-    set align(center)
-    make-authors().map(it => {
-      box(inset: (left: 0.5em, right: 0.5em), it)
-    }).join()
-  }
+  // Render authors.
+  block(width: 100%, {
+    set text(size: font.normal)
+    set par(leading: 4.5pt)
+    // TODO(@daskol): Implement rendering of real author names.
+    align(center)[
+*Anonymous Author(s)* \
+Affilation \
+Address \
+`email`
+]
+  v(0.3in - 0.1in)
+  })
 
   // Vertical spacing between authors and abstract.
-  v(0.3in - 0.2in)
-  v(0.075in)
+  v(6.5pt)  // Original 0.075in.
 
   // Render abstract.
-  {
+  block(width: 100%, fill: luma(230), {
     set text(size: 10pt)
-    set par(leading: 0.55em)
+    set text(size: font.normal)
+    set par(leading: 0.43em)  // Original 0.55em (or 0.45em).
 
     // NeurIPS instruction tels that font size of `Abstract` must equal to 12pt
     // but there is not predefined font size.
     align(center, text(size: 12pt)[*Abstract*])
-    v(0.5em)
+    v(0.215em)  // Original 0.5ex.
     pad(left: 0.5in, right: 0.5in, abstract)
-  }
+    v(0.43em)  // Original 0.5ex.
+  })
 
-  v(0.20in)
+  v(0.43em / 2)  // No idea.
 
   // Render main body
   {
