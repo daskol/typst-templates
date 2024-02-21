@@ -148,17 +148,14 @@
 
 #let make_figure_caption(it) = {
   set align(center)
-  block(width: 100%, {
-    set align(left)
-    set text(size: font.small)
-    emph({
-      it.supplement
-      if it.numbering != none {
-        [ ]
-        it.counter.display(it.numbering)
-      }
-      it.separator
-    })
+  block({
+    set text(size: font.normal)
+    it.supplement
+    if it.numbering != none {
+      [ ]
+      it.counter.display(it.numbering)
+    }
+    it.separator
     [ ]
     it.body
   })
@@ -167,17 +164,20 @@
 #let make_figure(caption_above: false, it) = {
   // set align(center + top)
   place(center + top, float: true,
-  block(breakable: false, width: 100%, {
-    if caption_above {
-      it.caption
-    }
-    v(0.1in, weak: true)
-    it.body
-    v(0.1in, weak: true)
-    if not caption_above {
-      it.caption
-    }
-  }))
+    block(breakable: false, width: 100%, {
+      set text(size: font.normal)
+      if caption_above {
+        v(1em, weak: true)
+        it.caption
+      }
+      v(1em, weak: true)
+      it.body
+      v(1em, weak: true)
+      if not caption_above {
+        it.caption
+        v(1em, weak: true)
+      }
+    }))
 }
 
 #let anonymous-author = (
@@ -395,7 +395,7 @@
     }
   }
 
-  set figure.caption(separator: [.])
+  set figure.caption(separator: [:])
   show figure: set block(breakable: false)
   show figure.caption.where(kind: table): it => make_figure_caption(it)
   show figure.caption.where(kind: image): it => make_figure_caption(it)
@@ -421,31 +421,6 @@
       let color = rgb(0%, 8%, 45%)  // Originally `mydarkblue`. :D
       let content = link(el.location(), text(fill: color, numb))
       [(#content)]
-    } else if el != none and el.func() == heading {
-      let numb = numbering(
-        el.numbering,
-        ..counter(el.func()).at(el.location()))
-      if numb.at(-1) == "." {
-        numb = numb.slice(0, -1)
-      }
-      let color = rgb(0%, 8%, 45%)  // Originally `mydarkblue`. :D
-      let content = text(fill: color, numb)
-      // If numbering starts with letter then the heading is an appendix.
-      let supplement = el.supplement
-      if numb.at(0) not in ("0", "1", "2", "3", "4", "5", "6", "7", "8", "9") {
-        supplement = [Appendix]
-      }
-      link(el.location())[#supplement~#content]
-    } else if el != none and el.func() == figure {
-      let numb = numbering(
-        el.numbering,
-        ..counter(figure.where(kind: el.kind)).at(el.location()))
-      if numb.at(-1) == "." {
-        numb = numb.slice(0, -1)
-      }
-      let color = rgb(0%, 8%, 45%)  // Originally `mydarkblue`. :D
-      let content = text(fill: color, numb)
-      link(el.location())[#el.supplement~#content]
     } else {
       render-ref-statement(it)
     }
@@ -521,7 +496,7 @@ Address \
   v(0.43em / 2)  // No idea.
 
   // Render main body
-  block(width: 100%, {
+  {
     // Display body.
     set text(size: font.normal)
     set par(leading: 0.55em)
@@ -545,7 +520,7 @@ Address \
         ..bibliography-opts,
       )
     }
-  })
+  }
 
   pagebreak()
   counter(heading).update(0)

@@ -1,3 +1,4 @@
+#import "@preview/tablex:0.0.8": cellx, hlinex, tablex
 #import "/neurips2024.typ": *
 #import "/logo.typ": LaTeX, LaTeXe, TeX
 
@@ -98,7 +99,8 @@ All you have to do is replace the author, title, abstract, and text of the
 paper with your own.
 
 The formatting instructions contained in these style files are summarized in
-Sections @gen_inst, @headings, and @others below.
+Sections~#ref(<gen_inst>, supplement: none), #ref(<headings>, supplement:
+none), and #ref(<others>, supplement: none) below.
 
 = General formatting instructions <gen_inst>
 
@@ -120,8 +122,8 @@ listed first (left-most), and the co-authors' names (if different address) are
 set to follow. If there is only one co-author, list both author and co-author
 side by side.
 
-Please pay special attention to the instructions in Section @others regarding
-figures, tables, acknowledgments, and references.
+Please pay special attention to the instructions in @others regarding figures,
+tables, acknowledgments, and references.
 
 = Headings: first level <headings>
 
@@ -175,40 +177,39 @@ If you wish to load the `natbib` package with options, you may add the
 following before loading the `neurips_2023` package:
 
 ```tex
-\PassOptionsToPackage{options}{natbib}
+    \PassOptionsToPackage{options}{natbib}
 ```
 
 If `natbib` clashes with another package you load, you can add the optional
 argument `nonatbib` when loading the style file:
 
 ```tex
-\usepackage[nonatbib]{neurips_2023}
+    \usepackage[nonatbib]{neurips_2023}
 ```
 
 As submission is double blind, refer to your own published work in the third
-person. That is, use "In the previous work of Jones et al.\ [4]," not "In our
+person. That is, use "In the previous work of Jones et al.~[4]," not "In our
 previous work [4]." If you cite your other papers that are not widely available
 (e.g., a journal paper under review), use anonymous author names in the
-citation, e.g., an author of the form "A.\ Anonymous" and include a copy of the
+citation, e.g., an author of the form "A.~Anonymous" and include a copy of the
 anonymized paper in the supplementary material.
 
 == Footnotes
 
-Footnotes should be used sparingly.  If you do require a footnote, indicate
-footnotes with a number\footnote{Sample of the first footnote.} in the
-text. Place the footnotes at the bottom of the page on which they appear.
-Precede the footnote with a horizontal rule of 2~inches (12~picas).
+Footnotes should be used sparingly. If you do require a footnote, indicate
+footnotes with a number#footnote[Sample of the first footnote.] in the text.
+Place the footnotes at the bottom of the page on which they appear. Precede the
+footnote with a horizontal rule of 2~inches (12~picas).
 
-Note that footnotes are properly typeset \emph{after} punctuation
-marks.\footnote{As in this example.}
+Note that footnotes are properly typeset _after_ punctuation marks.#footnote[As
+in this example.]
 
 == Figures
 
-\begin{figure}
-  \centering
-  \fbox{\rule[-.5cm]{0cm}{4cm} \rule[-.5cm]{4cm}{0cm}}
-  \caption{Sample figure caption.}
-\end{figure}
+#figure(
+  rect(width: 4.25cm, height: 4.25cm, stroke: 0.4pt),
+  caption: [Sample figure caption.]
+)
 
 All artwork must be neat, clean, and legible. Lines should be dark enough for
 purposes of reproduction. The figure number and caption always appear after the
@@ -220,40 +221,53 @@ You may use color figures.  However, it is best for the figure captions and the
 paper body to be legible if the paper is printed in either black/white or in
 color.
 
-== Tables
+== Tables <tables>
 
 All tables must be centered, neat, clean and legible.  The table number and
-title always appear before the table. See Table~\ref{sample-table}.
+title always appear before the table. See @sample-table.
 
 Place one line space before the table title, one line space after the
 table title, and one line space after the table. The table title must
 be lower case (except for first word and proper nouns); tables are
 numbered consecutively.
 
-Note that publication-quality tables \emph{do not contain vertical rules.} We
-strongly suggest the use of the \verb+booktabs+ package, which allows for
+Note that publication-quality tables _do not contain vertical rules_. We
+strongly suggest the use of the `booktabs` package, which allows for
 typesetting high-quality, professional tables:
-\begin{center}
-  \url{https://www.ctan.org/pkg/booktabs}
-\end{center}
-This package was used to typeset Table~\ref{sample-table}.
 
-\begin{table}
-  \caption{Sample table title}
-  \label{sample-table}
-  \centering
-  \begin{tabular}{lll}
-    \toprule
-    \multicolumn{2}{c}{Part}                   \\
-    \cmidrule(r){1-2}
-    Name     & Description     & Size ($\mu$m) \\
-    \midrule
-    Dendrite & Input terminal  & $\sim$100     \\
-    Axon     & Output terminal & $\sim$10      \\
-    Soma     & Cell body       & up to $10^6$  \\
-    \bottomrule
-  \end{tabular}
-\end{table}
+#align(center)[
+  #link("https://www.ctan.org/pkg/booktabs")
+]
+
+This package was used to typeset @sample-table.
+
+// Tickness values are taken from booktabs.
+#let toprule = hlinex(stroke: (thickness: 0.08em))
+#let bottomrule = toprule
+#let midrule = hlinex(stroke: (thickness: 0.05em))
+#let rows = (
+  toprule,
+  cellx(colspan: 2, align: center)[Part], (), [],
+  hlinex(start: 0, end: 2, stroke: (thickness: 0.05em)),
+  [Name], [Description], [Size ($mu$)],
+  midrule,
+  [Dendrite], [Input terminal ], [$~100$],
+  [Axon    ], [Output terminal], [$~10$],
+  [Soma    ], [Cell body      ], [up to $10^6$],
+  bottomrule,
+)
+
+#figure(
+  tablex(
+    columns: 3,
+    align: left + horizon,
+    auto-vlines: false,
+    auto-hlines: false,
+    header-rows: 2,
+    ..rows),  // TODO(@daskol): Fix gutter between rows in body.
+  caption: [Sample table title.],
+  kind: table,
+) <sample-table>
 
 == Math
 
@@ -271,7 +285,7 @@ particular, do not modify the width or length of the rectangle the text should
 fit into, and do not change font sizes (except perhaps in the *References*
 section; see below). Please note that pages should be numbered.
 
-== Preparing PDF files
+= Preparing PDF files
 
 Please prepare submission files with paper size "US Letter," and not, for
 example, "A4."
@@ -319,24 +333,22 @@ Most of the margin problems come from figures positioned by hand using
 from the `graphicx` package. Always specify the figure width as a multiple of
 the line width as in the example below:
 
-#align(center)[
 ```tex
-\usepackage[pdftex]{graphicx} ...
-\includegraphics[width=0.8\linewidth]{myfile.pdf}
+    \usepackage[pdftex]{graphicx} ...
+    \includegraphics[width=0.8\linewidth]{myfile.pdf}
 ```
-]
 
-See Section 4.4 in the graphics bundle documentation
+See @tables in the graphics bundle documentation
 (#link("http://mirrors.ctan.org/macros/latex/required/graphics/grfguide.pdf"))
 
 A number of width problems arise when #LaTeX cannot properly hyphenate a line.
-Please give LaTeX hyphenation hints using the `\-` command when necessary.
+please give #LaTeX hyphenation hints using the `\-` command when necessary.
 
-// NOTE This is the acknowledgments section which is not visible in draft.
+// note this is the acknowledgments section which is not visible in draft.
 #if false [
-Use unnumbered first level headings for the acknowledgments. All
+use unnumbered first level headings for the acknowledgments. all
 acknowledgments go at the end of the paper before the list of references.
-Moreover, you are required to declare funding (financial activities supporting
+moreover, you are required to declare funding (financial activities supporting
 the submitted work) and competing interests (related financial activities
 outside the submitted work). More information about this disclosure can be
 found at:
