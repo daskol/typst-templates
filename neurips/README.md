@@ -1,4 +1,4 @@
-# Neural Information Processing Systems (NeurIPS) 2024
+# Neural Information Processing Systems (NeurIPS) 2023
 
 ## Example Papers
 

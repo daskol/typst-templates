@@ -1,5 +1,5 @@
 #import "@preview/tablex:0.0.8": cellx, hlinex, tablex
-#import "/neurips2024.typ": *
+#import "/neurips2023.typ": *
 #import "/logo.typ": LaTeX, LaTeXe, TeX
 
 #let affls = (
@@ -24,8 +24,8 @@
   (name: "Firstname2 Lastname2", affl: ("airi", "skoltech"), equal: true),
 )
 
-#show: neurips2024.with(
-  title: [Formatting Instructions For NeurIPS 2024],
+#show: neurips2023.with(
+  title: [Formatting Instructions For NeurIPS 2023],
   authors: (authors, affls),
   keywords: ("Machine Learning", "NeurIPS"),
   abstract: [

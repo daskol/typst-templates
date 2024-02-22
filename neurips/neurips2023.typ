@@ -235,13 +235,13 @@
 }
 
 /**
- * neurips2024
+ * neurips2023
  *
  * Args:
  *   accepted: Valid values are `none`, `false`, and `true`. Missing value
  *   (`none`) is designed to prepare arxiv publication. Default is `false`.
  */
-#let neurips2024(
+#let neurips2023(
   title: [],
   authors: (),
   keywords: (),
