@@ -40,6 +40,11 @@ Here are an example paper in [LaTeX][1] and in [Typst][2].
 
   See [README.md][3] for details.
 
+- NeurIPS 2023 instructions discuss bibliography in vague terms. Namely, there
+  is not specific requirements. Thus we stick to `ieee` bibliography style
+  since we found it in several accepted papers and it is similar to that in the
+  example paper.
+
 [1]: example-paper.latex.pdf
 [2]: example-paper.typst.pdf
 [3]: ../#colored-annotations

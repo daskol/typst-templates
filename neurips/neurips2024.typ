@@ -391,7 +391,7 @@ Address \
   v(6.5pt)  // Original 0.075in.
 
   // Render abstract.
-  block(width: 100%, fill: luma(230), {
+  block(width: 100%, {
     set text(size: 10pt)
     set text(size: font.normal)
     set par(leading: 0.43em)  // Original 0.55em (or 0.45em?).
@@ -419,6 +419,9 @@ Address \
     if bibliography-file != none {
       if "title" not in bibliography-opts {
         bibliography-opts.title = "References"
+      }
+      if "style" not in bibliography-opts {
+        bibliography-opts.style = "ieee"
       }
       // NOTE It is allowed to reduce font to 9pt (small) but there is not
       // small font of size 9pt in original sty.
