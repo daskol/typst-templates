@@ -30,18 +30,6 @@
   script: font-defaults.scriptsize,
 )
 
-#let format_author_names(authors) = {
-  // Formats the author's names in a list with commas and a
-  // final "and".
-  let author_names = authors.map(author => author.name)
-  let author-string = if authors.len() == 2 {
-    author_names.join(" and ")
-  } else {
-    author_names.join(", ", last: ", and ")
-  }
-  return author_names
-}
-
 #let make_figure_caption(it) = {
   set align(center)
   block({
@@ -106,89 +94,145 @@
   Learning_, Vienna, Austria. PMLR 235, 2024. Copyright 2024 by the author(s).
 ]
 
-#let make-author(author, affl2idx) = {
+#let format-author-names(authors) = {
+  // Formats the author's names in a list with commas and a
+  // final "and".
+  let author_names = authors.map(author => author.name)
+  let author-string = if authors.len() == 2 {
+    author_names.join(" and ")
+  } else {
+    author_names.join(", ", last: ", and ")
+  }
+  return author_names
+}
+
+#let format-author-name(author, affl2idx, affilated: false) = {
+  // Sanitize author affilations.
+  let affl = author.at("affl")
+  if type(affl) == str {
+    affl = (affl,)
+  }
+  let indices = affl.map(it => str(affl2idx.at(it))).join(" ")
+  let result = strong(author.name)
+  if affilated {
+    result += super(typographic: false, indices)
+  }
+  return box(result)
+}
+
+#let format-afflilation(affl) = {
+  assert(affl.len() > 0, message: "Affilation must be non-empty.")
+
+  // Concatenate terms which representat affilation to a single text.
+  let affilation = ""
+  if type(affl) == array {
+    affilation = affl.join(", ")
+  } else if type(affl) == dictionary {
+    let terms = ()
+    if "department" in affl and affl.department != none {
+      terms.push(affl.department)
+    }
+    if "institution" in affl and affl.institution != none {
+      terms.push(affl.institution)
+    }
+    if "location" in affl and affl.location != none {
+      terms.push(affl.location)
+    }
+    if "country" in affl and affl.country != none {
+      terms.push(affl.country)
+    }
+    affilation = terms.filter(it => it.len() > 0).join(", ")
+  } else {
+    assert(false, message: "Unexpected execution branch.")
+  }
+
+  return affilation
+}
+
+#let make-single-author(author, affls, affl2idx) = {
   // Sanitize author affilations.
   let affl = author.at("affl")
   if type(affl) == str {
     affl = (affl,)
   }
 
-  // Make a list of superscript indices.
-  let indices = affl.map(it => str(affl2idx.at(it)))
-  let has-equal-contrib = author.at("equal", default: false)
-  if has-equal-contrib {
-    indices.insert(0, "*")
+  // Render author name.
+  let name = format-author-name(author, affl2idx)
+  // Render affilations.
+  let affilation = affl
+    .map(it => format-afflilation(affls.at(it)))
+    .map(it => box(it))
+    .join(" ")
+
+  let lines = (name, affilation)
+  if "email" in author {
+    let uri = "mailto:" + author.email
+    let text = raw(author.email)
+    lines.push(box(link(uri, text)))
   }
 
-  // Render author and affilation references to content.
-  set text(size: font.normal, weight: "regular")
-  return [
-    #strong(author.name) \
-    Affilation \
-    Address \
-    `email`
-  ]
+  // Combine all parts of author's info.
+  let body = lines.join([\ ])
+  return align(center, body)
 }
 
-#let make-affilations-and-notice(authors, affls) = {
-  let info = ()
+#let make-two-authors(authors, affls, affl2idx) = {
+  let row = authors
+    .map(it => make-single-author(it, affls, affl2idx))
+    .map(it => box(it))
+  return align(center, grid(columns: (1fr, 1fr), gutter: 2em, ..row))
+}
 
-  // Add equal contribution notice.
-  let has-equal-contrib = authors.fold(false, (acc, it) => {
-    let equal-contrib = it.at("equal", default: false)
-    return acc or equal-contrib
-  })
-  if has-equal-contrib {
-    info.push(super[\*] + [Equal contribution])
+#let make-many-authors(authors, affls, affl2idx) = {
+  let format-affl(affls, key, index) = {
+    let affl = affls.at(key)
+    let affilation = format-afflilation(affl)
+    let entry = super(typographic: false, [#index]) + affilation
+    return box(entry)
   }
 
-  // Prepare list of affilations.
+  // Concatenate all author names with affilation superscripts.
+  let names = authors
+    .map(it => format-author-name(it, affl2idx, affilated: true))
+
+  // Concatenate all affilations with superscripts.
+  let affilations = affl2idx
+    .pairs()
+    .map(it => format-affl(affls, ..it))
+
+  // Concatenate all emails to a single paragraph.
+  let emails = authors
+    .filter(it => "email" in it)
+    .map(it => box(link("mailto:" + it.email, raw(it.email))))
+
+  // Combine paragraph pieces to single array, then filter and join to
+  // paragraphs.
+  let paragraphs = (names, affilations, emails)
+    .filter(it => it.len() > 0)
+    .map(it => it.join(h(1em, weak: true)))
+    .join([#parbreak() ])
+
+  return align(center, {
+    pad(left: 1em, right: 1em, paragraphs)
+  })
+}
+
+#let make-authors(authors, affls) = {
+  // Prepare authors and footnote anchors.
   let ordered-affls = authors.map(it => it.affl).flatten().dedup()
-  let affilations = ordered-affls.enumerate(start: 1).map(pair => {
-    let (ix, it) = pair
-    let affl = affls.at(it, default: none)
-    assert(affl != none, message: "unknown affilation: " + it)
-
-    // Convert structured affilation representation to plain one (array).
-    if type(affl) == dictionary {
-      let keys = ("department", "institution", "location", "country")
-      let parts = ()
-      for key in keys {
-        let val = affl.at(key, default: none)
-        if val != none {
-          parts.push(val)
-        }
-      }
-      affl = parts
-    }
-
-    // Validate affilation representation.
-    assert(type(affl) == array,
-           message: "wrong affilation type: " + type(affl))
-    assert(affl.len() > 0,
-           message: "empty affilation: " + it + " :" + repr(affl))
-
-    // Finally, join parts of affilation.
-    return super(str(ix)) + affl.join(", ")
-  })
-  if affilations != () {
-    info.push(affilations.join([ ]) + [.])
-  }
-
-  // Prepare list of corresponding authors (author which has its email).
-  let correspondents = authors.fold((), (acc, it) => {
-    let email = it.at("email", default: none)
-    if email != none {
-      let mailto = link("mailto:" + it.email, it.email)
-      acc.push([#it.name \<#mailto\>])
-    }
+  let affl2idx = ordered-affls.enumerate(start: 1).fold((:), (acc, it) => {
+    let (ix, affl) = it
+    acc.insert(affl, ix)
     return acc
   })
-  if correspondents != () {
-    info.push([Correspondence to: ] + correspondents.join(", ") + [.])
-  }
 
-  return info
+  if authors.len() == 1 {
+    return make-single-author(authors.at(0), affls, affl2idx)
+  } else if authors.len() == 2 {
+    return make-two-authors(authors, affls, affl2idx)
+  } else {
+    return make-many-authors(authors, affls, affl2idx)
+  }
 }
 
 /**
@@ -206,14 +250,9 @@
   abstract: none,
   bibliography-file: none,
   bibliography-opts: (:),
-  header: none,
   accepted: false,
   body,
 ) = {
-  if header == none {
-    header = title
-  }
-
   // Sanitize authors and affilations arguments.
   if accepted != none and not accepted {
     authors = ((anonymous-author,), (anonymous-affl: anonymous-affl))
@@ -223,19 +262,10 @@
   // Configure document metadata.
   set document(
     title: title,
-    author: authors.map(it => it.name),
+    author: format-author-names(authors),
     keywords: keywords,
     date: date,
   )
-
-  // Prepare authors and footnote anchors.
-  let ordered-affls = authors.map(it => it.affl).flatten().dedup()
-  let affl2idx = ordered-affls.enumerate(start: 1).fold((:), (acc, it) => {
-    let (ix, affl) = it
-    acc.insert(affl, ix)
-    return acc
-  })
-  let make-authors() = authors.map(it => make-author(it, affl2idx))
 
   set page(
     paper: "us-letter",
@@ -377,14 +407,9 @@
   block(width: 100%, {
     set text(size: font.normal)
     set par(leading: 4.5pt)
-    // TODO(@daskol): Implement rendering of real author names.
-    align(center)[
-*Anonymous Author(s)* \
-Affilation \
-Address \
-`email`
-]
-  v(0.3in - 0.1in)
+    show par: set block(spacing: 1.0em)  // Original 11pt.
+    make-authors(authors, affls)
+    v(0.3in - 0.1in)
   })
 
   // Vertical spacing between authors and abstract.

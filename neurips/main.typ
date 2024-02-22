@@ -8,16 +8,20 @@
     department: "AI Center",
     institution: "Skoltech",
     location: "Moscow",
-    country: "Russia",
-    ),
+    country: "Russia"),
+  skoltech2: (
+    department: "AI Center",
+    institution: "Skoltech",
+    location: "Moscow",
+    country: "Russia"),
 )
 
 #let authors = (
   (name: "Firstname1 Lastname1",
-   affl: ("skoltech"),
+   affl: "skoltech",
    email: "author@example.org",
    equal: true),
-  (name: "Firstname1 Lastname1", affl: ("airi", "skoltech"), equal: true),
+  (name: "Firstname2 Lastname2", affl: ("airi", "skoltech"), equal: true),
 )
 
 #show: neurips2024.with(
@@ -33,7 +37,6 @@
   ],
   bibliography-file: "main.bib",
   bibliography-opts: (title: none, full: true),  // Only for example paper.
-  header: [Submission and Formatting Instructions for ICML 2024],
   accepted: false,
 )
 
