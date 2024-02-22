@@ -15,3 +15,16 @@ journals during calendar year.
 - [Neural Information Processing System (NeurIPS)](neurips).
 - International Conference on Learning Representations (ICLR).
 - Association for the Advancement of Artificial Intelligence (AAAI).
+
+## Utilities
+
+Typst of version 0.10.0 does not produce colored annotations. In order to
+mitigate the issue, we add [a simple script](colorize-annotations.py) to the
+repository. The script is plain and simple. One can use it as follows.
+
+```shell
+./colorize-annotations.py \
+    neurips/example-paper.typst.pdf neurips/example-paper-colored.typst.pdf
+```
+
+It is written with PyMuPDF library and inserts colored annotation.

@@ -42,7 +42,7 @@
 Please read the instructions below carefully and follow them faithfully.
 *Important:* This year the checklist will be submitted separately from the main
 paper in OpenReview, please review it well ahead of the submission deadline:
-#link("https://neurips.cc/public/guides/PaperChecklist").
+#url("https://neurips.cc/public/guides/PaperChecklist")
 
 == Style
 
@@ -66,7 +66,7 @@ The style files for NeurIPS and other conference information are available on
 the website at
 
 #align(center)[
-  #link("http://www.neurips.cc/")
+  #url("http://www.neurips.cc/")
 ]
 
 The file `neurips_2023.pdf` contains these instructions and illustrates the
@@ -158,7 +158,7 @@ is used consistently.
 The documentation for `natbib` may be found at
 
 #align(center)[
-  #link("http://mirrors.ctan.org/macros/latex/contrib/natbib/natnotes.pdf")
+  #url("http://mirrors.ctan.org/macros/latex/contrib/natbib/natnotes.pdf")
 ]
 
 Of note is the command `\citet`, which produces citations appropriate for use
@@ -235,7 +235,7 @@ strongly suggest the use of the `booktabs` package, which allows for
 typesetting high-quality, professional tables:
 
 #align(center)[
-  #link("https://www.ctan.org/pkg/booktabs")
+  #url("https://www.ctan.org/pkg/booktabs")
 ]
 
 This package was used to typeset @sample-table.
@@ -274,8 +274,8 @@ This package was used to typeset @sample-table.
 Note that display math in bare TeX commands will not create correct line
 numbers for submission. Please use LaTeX (or AMSTeX) commands for unnumbered
 display math. (You really shouldn't be using $dollar dollar$ anyway; see
-#link("https://tex.stackexchange.com/questions/503/why-is-preferable-to") and
-#link("https://tex.stackexchange.com/questions/40492/what-are-the-differences-between-align-equation-and-displaymath")
+#url("https://tex.stackexchange.com/questions/503/why-is-preferable-to") and
+#url("https://tex.stackexchange.com/questions/40492/what-are-the-differences-between-align-equation-and-displaymath")
 for more information.)
 
 == Final instructions
@@ -339,7 +339,7 @@ the line width as in the example below:
 ```
 
 See @tables in the graphics bundle documentation
-(#link("http://mirrors.ctan.org/macros/latex/required/graphics/grfguide.pdf"))
+(#url("http://mirrors.ctan.org/macros/latex/required/graphics/grfguide.pdf"))
 
 A number of width problems arise when #LaTeX cannot properly hyphenate a line.
 please give #LaTeX hyphenation hints using the `\-` command when necessary.
@@ -352,7 +352,7 @@ moreover, you are required to declare funding (financial activities supporting
 the submitted work) and competing interests (related financial activities
 outside the submitted work). More information about this disclosure can be
 found at:
-#link("https://neurips.cc/Conferences/2023/PaperInformation/FundingDisclosure")
+#url("https://neurips.cc/Conferences/2023/PaperInformation/FundingDisclosure")
 
 Do *not* include this section in the anonymized submission, only in the final
 paper. You can use the `ack` environment provided in the style file to

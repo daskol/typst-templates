@@ -29,5 +29,17 @@ Here are an example paper in [LaTeX][1] and in [Typst][2].
   )
   ```
 
+- Another issue is related to Typst's inablity to produce colored annotation.
+  In order to mitigte the issue, we add a script which modifies annotations and
+  make them colored.
+
+  ```shell
+  ../colorize-annotations.py \
+      example-paper.typst.pdf example-paper-colored.typst.pdf
+  ```
+
+  See [README.md][3] for details.
+
 [1]: example-paper.latex.pdf
 [2]: example-paper.typst.pdf
+[3]: ../#colored-annotations

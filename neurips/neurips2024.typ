@@ -439,3 +439,10 @@ Address \
   [*#body*]
   h(1em, weak: true)
 }
+
+/**
+ * A routine for rendering external links in monospace font.
+ */
+#let url(uri) = {
+  return link(uri, raw(uri))
+}
