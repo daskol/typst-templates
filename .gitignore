@@ -1,0 +1,6 @@
+# Ignore LaTeX output files.
+*.aux
+*.bbl
+*.bst
+*.log
+*.out
