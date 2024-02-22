@@ -355,6 +355,26 @@
   set par(justify: true, leading: 0.55em)
   set text(font: font-family, size: font.normal)
 
+  // Configure quotation (similar to LaTeX's `quoting` package).
+  show quote: set align(left)
+  show quote: set pad(x: 4em)
+  show quote: set block(spacing: 1em)  // Original 11pt.
+
+  // Configure spacing code snippets as in the original LaTeX.
+  show raw.where(block: true): set block(spacing: 14pt)  // TODO: May be 15pt?
+
+  // Configure bullet lists.
+  show list: set block(spacing: 15pt)  // Original unknown.
+  set list(
+    indent: 30pt,  // Original 3pc (=36pt) without bullet.
+    spacing: 8.5pt)
+
+  // Configure footnote.
+  set footnote.entry(
+    separator: line(length: 2in, stroke: 0.5pt),
+    clearance: 6.65pt,
+    indent: 12pt)  // Original 11pt.
+
   set heading(numbering: "1.1")
   show heading: it => {
     // Create the heading numbering.

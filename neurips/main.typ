@@ -169,9 +169,7 @@ in inline text.  For example,
 ```
 produces
 
-```
-    Hasselmo, et al.\ (1995) investigated\dots
-```
+#quote(block: true)[Hasselmo, et al.~(1995) investigated\dots]
 
 If you wish to load the `natbib` package with options, you may add the
 following before loading the `neurips_2023` package:
