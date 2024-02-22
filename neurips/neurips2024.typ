@@ -42,110 +42,6 @@
   return author_names
 }
 
-#let statement(kind: "statement", supplement: none, content) = {
-  if supplement == none {
-    supplement = upper(kind.first()) + lower(kind.slice(1))
-  }
-  figure(
-    kind: kind,
-    supplement: [#supplement],
-    numbering: "1",
-    content,
-  )
-}
-
-#let statement_render(supplement_fn: strong, body_fn: emph, it) = {
-  block(above: 11.5pt, below: 11.5pt, {
-    supplement_fn({
-      it.supplement
-      if it.numbering != none {
-        [ ]
-
-        // Render prefix (heading) part of a counter.
-        let prefix = locate(loc => {
-          let index = counter(heading).at(loc)
-          let prefix = index.slice(0, -1)  // Ignore the last level.
-          let header = query(selector(heading).before(loc), loc,).at(-1)
-          return numbering(header.numbering, ..prefix)
-        })
-        [#prefix]
-
-        // Render last digit of a counter.
-        let ix = locate(loc => {
-          let ix_assump = counter(figure.where(kind: "assumption")).at(loc)
-          let ix_state = counter(figure.where(kind: "statement")).at(loc)
-          let ix_notice = counter(figure.where(kind: "notice")).at(loc)
-          let index = ix_assump.first() + ix_state.first() + ix_notice.first()
-          return numbering(it.numbering, index)
-        })
-        [#ix]
-      }
-      [. ]
-    })
-    body_fn(it.body)
-  })
-}
-
-#let notice_render(it) = statement_render(
-  supplement_fn: emph,
-  body_fn: body => body,
-  it)
-
-#let assumption(content) = {
-  statement(kind: "assumption", supplement: [Assumption], content)
-}
-
-#let definition(content) = {
-  statement(kind: "assumption", supplement: [Definition], content)
-}
-
-#let corollary(content) = { statement(supplement: [Colorary], content) }
-#let lemma(content) = { statement(supplement: [Lemma], content) }
-#let proposition(content) = { statement(supplement: [Proposition], content) }
-#let theorem(content) = { statement(supplement: [Theorem], content) }
-
-#let note(content) = { statement(kind: "notice", supplement: [Note], content) }
-#let remark(content) = {
-  statement(kind: "notice", supplement: [Remark], content)
-}
-
-// Render reference to theorem-like figures (definitions, lemmas, theorems, and
-// so on).
-#let render-ref-statement(it) = {
-  // Ignore all elements that are not figures and not theorem-like figures.
-  let el = it.element
-  if el == none or el.func() != figure {
-    return it
-  } else if el.kind not in ("assumption", "notice", "statement") {
-    return it
-  }
-
-  // Reference number for theorem-like figures has form
-  // "<section>.<number>". So, we get the section number if there is any.
-  let loc = el.location()
-  let ix_heading = counter(heading).at(loc)
-  let prefix = ix_heading.at(0, default: 0)
-
-  // And now we compute a number of a theorem-like figure in the section.
-  let ix_assump = counter(figure.where(kind: "assumption")).at(loc)
-  let ix_state = counter(figure.where(kind: "statement")).at(loc)
-  let ix_notice = counter(figure.where(kind: "notice")).at(loc)
-  let suffix = ix_assump.first() + ix_state.first() + ix_notice.first()
-
-  // Finally, render it as a content.
-  el.supplement
-  [~]
-  numbering("1.1", prefix, suffix)
-}
-
-// And a definition for a proof.
-#let proof(body) = block(spacing: 11.5pt, {
-  emph[Proof.]
-  [ ] + body
-  h(1fr)
-  box(scale(160%, origin: bottom + right, sym.square.stroked))
-})
-
 #let make_figure_caption(it) = {
   set align(center)
   block({
@@ -163,21 +59,27 @@
 
 #let make_figure(caption_above: false, it) = {
   // set align(center + top)
-  place(center + top, float: true,
-    block(breakable: false, width: 100%, {
-      set text(size: font.normal)
-      if caption_above {
-        v(1em, weak: true)
-        it.caption
-      }
-      v(1em, weak: true)
-      it.body
-      v(1em, weak: true)
-      if not caption_above {
-        it.caption
-        v(1em, weak: true)
-      }
-    }))
+  // let body = block(breakable: false, width: 100%, {
+  let body = {
+    set text(size: font.normal)
+    if caption_above {
+      v(1em, weak: true)  // Does not work at the block beginning.
+      it.caption
+    }
+    v(1em, weak: true)
+    it.body
+    v(8pt, weak: true)  // Original 1em.
+    if not caption_above {
+      it.caption
+      v(1em, weak: true)  // Does not work at the block ending.
+    }
+  }
+
+  if it.placement == none {
+    return body
+  } else {
+    return place(it.placement + center, body, float: true, clearance: 2.3em)
+  }
 }
 
 #let anonymous-author = (
@@ -375,18 +277,12 @@
     clearance: 6.65pt,
     indent: 12pt)  // Original 11pt.
 
+  // Configure heading appearence and numbering.
   set heading(numbering: "1.1")
   show heading: it => {
     // Create the heading numbering.
     let number = if it.numbering != none {
       counter(heading).display(it.numbering)
-    }
-
-    // Reset "theorem"counters.
-    if it.level == 1 {
-      counter(figure.where(kind: "assumption")).update(0)
-      counter(figure.where(kind: "statement")).update(0)
-      counter(figure.where(kind: "notice")).update(0)
     }
 
     set align(left)
@@ -415,18 +311,13 @@
     }
   }
 
+  // Configure images and tables appearence.
   set figure.caption(separator: [:])
   show figure: set block(breakable: false)
   show figure.caption.where(kind: table): it => make_figure_caption(it)
   show figure.caption.where(kind: image): it => make_figure_caption(it)
   show figure.where(kind: image): it => make_figure(it)
   show figure.where(kind: table): it => make_figure(it, caption_above: true)
-
-  show figure.where(kind: "assumption"): it => {
-    statement_render(body_fn: body => body, it)
-  }
-  show figure.where(kind: "statement"): it => statement_render(it)
-  show figure.where(kind: "notice"): it => notice_render(it)
 
   // Math equation numbering and referencing.
   set math.equation(numbering: "(1)")
@@ -442,7 +333,7 @@
       let content = link(el.location(), text(fill: color, numb))
       [(#content)]
     } else {
-      render-ref-statement(it)
+      return it
     }
   }
 

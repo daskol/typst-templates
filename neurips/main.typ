@@ -206,7 +206,8 @@ in this example.]
 
 #figure(
   rect(width: 4.25cm, height: 4.25cm, stroke: 0.4pt),
-  caption: [Sample figure caption.]
+  caption: [Sample figure caption.],
+  placement: top,
 )
 
 All artwork must be neat, clean, and legible. Lines should be dark enough for
@@ -265,6 +266,7 @@ This package was used to typeset @sample-table.
     ..rows),  // TODO(@daskol): Fix gutter between rows in body.
   caption: [Sample table title.],
   kind: table,
+  placement: top,
 ) <sample-table>
 
 == Math
