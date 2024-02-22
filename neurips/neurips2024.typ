@@ -303,7 +303,7 @@
   date: auto,
   abstract: none,
   bibliography-file: none,
-  bibliography-opts: (),
+  bibliography-opts: (:),
   header: none,
   accepted: false,
   body,
@@ -506,9 +506,6 @@ Address \
 
     // Display the bibliography, if any is given.
     if bibliography-file != none {
-      if "full" not in bibliography-opts {
-        bibliography-opts.full = false
-      }
       if "title" not in bibliography-opts {
         bibliography-opts.title = "References"
       }
@@ -521,18 +518,6 @@ Address \
       )
     }
   }
-
-  pagebreak()
-  counter(heading).update(0)
-  counter("appendices").update(1)
-  set heading(
-    numbering: (..nums) => {
-      let vals = nums.pos()
-      let value = "ABCDEFGHIJ".at(vals.at(0) - 1)
-      return value + "." + nums.pos().slice(1).map(str).join(".")
-    }
-  )
-  // include "appendix.typ"
 }
 
 /**

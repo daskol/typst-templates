@@ -32,7 +32,7 @@
     limited to one paragraph.
   ],
   bibliography-file: "main.bib",
-  bibliography-opts: (title: "", full: true),
+  bibliography-opts: (title: none, full: true),  // Only for example paper.
   header: [Submission and Formatting Instructions for ICML 2024],
   accepted: false,
 )
