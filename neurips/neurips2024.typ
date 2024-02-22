@@ -83,15 +83,14 @@
 )
 
 #let anonymous-notice = [
-  Submitted to 38th Conference on Neural Information Processing Systems
-  (NeurIPS 2024). Do not distribute.
+  Submitted to 37th Conference on Neural Information Processing Systems
+  (NeurIPS 2023). Do not distribute.
 ]
 
-#let arxiv-notice = []
+#let arxiv-notice = [Preprint. Under review.]
 
 #let public-notice = [
-  _Proceedings of the 41#super[st] International Conference on Machine
-  Learning_, Vienna, Austria. PMLR 235, 2024. Copyright 2024 by the author(s).
+  37th Conference on Neural Information Processing Systems (NeurIPS 2023).
 ]
 
 #let format-author-names(authors) = {
@@ -275,7 +274,15 @@
     footer: locate(loc => {
       let i = counter(page).at(loc).first()
       if i == 1 {
-        return align(center, text(size: 9pt, anonymous-notice))
+        let notice = ""
+        if accepted == none {
+          notice = arxiv-notice
+        } else if accepted {
+          notice = public-notice
+        } else {
+          notice = anonymous-notice
+        }
+        return align(center, text(size: 9pt, notice))
       } else {
         return align(center, text(size: font.normal, [#i]))
       }

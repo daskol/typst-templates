@@ -45,6 +45,9 @@ Here are an example paper in [LaTeX][1] and in [Typst][2].
   since we found it in several accepted papers and it is similar to that in the
   example paper.
 
+- It is unclear how to render notice in the bottom of the title page in case of
+  final (`accepted: true`) or preprint (`accepted: none`) submission.
+
 [1]: example-paper.latex.pdf
 [2]: example-paper.typst.pdf
 [3]: ../#colored-annotations
