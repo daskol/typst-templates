@@ -64,6 +64,37 @@
 
   // Configure heading appearence and numbering.
   set heading(numbering: "1.1")
+  show heading: it => {
+    // Create the heading numbering.
+    let number = if it.numbering != none {
+      counter(heading).display(it.numbering)
+    }
+
+    // TODO(@daskol): Use styles + measure to estimate ex.
+    set align(left)
+    if it.level == 1 {
+      text(font: font-family-heading, size: font.large, weight: "bold", {
+        let ex = 10pt
+        v(2.21 * ex, weak: true)
+        [#number *#it.body*]
+        v(1.80 * ex, weak: true)
+      })
+    } else if it.level == 2 {
+      text(font: font-family-heading, size: font.normal, weight: "bold", {
+        let ex = 6.78pt
+        v(2.1 * ex, weak: true)
+        [#number *#it.body*]
+        v(2.0 * ex, weak: true)  // Original 1ex.
+      })
+    } else if it.level == 3 {
+      text(font: font-family-heading, size: font.normal, weight: "bold", {
+        let ex = 6.78pt
+        v(2.6 * ex, weak: true)
+        [#number *#it.body*]
+        v(2.0 * ex, weak: true)  // Original -0.7em.
+      })
+    }
+  }
 
   // Render title.
   v(-0.03in)  // Visually perfect.
