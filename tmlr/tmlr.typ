@@ -23,6 +23,7 @@
   bibliography: none,
   header: none,
   accepted: false,
+  appendix: none,
   body,
 ) = {
   set document(
@@ -100,6 +101,11 @@
   body
 
   if bibliography != none {
+    set std-bibliography(title: [References])
     bibliography
+  }
+
+  if appendix != none {
+    appendix
   }
 }

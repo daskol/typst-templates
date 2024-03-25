@@ -36,6 +36,7 @@
     abstract must be limited to one paragraph.
   ],
   bibliography: bibliography("main.bib"),
+  appendix: include "appendix.typ",
   accepted: false,
 )
 
@@ -371,10 +372,3 @@ Use unnumbered third level headings for the acknowledgments. All
 acknowledgments, including those to funding agencies, go at the end of the
 paper. Only add this information once your submission is accepted and
 deanonymized. 
-
-// \bibliography{main}
-// \bibliographystyle{tmlr}
-
-= Appendix
-
-You may include other additional sections here.
