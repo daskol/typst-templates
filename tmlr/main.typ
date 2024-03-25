@@ -31,9 +31,9 @@
   abstract: [
     The abstract paragraph should be indented 1/2~inch on both left and
     right-hand margins. Use 10~point type, with a vertical spacing of
-    11~points. The word *Abstract* must be centered, in bold, and in point size
-    12. Two line spaces precede the abstract. The abstract must be limited to
-    one paragraph.
+    11~points. The word #text(size: 12pt)[*Abstract*] must be centered, in
+    bold, and in point size~12. Two line spaces precede the abstract. The
+    abstract must be limited to one paragraph.
   ],
   bibliography: bibliography("main.bib"),
   accepted: false,
