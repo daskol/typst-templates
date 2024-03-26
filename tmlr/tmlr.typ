@@ -122,6 +122,15 @@
     gap: 0.40em,
     indent: 12pt)  // Original 12pt.
 
+  // Configure figures.
+  show figure.where(kind: image): set figure.caption(position: bottom)
+  set figure(gap: 16pt)
+
+  // Configure tables.
+  show figure.where(kind: table): set figure.caption(position: top)
+  show figure.where(kind: table): set figure(gap: 6pt)
+  set table(inset: 4pt)
+
   // Render title.
   v(-0.03in)  // Visually perfect.
   block(fill: luma(230), {

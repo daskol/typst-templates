@@ -164,15 +164,7 @@ paper body to make sense if the paper is printed either in black/white or in
 color.
 
 #figure(
-```tex
-\begin{figure}[h]
-\begin{center}
-%\framebox[4.0in]{$\;$}
-\fbox{\rule[-.5cm]{0cm}{4cm} \rule[-.5cm]{4cm}{0cm}}
-\end{center}
-\end{figure}
-```,
-  kind: image,
+  rect(width: 4.2cm + 0.8pt, height: 4.20cm + 0.8pt, stroke: 0.4pt),
   caption: [Sample figure caption.])
 
 == Tables
@@ -184,22 +176,18 @@ after the table title, and one line space after the table. The table title must
 be lower case (except for first word and proper nouns); tables are numbered
 consecutively.
 
-#figure(```tex
-\begin{table}[t]
-\caption{Sample table title}
-\begin{center}
-\begin{tabular}{ll}
-\multicolumn{1}{c}{\bf PART}  &\multicolumn{1}{c}{\bf DESCRIPTION}
-\\ \hline \\
-Dendrite         &Input terminal \\
-Axon             &Output terminal \\
-Soma             &Cell body (contains cell nucleus) \\
-\end{tabular}
-\end{center}
-\end{table}
-```,
-  kind: table,
-  caption: [Sample table title]) <sample-table>
+#figure(
+  table(
+    columns: 2,
+    stroke: none,
+    align: (x, y) => if y == 0 { center } else { left },
+    table.header([*PART*],   [*DESCRIPTION*]),
+    table.hline(stroke: 0.5pt),
+    [Dendrite], [Input terminal],
+    [Axon    ], [Output terminal],
+    [Soma    ], [Cell body (contains cell nucleus)]),
+  caption: [Sample table title],
+  placement: top) <sample-table>
 
 = Default Notation
 
