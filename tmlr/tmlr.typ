@@ -51,7 +51,7 @@
         line(length: 100%, stroke: (thickness: 0.4pt))
       })
     }),
-    footer-descent: 15pt, // TODO(@daskol): Why such multiplier?
+    footer-descent: 20pt, // TODO(@daskol): Why such multiplier?
     footer: locate(loc => {
       let ix = counter(page).at(loc).first()
       return align(center, text(size: font.normal, [#ix]))
@@ -60,41 +60,67 @@
   // The original style requirements is to use Computer Modern Bright but we
   // just use OpenType CMU Bright font.
   set text(font: font-family, size: font.normal)
-  set par(justify: true, leading: 0.55em)
+  set par(justify: true, leading: 0.52em)  // TODO: Why? Visually perfect.
+  show par: set block(spacing: 1.1em)
 
   // Configure heading appearence and numbering.
   set heading(numbering: "1.1")
+  show heading: set text(font: font-family-heading)
   show heading: it => {
     // Create the heading numbering.
     let number = if it.numbering != none {
       counter(heading).display(it.numbering)
     }
 
+    // Render section with such names without numbering as level 3 heading.
+    let unnumbered = (
+      [Broader Impact Statement],
+      [Author Contributions],
+      [Acknowledgments],
+    )
+    let level = it.level
+    let prefix = [#number ]
+    if unnumbered.any(name => name == it.body) {
+      level = 3
+      prefix = []
+    }
+
     // TODO(@daskol): Use styles + measure to estimate ex.
     set align(left)
-    if it.level == 1 {
-      text(font: font-family-heading, size: font.large, weight: "bold", {
+    if level == 1 {
+      text(size: font.large, weight: "bold", {
         let ex = 10pt
-        v(2.21 * ex, weak: true)
-        [#number *#it.body*]
-        v(1.80 * ex, weak: true)
+        v(2.05 * ex, weak: true)  // Visually perfect.
+        [#prefix*#it.body*]
+        v(1.80 * ex, weak: true) // Visually perfect.
       })
-    } else if it.level == 2 {
-      text(font: font-family-heading, size: font.normal, weight: "bold", {
+    } else if level == 2 {
+      text(size: font.normal, weight: "bold", {
         let ex = 6.78pt
-        v(2.1 * ex, weak: true)
-        [#number *#it.body*]
-        v(2.0 * ex, weak: true)  // Original 1ex.
+        v(2.8 * ex, weak: true)  // Visually perfect.
+        [#prefix*#it.body*]
+        v(2.15 * ex, weak: true)  // Visually perfect. Original 1ex.
       })
-    } else if it.level == 3 {
-      text(font: font-family-heading, size: font.normal, weight: "bold", {
+    } else if level == 3 {
+      text(size: font.normal, weight: "bold", {
         let ex = 6.78pt
-        v(2.6 * ex, weak: true)
-        [#number *#it.body*]
-        v(2.0 * ex, weak: true)  // Original -0.7em.
+        v(2.7 * ex, weak: true)  // Visually perfect.
+        [#prefix*#it.body*]
+        v(2.0 * ex, weak: true)  // Visually perfect. Original -0.7em.
       })
     }
   }
+
+  // Configure code blocks (listings).
+  show raw: set block(spacing: 1.95em)
+
+  // Configure footnote (almost default).
+  show footnote.entry: set text(size: 8pt)
+  set footnote.entry(
+    separator: line(length: 2in, stroke: 0.35pt),
+    clearance: 6.65pt,
+    gap: 0.40em,
+    indent: 12pt)  // Original 12pt.
 
   // Render title.
   v(-0.03in)  // Visually perfect.
@@ -137,6 +163,8 @@
   }
 
   if appendix != none {
+    set heading(numbering: "A.1")
+    counter(heading).update(0)
     appendix
   }
 }

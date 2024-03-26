@@ -83,7 +83,8 @@ Submissions must be made using #LaTeX and the style files `tmlr.sty` and
 title, abstract, and text of the paper with your own.
 
 The formatting instructions contained in these style files are summarized in
-sections @gen_inst, @headings, and @others below.
+sections #ref(<gen_inst>, supplement: none), #ref(<headings>, supplement:
+none), and #ref(<others>, supplement: none) below.
 
 = General formatting instructions <gen_inst>
 
@@ -281,9 +282,7 @@ required and can be disabled by commenting out `math_commands.tex`.
   // $\Cov(f(x),g(x))$, [Covariance of $f(x)$ and $g(x)$ under $P(\rx)$],
   // $H(\rx)$, [Shannon entropy of the random variable $\rx$],
   // $\KL ( P \Vert Q )$, [Kullback-Leibler divergence of P and Q],
-  $cal(N)( \vx ; \vmu , \mSigma)$,
-  [Gaussian distribution % over $\vx$ with mean $\vmu$ and covariance
-  $\mSigma$])
+  $cal(N)( \vx ; \vmu , \mSigma)$, [Gaussian distribution])
 #v(0.25cm)
 
 #align(center, [*Functions*])
@@ -339,7 +338,7 @@ line width as in the example below using .eps graphics
    \includegraphics[width=0.8\linewidth]{myfile.eps}
 ```
 
-or % Apr 2009 addition
+or
 
 ```tex
    \usepackage[pdftex]{graphicx} ...
@@ -352,7 +351,7 @@ for .pdf graphics. See section~4.4 in the graphics bundle documentation
 A number of width problems arise when #LaTeX cannot properly hyphenate a line.
 Please give LaTeX hyphenation hints using the `\-` command.
 
-=== Broader Impact Statement
+= Broader Impact Statement
 
 In this optional section, TMLR encourages authors to discuss possible
 repercussions of their work, notably any potential negative impact that a user
@@ -360,13 +359,13 @@ of this research should be aware of. Authors should consult the TMLR Ethics
 Guidelines available on the TMLR website for guidance on how to approach this
 subject.
 
-=== Author Contributions
+= Author Contributions
 
 If you'd like to, you may include a section for author contributions as is done
 in many journals. This is optional and at the discretion of the authors. Only
 add this information once your submission is accepted and deanonymized. 
 
-=== Acknowledgments
+= Acknowledgments
 
 Use unnumbered third level headings for the acknowledgments. All
 acknowledgments, including those to funding agencies, go at the end of the
