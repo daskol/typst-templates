@@ -196,100 +196,118 @@ file from the textbook, _Deep Learning_ @goodfellow2016deep available at
 #url("https://github.com/goodfeli/dlbook_notation/").  Use of this style is not
 required and can be disabled by commenting out `math_commands.tex`.
 
+#v(2em, weak: true)
+
 #align(center, [*Numbers and Arrays*])
-// \def\arraystretch{1.5}
 #table(
-  columns: (1in, 3.25in),
-  $a$, [A scalar (integer or real)],
-  $\va$, [A vector],
-  $\mA$, [A matrix],
-  $\tA$, [A tensor],
-  $\mI_n$, [Identity matrix with $n$ rows and $n$ columns],
-  $\mI$, [Identity matrix with dimensionality implied by context],
-  $\ve^((i))$, [Standard basis vector $[0,dots,0,1,0,dots,0]$ with a 1 at position $i$],
-  $op("diag")(\va)$, [A square, diagonal matrix with diagonal entries given by $\va$],
-  $\ra$, [A scalar random variable],
-  $serif(a)$, [A vector-valued random variable],
-  $serif(A)$, [A matrix-valued random variable])
-#v(0.25cm)
+  columns: (1in + 5pt, 3.25in + 15pt),
+  inset: 5pt,
+  stroke: none,
+  $a$,         [A scalar (integer or real)],
+  $bold(a)$,   [A vector],
+  $bold(A)$,   [A matrix],
+  $bold(upright(sans(A)))$, [A tensor],
+  $bold(I)_n$, [Identity matrix with $n$ rows and $n$ columns],
+  $bold(I)$,   [Identity matrix with dimensionality implied by context],
+  $bold(e)^((i))$, [Standard basis vector $[0,dots,0,1,0,dots,0]$ with a 1 at position $i$],
+  $op("diag")(bold(a))$, [A square, diagonal matrix with diagonal entries given by $bold(a)$],
+  $upright(a)$,       [A scalar random variable],
+  $bold(upright(a))$, [A vector-valued random variable],
+  $bold(upright(A))$, [A matrix-valued random variable])
+
+#v(0.25cm, weak: true)
 
 #align(center, [*Sets and Graphs*])
-// \def\arraystretch{1.5}
 #table(
-  columns: (1in, 3.25in),
+  columns: (1.25in + 5pt, 3.25in + 5pt),
+  inset: 5pt,
+  stroke: none,
   $AA$, [A set],
   $RR$, [The set of real numbers],
   $\{0, 1\}$, [The set containing 0 and 1],
   $\{0, 1, dots, n \}$, [The set of all integers between $0$ and $n$],
   $[a, b]$, [The real interval including $a$ and $b$],
   $(a, b]$, [The real interval excluding $a$ but including $b$],
-  $AA \\ BB$, [Set subtraction, i.e., the set containing the elements of $\sA$ that are not in $\sB$],
+  $AA \\ BB$, [Set subtraction, i.e., the set containing the elements of $AA$ that are not in $BB$],
   $cal(G)$, [A graph],
-  $op("parents")_cal(G)(serif(x)_i)$, [The parents of $serif(x)_i$ in $cal(G)$])
-#v(0.25cm)
+  $italic(P a)_cal(G)(upright(x)_i)$, [The parents of $upright(x)_i$ in $cal(G)$])
+
+#v(0.25cm, weak: true)
 
 #align(center, [*Indexing*])
-// \def\arraystretch{1.5}
 #table(
-  columns: (1in, 3.25in),
-  $serif(a)_i$, [Element $i$ of vector $\va$, with indexing starting at 1],
-  $serif(a)_(-i)$, [All elements of vector $\va$ except for element $i$],
-  $serif(A)_(i, j)$, [Element $i, j$ of matrix $\mA$],
-  $\mA_(i, :)$, [Row $i$ of matrix $\mA$],
-  $\mA_(:, i)$, [Column $i$ of matrix $\mA$],
-  $A_(i, j, k)$, [Element $(i, j, k)$ of a 3-D tensor $\tA$],
-  $\tA_(:, :, i)$, [2-D slice of a 3-D tensor],
-  $serif(a)_i$, [Element $i$ of the random vector $serif(a)$])
-#v(0.25cm)
+  columns: (1.25in + 5pt, 3.25in + 5pt),
+  inset: 5pt,
+  stroke: none,
+  $a_i$, [Element $i$ of vector $bold(a)$, with indexing starting at 1],
+  $a_(-i)$, [All elements of vector $bold(a)$ except for element $i$],
+  $A_(i, j)$, [Element $i, j$ of matrix $bold(A)$],
+  $bold(A)_(i, :)$, [Row $i$ of matrix $bold(A)$],
+  $bold(A)_(:, i)$, [Column $i$ of matrix $bold(A)$],
+  $sans(A)_(i, j, k)$, [Element $(i, j, k)$ of a 3-D tensor $bold(upright(sans(A)))$],
+  $bold(upright(sans(A)))_(:, :, i)$, [2-D slice of a 3-D tensor],
+  $upright(a)_i$, [Element $i$ of the random vector $bold(upright(a))$])
+
+#v(0.25cm, weak: true)
 
 #align(center, [*Calculus*])
-// \def\arraystretch{1.5}
 #table(
-  columns: (1in, 3.25in),
-  $(d y) / (d x)$, [Derivative of $y$ with respect to $x$],
-  $(diff y) / (diff x)$, [Partial derivative of $y$ with respect to $x$],
-  $nabla_\vx y$, [Gradient of $y$ with respect to $\vx$],
-  $nabla_\mX y$, [Matrix derivatives of $y$ with respect to $\mX$],
-  $nabla_\tX y$, [Tensor containing derivatives of $y$ with respect to $\tX$],
-  $(diff f) / (diff \vx}$, [Jacobian matrix $\mJ \in \R^{m times n}$ of $f: \R^n arrow.r \R^m$],
-  $nabla_\vx^2 f(\vx) " or " \mH( f)(\vx)$, [The Hessian matrix of $f$ at input point $\vx$],
-  $integral f(\vx) d\vx$, [Definite integral over the entire domain of $\vx$],
-  $integral_SS f(\vx) d\vx$, [Definite integral with respect to $\vx$ over the set $\sS$])
-#v(0.25cm)
+  columns: (1.25in + 5pt, 3.25in + 5pt),
+  inset: 5pt,
+  stroke: none,
+  $display((d y) / (d x))$, [Derivative of $y$ with respect to $x$],
+  $display((diff y) / (diff x))$, [Partial derivative of $y$ with respect to $x$],
+  $nabla_bold(x) y$, [Gradient of $y$ with respect to $bold(x)$],
+  $nabla_bold(X) y$, [Matrix derivatives of $y$ with respect to $bold(X)$],
+  $nabla_bold(upright(sans(X))) y$, [Tensor containing derivatives of $y$ with respect to $bold(upright(sans(X)))$],
+  $display((diff f) / (diff bold(x)))$, [Jacobian matrix $bold(J) in RR^(m times n)$ of $f: RR^n arrow.r RR^m$],
+  $nabla_bold(x)^2 f(bold(x)) "or" bold(H)(f)(bold(x))$, [The Hessian matrix of $f$ at input point $bold(x)$],
+  $display(integral f(bold(x)) d bold(x))$,
+  [Definite integral over the entire domain of $bold(x)$],
+  $display(integral_SS f(bold(x)) d bold(x))$,
+  [Definite integral with respect to $bold(x)$ over the set $SS$])
+
+#v(0.25cm, weak: true)
 
 #align(center, [*Probability and Information Theory*])
-// \def\arraystretch{1.5}
 #table(
-  columns: (1in, 3.25in),
-  $P(\ra)$, [A probability distribution over a discrete variable],
-  $p(\ra)$, [A probability distribution over a continuous variable, or over a
-  variable whose type has not been specified],
-  $\ra \sim P$, [Random variable $\ra$ has distribution $P$], 
-  // $\E_{\rx\sim P} [ f(x) ]\text{ or } \E f(x)$, [Expectation of $f(x)$ with respect to $P(\rx)$],
-  // $\Var(f(x))$, [Variance of $f(x)$ under $P(\rx)$],
-  // $\Cov(f(x),g(x))$, [Covariance of $f(x)$ and $g(x)$ under $P(\rx)$],
-  // $H(\rx)$, [Shannon entropy of the random variable $\rx$],
-  // $\KL ( P \Vert Q )$, [Kullback-Leibler divergence of P and Q],
-  $cal(N)( \vx ; \vmu , \mSigma)$, [Gaussian distribution])
-#v(0.25cm)
+  columns: (1.25in + 5pt, 3.25in + 5pt),
+  inset: 5pt,
+  stroke: none,
+  $P(upright(a))$, [A probability distribution over a discrete variable],
+  $p(upright(a))$, [A probability distribution over a continuous variable, or over a variable whose type has not been specified],
+  $upright(a) tilde P$, [Random variable $upright(a)$ has distribution $P$],
+  $EE_(upright(x) tilde P) [ f(x) ] "or" EE f(x)$, [Expectation of $f(x)$ with respect to $P(upright(x))$],
+  $op("Var")(f(x))$,       [Variance of $f(x)$ under $P(upright(x))$],
+  $op("Cov")(f(x), g(x))$, [Covariance of $f(x)$ and $g(x)$ under $P(upright(x))$],
+  $H(upright(x))$,   [Shannon entropy of the random variable $upright(x)$],
+  $D_"KL" (P || Q)$, [Kullback-Leibler divergence of $P$ and $Q$],
+  $cal(N)(bold(x); bold(mu), bold(Sigma))$, [Gaussian distribution over $bold(x)$ with mean $bold(mu)$ and covariance $bold(Sigma)$])
+
+#v(0.25cm, weak: true)
 
 #align(center, [*Functions*])
-// \def\arraystretch{1.5}
 #table(
-  columns: (1in, 3.25in),
-  $f: AA arrow.r BB$, [The function $f$ with domain $\sA$ and range $\sB$],
-  $f dot.c g $, [Composition of the functions $f$ and $g$],
-  $f(\vx ; \vtheta) $,
-  [A function of $\vx$ parametrized by $\vtheta$. (Sometimes we write $f(\vx)$
-  and omit the argument $\vtheta$ to lighten notation)],
-  $log(x)$, [Natural logarithm of $x$],
-  $sigma(x)$, [Logistic sigmoid, $1 / (1 + exp(-x))$],
-  $zeta(x)$, [Softplus, $log(1 + exp(x))$],
-  $|| \vx ||_p $, [$L^p$ norm of $\vx$],
-  $|| \vx || $, [$L^2$ norm of $\vx$],
+  columns: (1.25in + 5pt, 3.25in + 5pt),
+  inset: 5pt,
+  stroke: none,
+  $f: AA arrow.r BB$, [The function $f$ with domain $AA$ and range $BB$],
+  $f circle.stroked.tiny g$, [Composition of the functions $f$ and $g$],
+  $f(bold(x); bold(theta))$,
+  [A function of $bold(x)$ parametrized by $bold(theta)$. (Sometimes we write
+  $f(bold(x))$ and omit the argument $bold(theta)$ to lighten notation)],
+  $log x$,    [Natural logarithm of $x$],
+  $sigma(x)$, [Logistic sigmoid, $display(1 / (1 + exp(-x)))$],
+  $zeta(x)$,  [Softplus, $log(1 + exp(x))$],
+  $norm(bold(x))_p$, [$L^p$ norm of $bold(x)$],
+  $norm(bold(x))$,   [$L^2$ norm of $bold(x)$],
   $x^+$, [Positive part of $x$, i.e., $max(0,x)$],
-  $\1_sans("condition")$, [is 1 if the condition is true, 0 otherwise])
-#v(0.25cm)
+  $bold(1)_"condition"$, [is 1 if the condition is true, 0 otherwise])
+
+#v(0.25cm, weak: true)
+
+// We add page break here in order to align the end of the paper.
+#pagebreak()
 
 = Final instructions
 
