@@ -167,7 +167,7 @@
   body
 
   if bibliography != none {
-    set std-bibliography(title: [References])
+    set std-bibliography(title: [References], style: "tmlr.csl")
     bibliography
   }
 

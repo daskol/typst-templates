@@ -101,8 +101,8 @@ address and has its corresponding email contact on the same line, in italic and
 right aligned. The lead author's name is to be listed first, and the
 co-authors' names are set to follow vertically.
 
-Please pay special attention to the instructions in section @others
-regarding figures, tables, acknowledgments, and references.
+Please pay special attention to the instructions in section #ref(<others>,
+supplement: none) regarding figures, tables, acknowledgments, and references.
 
 = Headings: first level <headings>
 
@@ -131,10 +131,10 @@ These instructions apply to everyone, regardless of the formatter being used.
 Citations within the text should be based on the `natbib` package and include
 the authors' last names and year (with the "et~al." construct for more than two
 authors). When the authors or the publication are included in the sentence, the
-citation should not be in parenthesis, using `\citet{}` (as in "See @Hinton06
-for more information."). Otherwise, the citation should be in parenthesis using
-`\citep{}` (as in "Deep learning shows promise to make progress towards
-AI~@Bengio2007.").
+citation should not be in parenthesis, using `\citet{}` (as in "See
+#cite(<Hinton06>, form: "prose") for more information."). Otherwise, the
+citation should be in parenthesis using `\citep{}` (as in "Deep learning shows
+promise to make progress towards AI~@Bengio2007.").
 
 The corresponding references are to be listed in alphabetical order of authors,
 in the *References* section. As to the format of the references themselves, any
