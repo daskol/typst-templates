@@ -8,8 +8,7 @@
   deepmind: (
     institution: "DeepMind"),
   mila: (
-    department: "Mila",
-    institution: "Universit\'e de Montr\'eal"),
+    institution: "Mila, Université de Montréal"),
   google-research: (
     institution: "Google Research"),
   cifar: (
@@ -37,6 +36,7 @@
   ],
   bibliography: bibliography("main.bib"),
   appendix: include "appendix.typ",
+  review: "https://openreview.net/forum?id=XXXX",
   accepted: false,
 )
 

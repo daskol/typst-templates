@@ -4,6 +4,7 @@
 // ever it is possible.
 #let font-family = ("CMU Serif", "Latin Modern Roman", "New Computer Modern")
 #let font-family-heading = ("CMU Sans Serif", "Latin Modern Sans")
+#let font-family-mono = ("Latin Modern Mono", "Mono")
 
 #let font = (
   Large: 17pt,
@@ -14,6 +15,109 @@
   script: 8pt,
 )
 
+#let header(accepted, pubdate) = {
+  if accepted == none {
+    return ""
+  } else if accepted {
+    return (
+      "Published in Transactions on Machine Learning Research (",
+      pubdate.display("[month]/[year]"), ")",
+    ).join()
+  } else {
+    return "Under review as submission to TMLR"
+  }
+}
+
+#let affl-keys = ("department", "institution", "location", "country")
+
+#let make-author(author, affls) = {
+  let author-affls = if type(author.affl) == array {
+    author.affl
+  } else {
+    (author.affl, )
+  }
+
+  let lines = author-affls.map(key => {
+    let affl = affls.at(key)
+    return affl-keys
+      .map(key => affl.at(key, default: none))
+      .filter(it => it != none)
+      .join("\n")
+  }).map(it => emph(it))
+
+  return block(spacing: 0em, {
+    set par(justify: true, leading: 0.50em)  // Visually perfect.
+    show par: set block(spacing: 0em)
+    text(size: font.normal)[*#author.name*\ ]
+    text(size: font.small)[#lines.join([\ ])]
+  })
+}
+
+#let make-email(author) = {
+  let label = text(size: font.small, emph(author.email))
+  return block(spacing: 0em, {
+    // Compensate difference between name and email font sizes (10pt vs 9pt).
+    v(1pt)
+    link("mailto:" + author.email, label)
+  })
+}
+
+#let make-authors(authors, affls) = {
+  let cells = authors
+    .map(it => (make-author(it, affls), make-email(it)))
+    .join()
+  return grid(
+    columns: (2fr, 1fr),
+    align: (left + top, right + top),
+    row-gutter: 15.8pt,  // Visually perfect.
+    ..cells)
+}
+
+#let make-title(title, authors, abstract, review, accepted) = {
+  // Render title.
+  v(-0.03in)  // Visually perfect.
+  block(fill: luma(230), {
+    set block(spacing: 0em)
+    set par(leading: 10pt)  // Empirically found.
+    text(font: font-family-heading, size: font.Large, weight: "bold", title)
+  })
+
+  // Render authors.
+  if accepted == none {
+    // TODO(@daskol): Preprint info.
+  } else if accepted {
+    v(31pt, weak: true)  // Visually perfect.
+    make-authors(..authors)
+    v(14.9pt, weak: true)  // Visually perfect.
+    let label = text(font: font-family-mono, weight: "bold", emph(review))
+    [*Reviewed on OpenReview:* #link(review, label)]
+  } else {
+    v(0.3in + 0.2in - 3.5pt, weak: true)
+    block(fill: luma(230), {
+      [*Anonymous authors*\ ]
+      [*Paper under double-blind review*]
+    })
+  }
+  v(0.45in, weak: true)  // Visually perfect.
+
+  // Render abstract.
+  block(width: 100%, fill: luma(230), {
+    set text(size: font.normal)
+    set par(leading: 0.51em)  // Original 0.55em (or 0.45em?).
+
+    // While all content is serif, headers and titles are sans serif.
+    align(center,
+      text(
+        font: "CMU Sans Serif",
+        size: font.large,
+        weight: "bold",
+        [*Abstract*]))
+    v(22.2pt, weak: true)
+    pad(left: 0.5in, right: 0.5in, abstract)
+  })
+  v(29.5pt, weak: true)  // Visually perfect.
+}
+
 #let tmlr(
   title: [],
   authors: (),
@@ -21,18 +125,26 @@
   date: auto,
   abstract: none,
   bibliography: none,
-  header: none,
-  accepted: false,
   appendix: none,
+  accepted: false,
+  pubdate: none,
+  review: none,
   body,
 ) = {
+  if pubdate == none {
+    pubdate = if date != auto and data != none {
+      date
+    } else {
+      datetime.today()
+    }
+  }
+
   set document(
     title: title,
     author: authors.at(0).map(it => it.name),
     keywords: keywords,
     date: date)
 
-  header = "Under review as submission to TMLR"
   set page(
     paper: "us-letter",
     margin: (left: 1in,
@@ -46,7 +158,7 @@
       // TODO
       set block(spacing: 0em)
       block(spacing: 0em, fill: luma(230), {
-        header
+        header(accepted, pubdate)
         v(3.5pt, weak: true)
         line(length: 100%, stroke: (thickness: 0.4pt))
       })
@@ -131,38 +243,9 @@
   show figure.where(kind: table): set figure(gap: 6pt)
   set table(inset: 4pt)
 
-  // Render title.
-  v(-0.03in)  // Visually perfect.
-  block(fill: luma(230), {
-    set block(spacing: 0em)
-    set par(leading: 10pt)  // Empirically found.
-    text(font: font-family-heading, size: font.Large, weight: "bold", title)
-  })
-  v(0.3in + 0.2in - 3.5pt, weak: true)  // \aftertiskip
-  // Render authors.
-  block(fill: luma(230), {
-    [*Anonymous authors*\ ]
-    [*Paper under double-blind review*]
-  })
-  v(0.45in, weak: true)  // Visually perfect.
-
-  // Render abstract.
-  block(width: 100%, fill: luma(230), {
-    set text(size: font.normal)
-    set par(leading: 0.51em)  // Original 0.55em (or 0.45em?).
-
-    // While all content is serif, headers and titles are sans serif.
-    align(center,
-      text(
-        font: "CMU Sans Serif",
-        size: font.large,
-        weight: "bold",
-        [*Abstract*]))
-    v(22.2pt, weak: true)
-    pad(left: 0.5in, right: 0.5in, abstract)
-  })
-  v(29.5pt, weak: true)  // Visually perfect.
-
+  // Render title + authors + abstract.
+  make-title(title, authors, abstract, review, accepted)
+  // Render body as is.
   body
 
   if bibliography != none {
