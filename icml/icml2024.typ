@@ -1,3 +1,6 @@
+// Workaround for the lack of an `std` scope.
+#let std-bibliography = bibliography
+
 // Metrical size of page body.
 #let body = (
   width: 6.75in,
@@ -300,8 +303,9 @@
   keywords: (),
   date: auto,
   abstract: none,
-  bibliography-file: none,
+  bibliography: none,
   header: none,
+  appendix: none,
   accepted: false,
   body,
 ) = {
@@ -530,50 +534,47 @@
 
   v(0.2in)
 
-  columns(2, gutter: 0.25in)[
-    #set text(size: font.normal)
-    #show par: set block(spacing: 11pt)
+  columns(2, gutter: 0.25in, {
+    set text(size: font.normal)
+    show par: set block(spacing: 11pt)
     // Render abstract.
     // ICML instruction tels that font size of `Abstract` must equal to 11 but
     // it does not like so.
-    #text(size: font.large)[
-      #align(center)[*Abstract*]
-    ]
-    #pad(left: 2em, right: 2em, abstract)
-    #v(0.12in)
+    align(center, text(size: font.large, [*Abstract*]))
+    pad(left: 2em, right: 2em, abstract)
+    v(0.12in)
 
     // Place contribution and notice at the bottom of the first column.
-    #place(bottom, float: true, clearance: 0.5em, {
+    place(bottom, float: true, clearance: 0.5em, {
       set block(spacing: 0pt)
       make-contribs()
     })
 
     // Display body.
-    #set text(size: font.normal)
-    #body
+    set text(size: font.normal)
+    body
 
     // Display the bibliography, if any is given.
-    #if bibliography-file != none {
-      show bibliography: set text(size: font.normal)
-      bibliography(
-        bibliography-file,
-        style: "icml2024.csl",
-        title: "References",
-      )
+    if bibliography != none {
+      show std-bibliography: set text(size: font.normal)
+      set std-bibliography(title: "References", style: "icml2024.csl")
+      bibliography
     }
-  ]
+  })
 
-  pagebreak()
-  counter(heading).update(0)
-  counter("appendices").update(1)
-  set heading(
-    numbering: (..nums) => {
-      let vals = nums.pos()
-      let value = "ABCDEFGHIJ".at(vals.at(0) - 1)
-      return value + "." + nums.pos().slice(1).map(str).join(".")
-    }
-  )
-  include "appendix.typ"
+  if appendix != none {
+    pagebreak()
+    counter(heading).update(0)
+    counter("appendices").update(1)
+    set heading(
+      numbering: (..nums) => {
+        let vals = nums.pos()
+        let value = "ABCDEFGHIJ".at(vals.at(0) - 1)
+        return value + "." + nums.pos().slice(1).map(str).join(".")
+      }
+    )
+    appendix
+  }
 }
 
 // NOTE We provide table support based on tablex package. It does not
