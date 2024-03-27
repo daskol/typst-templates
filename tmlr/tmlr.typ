@@ -2,18 +2,23 @@
 
 // We prefer to use CMU Bright variant instead of Computer Modern Bright when
 // ever it is possible.
-#let font-family = ("CMU Serif", "Latin Modern Roman", "New Computer Modern")
-#let font-family-heading = ("CMU Sans Serif", "Latin Modern Sans")
-#let font-family-mono = ("Latin Modern Mono", "Mono")
+#let font-family = ("CMU Serif", "Latin Modern Roman", "New Computer Modern",
+                    "Serif")
+#let font-family-sans = ("CMU Sans Serif", "Latin Modern Sans",
+                         "New Computer Modern Sans", "Sans")
+#let font-family-mono = ("Latin Modern Mono", "New Computer Modern Mono",
+                         "Mono")
 
 #let font = (
   Large: 17pt,
   footnote: 10pt,
   large: 12pt,
-  small: 9pt,
   normal: 10pt,
   script: 8pt,
+  small: 9pt,
 )
+
+#let affl-keys = ("department", "institution", "location", "country")
 
 #let header(accepted, pubdate) = {
   if accepted == none {
@@ -27,8 +32,6 @@
     return "Under review as submission to TMLR"
   }
 }
-
-#let affl-keys = ("department", "institution", "location", "country")
 
 #let make-author(author, affls) = {
   let author-affls = if type(author.affl) == array {
@@ -76,10 +79,10 @@
 #let make-title(title, authors, abstract, review, accepted) = {
   // Render title.
   v(-0.03in)  // Visually perfect.
-  block(fill: luma(230), {
+  block(spacing: 0em, {
     set block(spacing: 0em)
     set par(leading: 10pt)  // Empirically found.
-    text(font: font-family-heading, size: font.Large, weight: "bold", title)
+    text(font: font-family-sans, size: font.Large, weight: "bold", title)
   })
 
   // Render authors if paper is accepted or not accepted or ther is no
@@ -96,7 +99,7 @@
     [*Reviewed on OpenReview:* #link(review, label)]
   } else {
     v(0.3in + 0.2in - 3.5pt, weak: true)
-    block(fill: luma(230), {
+    block(spacing: 0em, {
       [*Anonymous authors*\ ]
       [*Paper under double-blind review*]
     })
@@ -104,14 +107,14 @@
   v(0.45in, weak: true)  // Visually perfect.
 
   // Render abstract.
-  block(width: 100%, fill: luma(230), {
+  block(spacing: 0em, width: 100%, {
     set text(size: font.normal)
     set par(leading: 0.51em)  // Original 0.55em (or 0.45em?).
 
     // While all content is serif, headers and titles are sans serif.
     align(center,
       text(
-        font: "CMU Sans Serif",
+        font: font-family-sans,
         size: font.large,
         weight: "bold",
         [*Abstract*]))
@@ -121,6 +124,23 @@
   v(29.5pt, weak: true)  // Visually perfect.
 }
 
+/**
+ * tmlr
+ *
+ * Args:
+ *   title: Paper title.
+ *   authors: Tuple of author objects and affilation dictionary.
+ *   keywords: Publication keywords (used in PDF metadata).
+ *   date: Creation date (used in PDF metadata).
+ *   abstract: Paper abstract.
+ *   bibliography: Bibliography content. If it is not specified then there is
+ *   not reference section.
+ *   appendix: Content to append after bibliography section.
+ *   accepted: Valid values are `none`, `false`, and `true`. Missing value
+ *   (`none`) is designed to prepare arxiv publication. Default is `false`.
+ *   review: Hypertext link to review on OpenReview.
+ *   pubdate: Date of publication (used only month and date).
+ */
 #let tmlr(
   title: [],
   authors: (),
@@ -130,8 +150,8 @@
   bibliography: none,
   appendix: none,
   accepted: false,
-  pubdate: none,
   review: none,
+  pubdate: none,
   body,
 ) = {
   if pubdate == none {
@@ -157,16 +177,12 @@
              top: 1.18in,
              bottom: 11in - (1.18in + 9in)),
     header-ascent: 46pt,  // 1.5em in case of 10pt font
-    header: locate(loc => {
-      // TODO
-      set block(spacing: 0em)
-      block(spacing: 0em, fill: luma(230), {
-        header(accepted, pubdate)
-        v(3.5pt, weak: true)
-        line(length: 100%, stroke: (thickness: 0.4pt))
-      })
-    }),
-    footer-descent: 20pt, // TODO(@daskol): Why such multiplier?
+    header: locate(loc => block(spacing: 0em, {
+      header(accepted, pubdate)
+      v(3.5pt, weak: true)
+      line(length: 100%, stroke: (thickness: 0.4pt))
+    })),
+    footer-descent: 20pt, // Visually perfect.
     footer: locate(loc => {
       let ix = counter(page).at(loc).first()
       return align(center, text(size: font.normal, [#ix]))
@@ -180,7 +196,7 @@
 
   // Configure heading appearence and numbering.
   set heading(numbering: "1.1")
-  show heading: set text(font: font-family-heading)
+  show heading: set text(font: font-family-sans)
   show heading: it => {
     // Create the heading numbering.
     let number = if it.numbering != none {

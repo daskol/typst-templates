@@ -36,11 +36,11 @@
   ],
   bibliography: bibliography("main.bib"),
   appendix: include "appendix.typ",
-  review: "https://openreview.net/forum?id=XXXX",
   accepted: false,
+  review: "https://openreview.net/forum?id=XXXX",
 )
 
-#let url(uri) = { 
+#let url(uri) = {
   link(uri, raw(uri))
 }
 
@@ -369,11 +369,11 @@ subject.
 
 If you'd like to, you may include a section for author contributions as is done
 in many journals. This is optional and at the discretion of the authors. Only
-add this information once your submission is accepted and deanonymized. 
+add this information once your submission is accepted and deanonymized.
 
 = Acknowledgments
 
 Use unnumbered third level headings for the acknowledgments. All
 acknowledgments, including those to funding agencies, go at the end of the
 paper. Only add this information once your submission is accepted and
-deanonymized. 
+deanonymized.
