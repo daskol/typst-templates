@@ -149,20 +149,19 @@
   // Render abstract.
   block(width: 100%, fill: luma(230), {
     set text(size: font.normal)
-    set par(leading: 0.45em)  // Original 0.55em (or 0.45em?).
+    set par(leading: 0.51em)  // Original 0.55em (or 0.45em?).
 
-    // NeurIPS instruction tels that font size of `Abstract` must equal to 12pt
-    // but there is not predefined font size.
+    // While all content is serif, headers and titles are sans serif.
     align(center,
       text(
         font: "CMU Sans Serif",
         size: font.large,
         weight: "bold",
         [*Abstract*]))
-    v(22pt, weak: true)
+    v(22.2pt, weak: true)
     pad(left: 0.5in, right: 0.5in, abstract)
   })
-  v(0.4in + 1pt, weak: true)  // Visually perfect.
+  v(29.5pt, weak: true)  // Visually perfect.
 
   body
 
