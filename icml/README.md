@@ -1,10 +1,45 @@
-# International Conference on Machine Learning (ICML) 2024
+# International Conference on Machine Learning (ICML)
 
-## Example Papers
+## Usage
 
-Here are an example paper in [LaTeX][1] and in [Typst][2].
+You can use this template in the Typst web app by clicking _Start from
+template_ on the dashboard and searching for `lucky-icml`.
+
+Alternatively, you can use the CLI to kick this project off using the command
+
+```shell
+typst init @preview/lucky-icml
+```
+
+Typst will create a new directory with all the files needed to get you started.
+
+## Configuration
+
+This template exports the `icml2024` function with the following named
+arguments.
+
+- `title`: The paper's title as content.
+- `authors`: An array of author dictionaries. Each of the author dictionaries
+  must have a name key and can have the keys department, organization,
+  location, and email.
+- `abstract`: The content of a brief summary of the paper or none. Appears at
+  the top under the title.
+- `bibliography`: The result of a call to the bibliography function or none.
+  The function also accepts a single, positional argument for the body of the
+  paper.
+- `accepted`: If this is set to `false` then anonymized ready for submission
+  document is produced; `accepted: true` produces camera-redy version. If
+  the argument is set to `none` then preprint version is produced (can be
+  uploaded to arXiv).
+
+The template will initialize your package with a sample call to the `icml2024`
+function in a show rule. If you want to change an existing project to use this
+template, you can add a show rule at the top of your file.
 
 ## Issues
+
+This template is developed at [daskol/typst-templates][1] repo. Please report
+all issues there.
 
 ### Running Title
 

@@ -35,7 +35,7 @@
     point size 12. Two line spaces precede the abstract. The abstract must be
     limited to one paragraph.
   ],
-  bibliography-file: "main.bib",
+  bibliography: bibliography("main.bib"),
   bibliography-opts: (title: none, full: true),  // Only for example paper.
   accepted: false,
 )

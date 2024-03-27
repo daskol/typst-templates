@@ -25,6 +25,17 @@ conferences and journals during calendar year.
 - [International Conference on Machine Learning (ICML)](icml).
 - [Neural Information Processing System (NeurIPS)](neurips).
 
+## Usage
+
+You can use this template in the [Typst][2] WebApp by clicking _Start from
+template_ on the dashboard and searching for a template (e.g. `lucky-icml`).
+
+Alternatively, you can use the CLI to kick this project off using the command
+
+```shell
+typst init @preview/lucky-icml
+```
+
 ## Utilities
 
 Typst of version 0.10.0 does not produce colored annotations. In order to
@@ -39,3 +50,4 @@ repository. The script is plain and simple. One can use it as follows.
 It is written with PyMuPDF library and inserts colored annotation.
 
 [1]: https://portal.core.edu.au/conf-ranks/?search=A*&by=rank&source=CORE2023&sort=aacronym
+[2]: https://typst.app/

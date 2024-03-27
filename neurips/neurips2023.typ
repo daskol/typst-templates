@@ -1,3 +1,6 @@
+// Workaround for the lack of an `std` scope.
+#let std-bibliography = bibliography
+
 // Metrical size of page body.
 #let viewport = (
   width: 5.5in,
@@ -247,7 +250,7 @@
   keywords: (),
   date: auto,
   abstract: none,
-  bibliography-file: none,
+  bibliography: none,
   bibliography-opts: (:),
   accepted: false,
   body,
@@ -448,7 +451,7 @@
     body
 
     // Display the bibliography, if any is given.
-    if bibliography-file != none {
+    if bibliography != none {
       if "title" not in bibliography-opts {
         bibliography-opts.title = "References"
       }
@@ -457,11 +460,9 @@
       }
       // NOTE It is allowed to reduce font to 9pt (small) but there is not
       // small font of size 9pt in original sty.
-      show bibliography: set text(size: font.small)
-      bibliography(
-        bibliography-file,
-        ..bibliography-opts,
-      )
+      show std-bibliography: set text(size: font.small)
+      set std-bibliography(..bibliography-opts)
+      bibliography
     }
   }
 }

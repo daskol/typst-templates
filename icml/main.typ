@@ -31,8 +31,9 @@
     Abstracts must be a single paragraph, ideally between 4–6 sentences long.
     Gross violations will trigger corrections at the camera-ready phase.
   ],
-  bibliography-file: "main.bib",
+  bibliography: bibliography("main.bib"),
   header: [Submission and Formatting Instructions for ICML 2024],
+  appendix: include "appendix.typ",
   accepted: false,
 )
 
