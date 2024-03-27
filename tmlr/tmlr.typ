@@ -82,9 +82,12 @@
     text(font: font-family-heading, size: font.Large, weight: "bold", title)
   })
 
-  // Render authors.
+  // Render authors if paper is accepted or not accepted or ther is no
+  // acceptance status (aka preprint).
   if accepted == none {
-    // TODO(@daskol): Preprint info.
+    v(31pt, weak: true)  // Visually perfect.
+    make-authors(..authors)
+    v(-2pt)  // Visually perfect.
   } else if accepted {
     v(31pt, weak: true)  // Visually perfect.
     make-authors(..authors)
