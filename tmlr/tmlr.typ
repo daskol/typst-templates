@@ -262,6 +262,32 @@
   show figure.where(kind: table): set figure(gap: 6pt)
   set table(inset: 4pt)
 
+  // Configure numbered lists.
+  set enum(indent: 2.4em, spacing: 1.3em)
+  show enum: set block(above: 2em)
+
+  // Configure bullet lists.
+  set list(indent: 2.4em, spacing: 1.3em, marker: ([•], [‣], [⁃]))
+  show list: set block(above: 2em)
+
+  // Configure math numbering and referencing.
+  set math.equation(numbering: "(1)", supplement: [])
+  show ref: it => {
+    let eq = math.equation
+    let el = it.element
+    if el != none and el.func() == eq {
+      let numb = numbering(
+        "1",
+        ..counter(eq).at(el.location())
+      )
+      let color = rgb(0%, 8%, 45%)  // Originally `mydarkblue`. :D
+      let content = link(el.location(), text(fill: color, numb))
+      [(#content)]
+    } else {
+      it
+    }
+  }
+
   // Render title + authors + abstract.
   make-title(title, authors, abstract, review, accepted)
   // Render body as is.
