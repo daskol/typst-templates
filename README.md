@@ -25,6 +25,12 @@ conferences and journals during calendar year.
 - [International Conference on Machine Learning (ICML)](icml).
 - [Neural Information Processing System (NeurIPS)](neurips).
 
+Additionally, we are going to provide templates for popular machine learning
+scientific journals as well.
+
+- Journal of Machine Learning Research (JMLR).
+- [Transactions on Machine Learning Research (TMLR)](tmlr).
+
 ## Usage
 
 You can use this template in the [Typst][2] WebApp by clicking _Start from
