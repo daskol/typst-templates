@@ -162,9 +162,16 @@
     }
   }
 
+  // Prepare authors for PDF metadata.
+  let author = if accepted == none or accepted {
+    authors.at(0).map(it => it.name)
+  } else {
+    ()
+  }
+
   set document(
     title: title,
-    author: authors.at(0).map(it => it.name),
+    author: author,
     keywords: keywords,
     date: date)
 
