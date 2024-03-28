@@ -8,7 +8,7 @@ template_ on the dashboard and searching for `healthy-tmlr`.
 Alternatively, you can use the CLI to kick this project off using the command
 
 ```shell
-typst init @preview/healthy-tmlr
+typst init @preview/smooth-tmlr
 ```
 
 Typst will create a new directory with all the files needed to get you started.
