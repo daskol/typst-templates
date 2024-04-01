@@ -260,6 +260,9 @@
     gap: 0.40em,
     indent: 12pt)  // Original 12pt.
 
+  // All captions either centered or aligned to the left.
+  show figure.caption: set align(left)
+
   // Configure figures.
   show figure.where(kind: image): set figure.caption(position: bottom)
   set figure(gap: 16pt)
