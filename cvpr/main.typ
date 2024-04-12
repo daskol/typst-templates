@@ -1,10 +1,5 @@
-#import "/cvpr2022.typ": cvpr2022
+#import "/cvpr2022.typ": cvpr2022, conf-name, conf-year, eg, etal
 #import "/logo.typ": LaTeX, TeX
-
-#let conf-name = [CVPR]
-#let conf-year = [2022]
-#let eg = emph[e.g.]
-#let etal = emph[et~al]
 
 #show: cvpr2022.with(
   title: [#LaTeX Author Guidelines for #conf-name~Proceedings],
