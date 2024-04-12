@@ -9,6 +9,8 @@
  * [3]: https://github.com/daskol/typst-templates/issues/8
  */
 
+#let std-bibliography = bibliography
+
 #let pad_int(i, N: 3) = {
     let s = str(i)
     let n_pads = N - s.len()
@@ -18,7 +20,27 @@
     [#s]
 }
 
-#let manuscript(title: [Paper Title], authors: (), anonymous: true, id: 1234, abstract: [], content) = [
+//  title: [],
+//  authors: (),
+//  keywords: (),
+//  date: auto,
+//  abstract: none,
+//  bibliography: none,
+//  appendix: none,
+//  accepted: false,
+
+#let cvpr2022(
+  title: [],
+  authors: (),
+  anonymous: true,
+  id: 1234,
+  abstract: [],
+  bibliography: none,
+  appendix: none,
+  accepted: false,
+  body,
+) = {
+  [
     #let RULERWIDTH = 0.6in
     #set page(
         paper: "a4",
@@ -103,7 +125,7 @@
               ]
 
               #emph[#abstract] \ \
-              #content
+              #body
           ])
       ],
       [
@@ -118,4 +140,16 @@
         }
       ]
     )
-]
+  ]
+
+  if bibliography != none {
+    set std-bibliography(title: [References], style: "ieee")
+    bibliography
+  }
+
+  if appendix != none {
+    set heading(numbering: "A.1")
+    counter(heading).update(0)
+    appendix
+  }
+}
