@@ -87,7 +87,7 @@
     .map(it => (make-author(it, affls), make-email(it)))
     .join()
   return grid(
-    columns: (2fr, 1fr),
+    columns: (6fr, 4fr),
     align: (left + top, right + top),
     row-gutter: 12pt,  // Visually perfect.
     ..cells)
