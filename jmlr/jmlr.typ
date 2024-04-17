@@ -292,12 +292,12 @@
 
         let href = addr => link(addr, raw(addr))
         let url-license = "https://creativecommons.org/licenses/by/4.0/"
-        let url-attrib = (
-          "http://jmlr.org/papers/v", str(pubdata.volume), "/",
-          pubdata.id, ".html",
-        ).join()
         [License: CC-BY 4.0, see #href(url-license).]
         if not is_preprint {
+          let url-attrib = (
+            "http://jmlr.org/papers/v", str(pubdata.volume), "/",
+            pubdata.id, ".html",
+          ).join()
           [Attribution requirements are provided at #href(url-attrib).]
         }
       } else {
