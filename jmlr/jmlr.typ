@@ -351,6 +351,7 @@
       it
     }
   }
+  set cite(form: "prose")
 
   set figure(gap: 14pt)
   show figure.caption: it => {
@@ -388,7 +389,10 @@
       show: h1
       block(above: 0.32in, it.body)
     }
-    set std-bibliography(title: [References], style: "american-sociological-association")
+    // TODO(@daskol): Closest bibliography style is "bristol-university-press".
+    set std-bibliography(
+      title: [References],
+      style: "bristol-university-press")
     bibliography
   }
 }
