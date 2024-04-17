@@ -21,6 +21,34 @@
 )
 
 /**
+ * h, h1, h2, h3 - Style rules for headings.
+ */
+
+#let h(body) = {
+  set text(size: font-size.normal, weight: "regular")
+  set block(above: 11.9pt, below: 11.7pt)
+  body
+}
+
+#let h1(body) = {
+  set text(size: font-size.large, weight: "bold")
+  set block(above: 13pt, below: 13pt)
+  body
+}
+
+#let h2(body) = {
+  set text(size: font-size.normal, weight: "bold")
+  set block(above: 11.9pt, below: 11.8pt)
+  body
+}
+
+#let h3(body) = {
+  set text(size: font-size.normal, weight: "regular")
+  set block(above: 11.9pt, below: 11.7pt)
+  body
+}
+
+/**
  * join-authors - Join a list of authors (full names, last names, or just
  * strings) to a single string.
  */
@@ -287,86 +315,57 @@
   // Configure heading appearence and numbering.
   set heading(numbering: "1.1")
   show heading.where(level: 1): it => {
-    set text(size: font-size.large)
-    set block(above: 13pt, below: 13pt)
-    it
-  }
-  show heading.where(level: 2): it => {
-    set text(size: font-size.normal)
-    set block(above: 11.9pt, below: 11.8pt)
-    it
-  }
-  show heading.where(level: 3): it => {
-    set text(size: font-size.normal)
-    set block(above: 11.9pt, below: 11.7pt)
-    it
-  }
-  show heading.where(level: 4): it => {
-    set text(size: font-size.normal)
-    set block(above: 11.9pt, below: 11.7pt)
-    it
-  }
-  /*
-  show heading: it => {
-    // Create the heading numbering.
-    let number = if it.numbering != none {
-      counter(heading).display(it.numbering)
-    }
-
+    show: h1
     // Render section with such names without numbering as level 3 heading.
     let unnumbered = (
+      [Acknowledgments],
       [Acknowledgments and Disclosure of Funding],
     )
-    let level = it.level
-    let prefix = [#number ]
     if unnumbered.any(name => name == it.body) {
-      text(size: 12pt, weight: "bold", {
-        v(0.3in, weak: true)
-        it.body
-        v(0.2in, weak: true)
-      })
-      return
-    }
-
-    // TODO(@daskol): Use styles + measure to estimate ex.
-    set align(left)
-    if level == 1 {
-      text(size: 12pt, weight: "bold", {
-        let ex = 10pt
-        v(2.05 * ex, weak: true)  // Visually perfect.
-        [#prefix*#it.body*]
-        v(1.80 * ex, weak: true) // Visually perfect.
-      })
-    } else if level == 2 {
-      text(size: 11pt, weight: "bold", {
-        let ex = 6.78pt
-        v(2.8 * ex, weak: true)  // Visually perfect.
-        [#prefix*#it.body*]
-        v(2.15 * ex, weak: true)  // Visually perfect. Original 1ex.
-      })
-    } else if level == 3 {
-      text(size: 11pt, weight: "bold", {
-        let ex = 6.78pt
-        v(2.7 * ex, weak: true)  // Visually perfect.
-        [#prefix*#it.body*]
-        v(2.0 * ex, weak: true)  // Visually perfect. Original -0.7em.
-      })
+      set align(left)
+      set text(size: font-size.large, weight: "bold")
+      set par(first-line-indent: 0pt)
+      v(0.3in, weak: true)
+      block(spacing: 0pt, it.body)
+      v(0.2in, weak: true)
+    } else {
+      it
     }
   }
-  */
+  show heading.where(level: 2): h2
+  show heading.where(level: 3): h3
+
+  }
+
+  }
 
   make-title(title, authors, affls, abstract, keywords, editors)
   parbreak()
   body
 
   if appendix != none {
-    set heading(numbering: "A.1", supplement: [Appendix])
+    set heading(numbering: "A.1.", supplement: [Appendix])
+    show heading: it => {
+      let rules = (h1, h2, h3)
+      let rule = rules.at(it.level - 1, default: h)
+      show: rule
+      let numb = locate(loc => {
+        let counter = counter(heading)
+        return numbering(it.numbering, ..counter.at(loc))
+      })
+      block([Appendix~#numb~#it.body])
+    }
+
     counter(heading).update(0)
     pagebreak()
     appendix
   }
 
   if bibliography != none {
+    show heading: it => {
+      show: h1
+      block(above: 0.32in, it.body)
+    }
     set std-bibliography(title: [References], style: "american-sociological-association")
     bibliography
   }
