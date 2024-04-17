@@ -288,7 +288,22 @@
   set heading(numbering: "1.1")
   show heading.where(level: 1): it => {
     set text(size: font-size.large)
-    set block(above: 0.31in, below: 0.22in)
+    set block(above: 13pt, below: 13pt)
+    it
+  }
+  show heading.where(level: 2): it => {
+    set text(size: font-size.normal)
+    set block(above: 11.9pt, below: 11.8pt)
+    it
+  }
+  show heading.where(level: 3): it => {
+    set text(size: font-size.normal)
+    set block(above: 11.9pt, below: 11.7pt)
+    it
+  }
+  show heading.where(level: 4): it => {
+    set text(size: font-size.normal)
+    set block(above: 11.9pt, below: 11.7pt)
     it
   }
   /*
