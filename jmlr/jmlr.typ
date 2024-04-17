@@ -106,7 +106,7 @@
   v(23.6pt, weak: true)
   make-authors(authors, affls)
   // 3. Editors if exist.
-  if editors != none {
+  if editors != none and editors.len() > 0 {
     v(28.6pt, weak: true)
     text(size: font-size.small, [*Editor:* ] + editors.join([, ]))
   }
@@ -185,8 +185,13 @@
 
   // If there is only one editor then create an `editors` field with a single
   // editor.
-  if pubdata.at("editors", default: none) == none {
-    pubdata.editors = (pubdata.editor, )
+  let is_preprint = pubdata.len() == 0
+  let editors = if is_preprint {
+    ()
+  } else if pubdata.at("editors", default: none) == none {
+    (pubdata.editor, )
+  } else {
+    pubdata.editors
   }
 
   // Set document metadata.
@@ -203,9 +208,14 @@
       // on odd ones.
       let pageno = counter(page).at(loc).first()
       if pageno == 1 {
+        // If this is preprint then there is nothing in header on title page.
+        if is_preprint {
+          return
+        }
+
         let volume = pubdata.volume
         let year = pubdata.published-at.year()
-        let nopages = locate(loc => counter(page).final(loc).at(0))
+        let nopages = locate(loc => counter(page).final().at(0))
 
         let format-date = (date, supplement) => {
           return date
@@ -235,20 +245,30 @@
     footer: locate(loc => {
       let pageno = counter(page).at(loc).first()
       if pageno == 1 {
+        set text(size: font-size.script)
         set par(first-line-indent: 0pt, justify: true)
         show par: set block(spacing: 9pt)
 
-        set text(size: font-size.script)
-        let year = pubdata.published-at.year()
+        // NOTE If this is preprint then we use metadata `date` for copyright
+        // notice.
         let owners = join-authors(authors.map(it => it.name))
+        let year = if not is_preprint {
+          pubdata.published-at.year()
+        } else if date == auto {
+          datetime.today().year()
+        } else {
+          date.year()
+        }
         [©#year #owners\.]
         parbreak()
 
         let href = addr => link(addr, raw(addr))
         let url-license = "https://creativecommons.org/licenses/by/4.0/"
         let url-attrib = "http://jmlr.org/papers/v23/21-0000.html"
-        [License: CC-BY 4.0, see #href(url-license). ]
-        [Attribution requirements are provided at #href(url-attrib).]
+        [License: CC-BY 4.0, see #href(url-license).]
+        if not is_preprint {
+          [Attribution requirements are provided at #href(url-attrib).]
+        }
       } else {
         v(-1pt)  // Compensatation for what?
         align(center, text(size: font-size.small, [#pageno]))
@@ -256,6 +276,7 @@
     }),
   )
 
+  // Basic paragraph and text settings.
   set text(font: font-family, size: font-size.normal)
   set par(leading: 0.55em, first-line-indent: 17pt, justify: true)
   show par: set block(spacing: 0.55em)
@@ -316,7 +337,7 @@
   }
   */
 
-  make-title(title, authors, affls, abstract, keywords, pubdata.editors)
+  make-title(title, authors, affls, abstract, keywords, editors)
   parbreak()
   body
 
