@@ -31,6 +31,7 @@
   bibliography: bibliography("main.bib"),
   appendix: include "appendix.typ",
   pubdata: (
+    id: "21-0000",
     editor: "My editor",
     volume: 23,
     submitted-at: datetime(year: 2021, month: 1, day: 1),
