@@ -335,8 +335,30 @@
   show heading.where(level: 2): h2
   show heading.where(level: 3): h3
 
+  set enum(indent: 14pt, spacing: 15pt)
+  show enum: set block(spacing: 18pt)
+
+  set list(indent: 14pt, spacing: 15pt)
+  show list: set block(spacing: 18pt)
+
+  set math.equation(numbering: "(1)")
+  show ref: it => {
+    let eq = math.equation
+    let el = it.element
+    if el != none and el.func() == eq {
+      numbering(el.numbering, ..counter(eq).at(el.location()))
+    } else {
+      it
+    }
   }
 
+  set figure(gap: 14pt)
+  show figure.caption: it => {
+    set text(size: font-size.small)
+    set par(leading: 6.67pt, first-line-indent: 0pt)
+    let numb = locate(loc => numbering(it.numbering, ..it.counter.at(loc)))
+    let index = it.supplement + [~] + numb + it.separator
+    grid(columns: 2, column-gutter: 5pt, align: left, index, it.body)
   }
 
   make-title(title, authors, affls, abstract, keywords, editors)

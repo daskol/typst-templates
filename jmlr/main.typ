@@ -42,6 +42,7 @@
 
 = Introduction
 
+#set math.equation(numbering: none)  // There are no numbers in sample paper.
 #blindmathpaper
 
 Here is a citation @chow68.

@@ -1,3 +1,6 @@
+// There are no numbers in sample paper.
+#set math.equation(numbering: none)
+
 // The first nameless section in the appendix.
 = <app:theorem>
 
@@ -22,6 +25,7 @@ with equality only if $u$ is identically 0.] $square.filled$
 // The second section in the appendix.
 =
 
+#block[
 *Proof.* We use the notation:
 
 $ P_(v)(i) = N_v^i / N, space.en i != 0; space.en
@@ -30,6 +34,7 @@ $ P_(v)(i) = N_v^i / N, space.en i != 0; space.en
 These values represent the (empirical) probabilities of $v$ taking value $i !=
 0$ and 0 respectively. Entropies will be denoted by $H$. We aim to show that
 $(diff I_(u v)) / (diff P_(v 0)) < 0$....
+]
 
 _Remainder omitted in this sample. See #link("http://www.jmlr.org/papers/") for
 full paper._
