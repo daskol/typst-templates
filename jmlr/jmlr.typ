@@ -1,3 +1,15 @@
+/**
+ * jmlr.typ
+ *
+ * This is a Typst template for Journal of Machine Learning Research (JMLR). It
+ * is based on textual instructions [1-3] as well as an example paper [4].
+ *
+ * [1]: https://www.jmlr.org/format/authors-guide.html
+ * [2]: https://www.jmlr.org/format/format.html
+ * [3]: https://www.jmlr.org/format/formatting-errors.html
+ * [4]: https://github.com/jmlrorg/jmlr-style-file
+ */
+
 #let std-bibliography = bibliography  // Due to argument shadowing.
 
 #let font-family = ("New Computer Modern", "Times New Roman",
@@ -179,7 +191,9 @@
  *   bibliography: Bibliography content. If it is not specified then there is
  *   not reference section.
  *   appendix: Content to append after bibliography section.
- *   pubdata: Dictionary with auxiliary information about publication.
+ *   pubdata: Dictionary with auxiliary information about publication. It
+ *   contains editor name(s), paper id, volume, and
+ *   submission/review/publishing dates.
  */
 #let jmlr(
   title: [],
