@@ -1,12 +1,42 @@
 #import "/jmlr.typ": jmlr
 #import "/blindtext.typ": blindtext, blindmathpaper
 
+#let affls = (
+  one: (
+    department: "Department of Statistics",
+    institution: "University of Washington",
+    location: "Seattle, WA 98195-4322",
+    country: "USA"),
+  two: (
+    department: "Division of Computer Science",
+    institution: "University of California",
+    location: "Berkeley, CA 94720-1776",
+    country: "USA"),
+)
+
+#let authors = (
+  (name: "Author One",
+   affl: "one",
+   email: "one@stat.washington.edu"),
+  (name: "Author Two",
+   affl: "two",
+   email: "two@cs.berkeley.edu"),
+)
+
 #show: jmlr.with(
   title: [Sample JMLR Paper],
-  keywords: ("keyword one", "keyword two", "keyword three"),
+  authors: (authors, affls),
   abstract: blindtext,
+  keywords: ("keyword one", "keyword two", "keyword three"),
   bibliography: bibliography("main.bib"),
   appendix: include "appendix.typ",
+  pubdata: (
+    editor: "My editor",
+    volume: 23,
+    submitted-at: datetime(year: 2021, month: 1, day: 1),
+    revised-at: datetime(year: 2022, month: 5, day: 1),
+    published-at: datetime(year: 2022, month: 9, day: 1),
+  ),
 )
 
 = Introduction
