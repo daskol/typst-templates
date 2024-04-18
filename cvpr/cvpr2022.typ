@@ -11,9 +11,6 @@
 
 #let std-bibliography = bibliography  // Due to argument shadowing.
 
-#let A4WIDTH = 8.5in
-#let RULERWIDTH = 0.6in
-
 #let conf-name = [CVPR]
 #let conf-year = [2022]
 #let notice = [CONFIDENTIAL REVIEW COPY. DO NOT DISTRIBUTE.]
@@ -43,14 +40,81 @@
   Huge: 25pt,
 )
 
-#let pad_int(i, N: 3) = {
-    let s = str(i)
-    let n_pads = N - s.len()
-    for _ in range(n_pads) {
-        s = "0" + s
+#let lineno = counter("lineno")
+
+#let lineno-fmt(numb, width: 3) = {
+    let value = str(numb)
+    let prefix-len = width - value.len()
+    let prefix = ""
+    for _ in range(prefix-len) {
+      prefix = prefix + "0"
     }
-    [#s]
+    return prefix + value
 }
+
+#let ruler-color = rgb(50%, 50%, 100%)
+
+#let ruler-style = body => {
+  set text(size: 8pt, font: font-family-sans, weight: "bold", fill: ruler-color)
+  set par(leading: 6.20pt)
+  body
+}
+
+#let xruler(side, dx, dy, width, height, offset, num-lines) = {
+  let alignment = if side == left {
+    right
+  } else {
+    left
+  }
+
+  let numbs = range(0, num-lines).map(ix => {
+    let anchor = lineno.step()
+    let index = lineno-fmt(offset + ix)
+    return [#anchor#index]
+  })
+
+  let ruler = block(width: width, height: height, spacing: 0pt, {
+    show: ruler-style
+    set align(alignment)
+    numbs.join([\ ])
+
+  })
+
+  return place(left + top, dx: dx, dy: dy, ruler)
+}
+
+#let make-ruler(
+  num-lines: 54,
+  margin: auto,
+  width: auto,
+  height: 8.875in,
+  gap: 30pt,
+) = locate(loc => {
+  let margin = if margin == auto {
+    (top: 1in - 0.5pt, left: 0.8125in, right: 0.929in)  // CVPR 2022 defaults.
+  } else {
+    margin
+  }
+
+  let width = if width == auto {
+    (left: margin.left - gap, right: margin.right - gap)
+  } else {
+    width
+  }
+
+  // Left ruler.
+  let dx = 0pt
+  let dy = margin.top
+  let offset = lineno.get().at(0)
+  xruler(left, dx, dy, width.left, height, offset, num-lines)
+
+  // Right ruler.
+  dx = 7.571in + gap
+  offset += num-lines
+  xruler(right, dx, dy, width.right, height, offset, num-lines)
+})
+
+#let ruler = make-ruler()  // Default CVPR 2022 ruler.
 
 /**
  * cvpr2022 - Template for Computer Vision and Pattern Recognition Conference
@@ -87,17 +151,17 @@
     anonymous = false
   }
 
+  // If there is not submission id then use a placeholder.
+  if id == none {
+    id = "*****"
+  }
+
   if anonymous {
     authors = ([
       Anonymous CVPR submission \
       \
       Paper ID #id
     ], )
-  }
-
-  // If there is not submission id then use a placeholder.
-  if id == none {
-    id = "*****"
   }
 
   let author = ""  // TODO(@daskol): Fix this.
@@ -109,11 +173,16 @@
 
   set page(
     paper: "us-letter",
-    margin: (left: 0.8125in, right: 0.8125in, top: 1in, bottom: 1.125in),
+    margin: (left: 0.696in, right: 0.929in, top: 1in, bottom: 1.125in),
+    background: if accepted != none and not accepted { ruler },
     header-ascent: 27.9pt,
     header: {
       set align(center)
-      set text(font: font-family-sans, size: font-size.footnote, weight: "bold", fill: rgb(50%, 50%, 100%))
+      set text(
+        font: font-family-sans,
+        size: font-size.footnote,
+        weight: "bold",
+        fill: ruler-color)
       strong[#conf-name #conf-year Submission \##id. #notice]
     },
     footer-descent: 23.4pt, // Visually perfect.
