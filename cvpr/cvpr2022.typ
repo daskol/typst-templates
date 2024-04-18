@@ -24,7 +24,7 @@
 #let font-family = ("Times New Roman", "CMU Serif", "Latin Modern Roman",
                     "New Computer Modern", "Times", "Serif")
 
-#let font-family-sans = ("CMU Sans Serif", "Latin Modern Sans",
+#let font-family-sans = ("Nimbus Sans", "CMU Sans Serif", "Latin Modern Sans",
                          "New Computer Modern Sans", "Sans")
 
 #let font-family-mono = ("CMU Typewriter Text", "Latin Modern Mono",
@@ -37,7 +37,7 @@
   script: 7pt,
   tiny: 5pt,
   large: 12pt,
-  Large: 14pt,
+  Large: 14.4pt,
   LARGE: 17pt,
   huge: 20pt,
   Huge: 25pt,
@@ -87,6 +87,14 @@
     anonymous = false
   }
 
+  if anonymous {
+    authors = ([
+      Anonymous CVPR submission \
+      \
+      Paper ID #id
+    ], )
+  }
+
   // If there is not submission id then use a placeholder.
   if id == none {
     id = "*****"
@@ -100,18 +108,19 @@
     date: date)
 
   set page(
-      paper: "a4",
-      margin: (
-        left: 0.8in - RULERWIDTH,
-        right: 0.9in - RULERWIDTH,
-        top: 1.0625in,
-        bottom: 1.0625in,
-      ),
-      header: {
-        set align(center)
-        set text(font: font-family-sans, size: 8pt, fill: rgb(50%, 50%, 100%))
-        strong[#conf-name #conf-year Submission \##id. #notice]
-      },
+    paper: "us-letter",
+    margin: (left: 0.8125in, right: 0.8125in, top: 1in, bottom: 1.125in),
+    header-ascent: 27.9pt,
+    header: {
+      set align(center)
+      set text(font: font-family-sans, size: font-size.footnote, weight: "bold", fill: rgb(50%, 50%, 100%))
+      strong[#conf-name #conf-year Submission \##id. #notice]
+    },
+    footer-descent: 23.4pt, // Visually perfect.
+    footer: locate(loc => {
+      let ix = counter(page).at(loc).first()
+      return align(center, text(size: font-size.normal, [#ix]))
+    }),
   )
 
   set text(font: font-family, size: font-size.normal)
@@ -125,61 +134,36 @@
       v(5pt)
   }
 
-  if anonymous {
-    authors = ([
-      Anonymous CVPR submission \
-      \
-      Paper ID #id
-    ], )
-  }
+  block(width: 100%, spacing: 0pt, {
+    set align(center)
+    set text(size: font-size.Large, weight: "bold")
+    v(0.5in - 0.6pt)  // Visually perfect.
+    title
+  })
+  v(30pt, weak: true)
+  block(width: 100%, spacing: 0pt, {
+    set align(center)
+    set text(size: font-size.large)
+    let c = () // TODO(@daskol)
+    for value in range(authors.len()) {
+      c.push(1fr)
+    }
+    grid(columns: c, ..authors)
+  })
+  v(34.5pt, weak: true)
 
-  grid(
-    columns: (RULERWIDTH, auto, RULERWIDTH),
-    gutter: 0pt,
-    if anonymous {
-      set text(weight: "bold", fill: rgb(50%, 50%, 100%))
-      set par(leading: 0.6em)
-      set align(left)
-      for i in range(100) {
-      locate(loc => [
-        #pad_int(loc.page() * i) #linebreak()
-      ])
-      }
-    },
-    [
-      #align(center, {
-        v(0.5in)
-        text(size: font-size.Large)[*#title*]
-      })\
-      #align(center, {
-        set text(size: font-size.large)
-        let c = ()
-        for value in range(authors.len()) {
-          c.push(1fr)
-        }
-        grid(columns: c, ..authors)
-      })\ \
-      #columns(2, gutter: 0.3125in, {
-        align(center, text(size: font-size.large)[*Abstract*])
-        emph[#abstract\ \ ]
-        body
-      })
-    ],
-    if anonymous {
-      set text(weight: "bold", fill: rgb(50%, 50%, 100%))
-      set align(right)
-      for i in range(100) {
-        locate(loc => [
-          #pad_int(loc.page() * i + 54) #linebreak()
-        ])
-      }
-    },
-  )
+  // NOTE It seems that there is a typo in formatting instructions and actual
+  // gutter is 3/8 in not 5/16 in.
+  columns(2, gutter: 0.3125in, {
+    align(center, text(size: font-size.large)[*Abstract*])
+    emph[#abstract\ \ ]
+    body
 
-  if bibliography != none {
-    set std-bibliography(title: [References], style: "ieee")
-    bibliography
-  }
+    if bibliography != none {
+      set std-bibliography(title: [References], style: "ieee")
+      bibliography
+    }
+  })
 
   if appendix != none {
     set heading(numbering: "A.1")
