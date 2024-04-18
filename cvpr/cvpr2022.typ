@@ -21,6 +21,28 @@
 #let eg = emph[e.g.]
 #let etal = emph[et~al]
 
+#let font-family = ("Times New Roman", "CMU Serif", "Latin Modern Roman",
+                    "New Computer Modern", "Times", "Serif")
+
+#let font-family-sans = ("CMU Sans Serif", "Latin Modern Sans",
+                         "New Computer Modern Sans", "Sans")
+
+#let font-family-mono = ("CMU Typewriter Text", "Latin Modern Mono",
+                         "New Computer Modern Mono", "Mono")
+
+#let font-size = (
+  normal: 10pt,
+  small: 9pt,
+  footnote: 8pt,
+  script: 7pt,
+  tiny: 5pt,
+  large: 12pt,
+  Large: 14pt,
+  LARGE: 17pt,
+  huge: 20pt,
+  Huge: 25pt,
+)
+
 #let pad_int(i, N: 3) = {
     let s = str(i)
     let n_pads = N - s.len()
@@ -87,18 +109,18 @@
       ),
       header: {
         set align(center)
-        set text(rgb(50%, 50%, 100%), font: "Times", size: 8pt)
+        set text(font: font-family-sans, size: 8pt, fill: rgb(50%, 50%, 100%))
         strong[#conf-name #conf-year Submission \##id. #notice]
       },
   )
 
-  set text(font: "Times", size: 10pt)
+  set text(font: font-family, size: font-size.normal)
   set par(justify: true, first-line-indent: 0.166666in, leading: 0.55em)
-  show raw: set text(font: "CMU Typewriter Text")
+  show raw: set text(font: font-family-mono)
 
   set heading(numbering: "1.1.")
   show heading: it => {
-      set text(size: 12pt)
+      set text(size: font-size.large)
       it
       v(5pt)
   }
@@ -114,25 +136,23 @@
   grid(
     columns: (RULERWIDTH, auto, RULERWIDTH),
     gutter: 0pt,
-    [
-      #if anonymous {
-        set text(rgb(50%, 50%, 100%), weight: "bold")
-        set par(leading: 0.6em)
-        set align(left)
-        for i in range(100) {
-        locate(loc => [
-          #pad_int(loc.page() * i) #linebreak()
-        ])
-        }
+    if anonymous {
+      set text(weight: "bold", fill: rgb(50%, 50%, 100%))
+      set par(leading: 0.6em)
+      set align(left)
+      for i in range(100) {
+      locate(loc => [
+        #pad_int(loc.page() * i) #linebreak()
+      ])
       }
-    ],
+    },
     [
       #align(center, {
         v(0.5in)
-        text(size: 14pt)[*#title*]
+        text(size: font-size.Large)[*#title*]
       })\
       #align(center, {
-        set text(size: 11pt)
+        set text(size: font-size.large)
         let c = ()
         for value in range(authors.len()) {
           c.push(1fr)
@@ -140,22 +160,20 @@
         grid(columns: c, ..authors)
       })\ \
       #columns(2, gutter: 0.3125in, {
-        align(center, text(size: 12pt)[*Abstract*])
+        align(center, text(size: font-size.large)[*Abstract*])
         emph[#abstract\ \ ]
         body
       })
     ],
-    [
-      #if anonymous {
-        set text(rgb(50%, 50%, 100%), weight: "bold")
-        set align(right)
-        for i in range(100) {
-          locate(loc => [
-            #pad_int(loc.page() * i + 54) #linebreak()
-          ])
-        }
+    if anonymous {
+      set text(weight: "bold", fill: rgb(50%, 50%, 100%))
+      set align(right)
+      for i in range(100) {
+        locate(loc => [
+          #pad_int(loc.page() * i + 54) #linebreak()
+        ])
       }
-    ],
+    },
   )
 
   if bibliography != none {
