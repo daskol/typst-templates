@@ -28,7 +28,7 @@ conferences and journals during calendar year.
 Additionally, we are going to provide templates for popular machine learning
 scientific journals as well.
 
-- Journal of Machine Learning Research (JMLR).
+- [Journal of Machine Learning Research (JMLR)](jmlr).
 - [Transactions on Machine Learning Research (TMLR)](tmlr).
 
 ## Usage
