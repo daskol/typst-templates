@@ -15,7 +15,17 @@
 #let conf-year = [2022]
 #let notice = [CONFIDENTIAL REVIEW COPY. DO NOT DISTRIBUTE.]
 
+/**
+ * indent - Indentation helper.
+ *
+ * As Typst v0.11.0, the first paragraph is not indented (see [1]).
+ *
+ * [1]: https://github.com/typst/typst/issues/311
+ */
+#let indent = h(12pt)
+
 #let eg = emph[e.g.]
+
 #let etal = emph[et~al]
 
 #let font-family = ("Times New Roman", "CMU Serif", "Latin Modern Roman",
@@ -26,6 +36,8 @@
 
 #let font-family-mono = ("CMU Typewriter Text", "Latin Modern Mono",
                          "New Computer Modern Mono", "Mono")
+
+#let font-family-link = ("Courier New", "Nimbus Mono PS") + font-family-mono
 
 #let font-size = (
   normal: 10pt,
@@ -38,6 +50,11 @@
   LARGE: 17pt,
   huge: 20pt,
   Huge: 25pt,
+)
+
+#let color = (
+  ref: rgb(100%, 0%, 0%),  // Red.
+  link: rgb(100%, 0%, 100%),  // Magenta.
 )
 
 #let lineno = counter("lineno")
@@ -56,7 +73,7 @@
 
 #let ruler-style = body => {
   set text(size: 8pt, font: font-family-sans, weight: "bold", fill: ruler-color)
-  set par(leading: 6.20pt)
+  set par(leading: 6.22pt)
   body
 }
 
@@ -123,6 +140,36 @@
     text(size: font-size.small, [CVPR\ ])
     text(size: font-size.normal, [\##id])
   }))
+}
+
+/**
+ * h, h1, h2, h3 - Style rules for headings.
+ */
+
+#let h(body) = {
+  set text(size: font-size.normal, weight: "regular")
+  set block(above: 11.9pt, below: 11.7pt)
+  body
+}
+
+#let h1(body) = {
+  set text(size: font-size.large, weight: "bold")
+  set block(above: 17pt, below: 12.8pt)
+  body
+}
+
+#let h2(body) = {
+  set text(size: font-size.normal, weight: "bold")
+  set text(size: 11pt, weight: "bold")
+  set block(above: 11.4pt, below: 11.5pt)
+  body
+}
+
+#let h3(body) = {
+  set text(size: font-size.normal, weight: "bold")
+  set text(size: 10pt, weight: "bold")
+  set block(above: 21.7pt, below: 12.8pt)
+  body
 }
 
 /**
@@ -207,14 +254,93 @@
   )
 
   set text(font: font-family, size: font-size.normal)
-  set par(justify: true, first-line-indent: 0.166666in, leading: 0.55em)
-  show raw: set text(font: font-family-mono)
+  set par(justify: true, first-line-indent: 0.166666in, leading: 0.532em)
+  show par: set block(spacing: 0.54em)
+  show raw: set text(font: font-family-mono, size: font-size.normal)
 
+  // Configure heading appearence and numbering.
   set heading(numbering: "1.1.")
-  show heading: it => {
-      set text(size: font-size.large)
+  show heading.where(level: 1): h1
+  show heading.where(level: 2): h2
+  show heading.where(level: 3): h3
+
+  set math.equation(numbering: "(1)", supplement: [Eq.])
+  show math.equation: set block(spacing: 9pt)
+
+  set quote(quotes: false)
+  show quote.where(block: true): it => {
+    set block(spacing: 14pt)
+    set pad(left: 20pt, right: 20pt)
+    set par(first-line-indent: 0em)
+    show par: set block(spacing: 9.8pt)
+    it
+  }
+
+  // Configure footnote (almost default).
+  show footnote.entry: set text(size: font-size.footnote)
+  set footnote.entry(
+    separator: line(length: 1.3in, stroke: 0.35pt),
+    clearance: 6.65pt,
+    gap: 0.40em,
+    indent: 12pt)
+
+  // Figures
+  set figure(gap: 12pt)
+  set figure.caption(separator: [.])
+  show figure.caption: set text(size: font-size.small)
+  show figure.caption: set align(center)
+  show figure.caption: it => block({
+    align(left, it)
+  })
+
+  // Links and references.
+  show link: set text(font: font-family-link, fill: color.link)
+  show ref: it => {
+    let el = it.element
+    if el == none {
+      return it
+    }
+
+    // Supplement exist for every element and we have already checked element
+    // existance.
+    let supplement = if it.supplement != auto {
+      it.supplement
+    } else {
+      el.supplement
+    }
+
+    if el.func() == math.equation {
+      show link: set text(font: font-family, fill: color.ref)
+      let cnt = counter(math.equation)
+      let ix = numbering("1", ..cnt.at(el.location()))
+      let href = link(el.location(), ix)
+      [#supplement~(#href)]
+    } else if el.func() == heading {
+      show link: set text(font: font-family, fill: color.ref)
+      let cnt = counter(math.equation)
+      let ix = numbering("1.1", ..cnt.at(el.location()))  // TODO: Appendices?
+      let href = link(el.location(), ix)
+      [#supplement~#href]
+    } else if el.func() == figure {
+      let fig = el
+      if fig.kind == image {
+        show link: set text(font: font-family, fill: color.ref)
+        let cnt = counter(figure.where(kind: image))
+        let ix = numbering(el.numbering, ..cnt.at(el.location()))
+        let href = link(el.location(), ix)
+        [#supplement~#href]
+      } else if fig.kind == table {
+        show link: set text(font: font-family, fill: color.ref)
+        let cnt = counter(figure.where(kind: table))
+        let ix = numbering(el.numbering, ..cnt.at(el.location()))
+        let href = link(el.location(), ix)
+        [#supplement~#href]
+      } else {
+        it
+      }
+    } else {
       it
-      v(5pt)
+    }
   }
 
   block(width: 100%, spacing: 0pt, {
@@ -239,11 +365,13 @@
   // gutter is 3/8 in not 5/16 in.
   columns(2, gutter: 0.3125in, {
     align(center, text(size: font-size.large)[*Abstract*])
+    v(17.6pt, weak: true)
     emph[#abstract\ \ ]
     body
 
     if bibliography != none {
       set std-bibliography(title: [References], style: "ieee")
+      show std-bibliography: set text(size: font-size.small)
       bibliography
     }
   })

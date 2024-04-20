@@ -1,4 +1,4 @@
-#import "/cvpr2022.typ": cvpr2022, conf-name, conf-year, eg, etal
+#import "/cvpr2022.typ": cvpr2022, conf-name, conf-year, eg, etal, indent
 #import "/logo.typ": LaTeX, TeX
 
 #show: cvpr2022.with(
@@ -15,9 +15,9 @@
   bibliography: bibliography("main.bib"),
 )
 
-
 = Introduction <sec:intro>
 
+#indent
 Please follow the steps outlined below when submitting your manuscript to the
 IEEE Computer Society Press. This style guide now has several important
 modifications (for example, you are no longer warned against the use of sticky
@@ -26,15 +26,18 @@ version.
 
 == Language
 
+#indent
 All manuscripts must be in English.
 
 == Dual submission
 
+#indent
 Please refer to the author guidelines on the #conf-name #conf-year web page for
 a discussion of the policy on dual submissions.
 
 == Paper length
 
+#indent
 Papers, excluding the references section, must be no longer than eight pages in
 length. The references section will not be included in the page count, and
 there is no limit on the length of the references section. For example, a paper
@@ -51,6 +54,7 @@ presentation in eight pages if it is reviewed in eleven.
 
 == The ruler
 
+#indent
 The #LaTeX style defines a printed ruler which should be present in the version
 submitted for review. The ruler is provided in order that reviewers may comment
 on particular lines in the paper without circumlocution. If you are preparing a
@@ -68,6 +72,7 @@ would expect that the approximate location will be adequate.
 
 == Paper ID
 
+#indent
 Make sure that the Paper ID from the submission system is visible in the
 version submitted for review (replacing the "\*\*\*\*\*" you see in this
 document). If you are using the #LaTeX template, *make sure to update paper ID
@@ -75,7 +80,9 @@ in the appropriate place in the tex file*.
 
 == Mathematics
 
-Please number all of your sections and displayed equations as in these examples:
+#indent
+Please number all of your sections and displayed equations as in these
+examples:
 
 $ E = m dot.c c^2 $ <eq:important>
 
@@ -94,6 +101,7 @@ Mermin's description of how to write mathematics:
 
 == Blind review
 
+#indent
 Many authors misunderstand the concept of anonymizing for blind review. Blind
 review does not mean that one must remove citations to one's own work --- in
 fact it is often impossible to review a paper unless the previous citations are
@@ -109,7 +117,8 @@ at the end of the paper, include reference 7 as you would any other cited work.
 
 An example of a bad paper just asking to be rejected:
 
-#quote[
+#quote(block: true)[
+  #h(1.5em)
   An analysis of the frobnicatable foo filter.
 
   In this paper we present a performance analysis of our previous paper [1],
@@ -117,12 +126,13 @@ An example of a bad paper just asking to be rejected:
   paper was accepted without this analysis is beyond me.
 
   [1] Removed for blind review
-]  // TODO(@daskol)
+]
 
-
+#indent
 An example of an acceptable paper:
 
-#quote[
+#quote(block: true)[
+  #h(1.5em)
   An analysis of the frobnicatable foo filter.
 
   In this paper we present a performance analysis of the  paper of Smith #etal
@@ -131,19 +141,21 @@ An example of an acceptable paper:
 
   [1] Smith, L and Jones, C. "The frobnicatable foo filter, a fundamental
   contribution to human knowledge". Nature 381(12), 1-213.
-]  // TODO(@daskol)
+]
 
+#indent
 If you are making a submission to another conference at the same time, which
 covers similar or overlapping material, you may need to refer to that
 submission in order to explain the differences, just as you would if you had
 previously published related work. In such cases, include the anonymized
 parallel submission~@Authors14 as supplemental material and cite it as
 
-#quote[
+#quote(block: true)[
   [1] Authors. "The frobnicatable foo filter", F\&G 2014 Submission ID 324,
   Supplied as supplemental material `fg324.pdf`.
-]  // TODO(@daskol)
+]
 
+#indent
 Finally, you may feel you need to tell the reader that more details can be
 found elsewhere, and refer them to a technical report. For conference
 submissions, the paper must stand on its own, and not _require_ the reviewer to
@@ -165,17 +177,19 @@ our previous work [Anonymous, 1968]. This time we tested the algorithm on a
 lunar lander [name of lander removed for blind review]". That would be silly,
 and would immediately identify the authors. Instead write the following:
 
-#quote[
-\noindent
-   We describe a system for zero-g frobnication.
-   This system is new because it handles the following cases:
-   A, B.  Previous systems [Zeus et al. 1968] did not  handle case B properly.
-   Ours handles it by including a foo term in the bar integral.
-
-   ...
-
-   The proposed system was integrated with the Apollo lunar lander, and went all the way to the moon, don't you know.
-   It displayed the following behaviours, which show how well we solved cases A and B: ...
+#quote(block: true)[
+  We describe a system for zero-g frobnication. This system is new because it
+  handles the following cases: A, B.  Previous systems [Zeus et al. 1968] did
+  not  handle case B properly. Ours handles it by including a foo term in the
+  bar integral.
+  #linebreak()
+  #indent
+  ...
+  #linebreak()
+  #indent
+  The proposed system was integrated with the Apollo lunar lander, and went all
+  the way to the moon, don't you know. It displayed the following behaviours,
+  which show how well we solved cases A and B: ...
 ]
 
 As you can see, the above text follows standard scientific convention, reads
@@ -183,9 +197,9 @@ better than the first version, and does not explicitly name you as the authors.
 A reviewer might think it likely that the new paper was written by Zeus #etal,
 but cannot make any decision based on that guess. He or she would have to be
 sure that no other authors could have been contracted to solve problem B.
-// \medskip
 
-// \noindent
+#v(16pt, weak: true)
+#block[
 FAQ
 
 \
@@ -200,29 +214,30 @@ results, however, you should not identify yourself and should not mention your
 participation in the challenge. Instead present your results referring to the
 method proposed in your paper and draw conclusions based on the experimental
 comparison to other results.
+]
 
-```tex
-\begin{figure}[t]
-  \centering
-  \fbox{\rule{0pt}{2in} \rule{0.9\linewidth}{0pt}}
-   %\includegraphics[width=0.8\linewidth]{egfigure.eps}
-
-   \caption{Example of caption.
-   It is set in Roman so that mathematics (always set in Roman: $B \sin A = A \sin B$) may be included without an ugly clash.}
-   \label{fig:onecol}
-\end{figure}
-``` <fig:onecol>
+#figure(
+  caption: [
+    Example of caption. It is set in Roman so that mathematics (always set in
+    Roman: $B sin A = A sin B$) may be included without an ugly clash.
+  ],
+  placement: top,
+  kind: image,
+  rect(width: 0.9 * 3.25in - 0.8pt, height: 2.1in - 0.8pt, stroke: 0.4pt),
+) <fig:onecol>
+\
 
 == Miscellaneous
 
 Compare the following:
 
-```tex
-\begin{tabular}{ll}
- \verb'$conf_a$' &  $conf_a$ \\
- \verb'$\mathit{conf}_a$' & $\mathit{conf}_a$
-\end{tabular}
-```
+#align(center, grid(
+  columns: 2,
+  align: left,
+  gutter: 5pt,
+  `conf_a`,          $c o n f_a$,
+  `\mathit{conf}_a`, $italic("conf")_a$,
+))
 
 See The #TeX book, p165.
 
@@ -242,27 +257,43 @@ developed by Alpher and Fotheringham-Smythe~@Alpher03, and Alpher
 This is incorrect: "... subsequently developed by Alpher #etal~@Alpher03 ..."
 because reference~@Alpher03 has just two authors.
 
-```tex
-\begin{figure*}
-  \centering
-  \begin{subfigure}{0.68\linewidth}
-    \fbox{\rule{0pt}{2in} \rule{.9\linewidth}{0pt}}
-    \caption{An example of a subfigure.}
-    \label{fig:short-a}
-  \end{subfigure}
-  \hfill
-  \begin{subfigure}{0.28\linewidth}
-    \fbox{\rule{0pt}{2in} \rule{.9\linewidth}{0pt}}
-    \caption{Another example of a subfigure.}
-    \label{fig:short-b}
-  \end{subfigure}
-  \caption{Example of a short caption, which should be centered.}
-  \label{fig:short}
-\end{figure*}
-``` <fig:short>
+#show figure.where(kind: "subfigure"): it => {
+  it.body
+  v(-9pt)
+  it.caption
+}
+#show figure.caption.where(kind: "subfigure"): it => {
+  let ix = counter(figure.where(kind: "subfigure")).display("(a)")
+  [#ix~#it.body]
+}
+
+#let fig2a = figure(
+  caption: [An example of a subfigure.],
+  supplement: [],
+  kind: "subfigure",
+  rect(width: 4in, height: 2in, stroke: 0.4pt))
+
+#let fig2b = figure(
+  caption: [Another example of a subfigure.],
+  supplement: [],
+  kind: "subfigure",
+  rect(width: 2in, height: 2in, stroke: 0.4pt))
+
+#let fig = block(width: 6.875in, height: 2.59in)[
+  #figure(
+    caption: [Example of a short caption, which should be centered.],
+    placement: top,
+    grid(
+      columns: 2,
+      column-gutter: 0.875in - 2 * 0.4pt,
+      [#fig2a <fig2a>], [#fig2b <fig2b>],
+    )
+  ) <fig:short-a>
+]
 
 = Formatting your paper <sec:formatting>
 
+#indent
 All text must be in a two-column format. The total allowable size of the text
 area is $6 7/8$ inches (17.46 cm) wide by $8 7/8$ inches (22.54 cm) high.
 Columns are to be $3 1/4$ inches (8.25 cm) wide, with a $5/(16)$ inch (0.8 cm)
@@ -275,6 +306,7 @@ the bottom edge of the page.
 
 == Margins and page numbering
 
+#indent
 All printed material, including text, illustrations, and charts, must be kept
 within a print area $6 7/8$ inches (17.46 cm) wide by $8 7/8$ inches (22.54 cm)
 high. Page numbers should be in the footer, centered and $3/4$ inches from the
@@ -284,6 +316,7 @@ template takes care of this when used properly.
 
 == Type style and fonts
 
+#indent
 Wherever Times is specified, Times Roman may also be used. If neither is
 available on your word processor, please use the font closest in appearance to
 Times to which you have access.
@@ -306,24 +339,27 @@ double-spacing. All paragraphs should be indented 1 pica (approx.~$1/6$ inch or
 flush right. Please do not place any additional blank lines between paragraphs.
 
 Figure and table captions should be 9-point Roman type as in
-\cref{fig:onecol,fig:short}. Short captions should be centred.
-
-\noindent Callouts should be 9-point Helvetica, non-boldface type. Initially
+@fig:onecol[Figs.] and @fig:short-a[]. Short captions should be centred.\
+Callouts should be 9-point Helvetica, non-boldface type. Initially
 capitalize only the first word of section titles and first-, second-, and
 third-order headings.
 
-FIRST-ORDER HEADINGS. (For example, {\large \bf 1. Introduction}) should be
-Times 12-point boldface, initially capitalized, flush left, with one blank line
-before, and one blank line after.
+FIRST-ORDER HEADINGS. (For example, #box(text(size: 12pt)[*1. Introduction*]))
+should be Times 12-point boldface, initially capitalized, flush left, with one
+blank line before, and one blank line after.
 
-SECOND-ORDER HEADINGS. (For example, { \bf 1.1. Database elements}) should be
-Times 11-point boldface, initially capitalized, flush left, with one blank line
-before, and one after. If you require a third-order heading (we discourage it),
-use 10-point Times, boldface, initially capitalized, flush left, preceded by
-one blank line, followed by a period and your text on the same line.
+SECOND-ORDER HEADINGS. (For example, #box(text(size: 11pt)[*1.1. Database
+elements*])) should be Times 11-point boldface, initially capitalized, flush
+left, with one blank line before, and one after. If you require a third-order
+heading (we discourage it), use 10-point Times, boldface, initially
+capitalized, flush left, preceded by one blank line, followed by a period and
+your text on the same line.
+
+#place(top, float: true, fig)
 
 == Footnotes
 
+#indent
 Please use footnotes#footnote[This is what a footnote looks like. It often
 distracts the reader from the main flow of the argument.] sparingly. Indeed,
 try to avoid footnotes altogether and include necessary peripheral observations
@@ -333,6 +369,7 @@ which it is referenced. Use Times 8-point type, single-spaced.
 
 == Cross-references
 
+#indent
 For the benefit of author(s) and readers, please use the
 
 ```tex
@@ -343,12 +380,13 @@ command for cross-referencing to figures, tables, equations, or sections. This
 will automatically insert the appropriate label alongside the cross-reference
 as in this example:
 
-#quote[
-  To see how our method outperforms previous work, please see \cref{fig:onecol}
-  and \cref{tab:example}. It is also possible to refer to multiple targets as
-  once, \eg~to \cref{fig:onecol,fig:short-a}. You may also return to
-  \cref{sec:formatting} or look at \cref{eq:also-important}.
-] // TODO(@daskol)
+#quote(block: true)[
+  #indent
+  To see how our method outperforms previous work, please see @fig:onecol[Fig.]
+  and @tab:example[Tab.]. It is also possible to refer to multiple targets as
+  once, #eg~to @fig:onecol[Figs.] and @fig:short-a[]. You may also return to
+  @sec:formatting[Sec.] or look at @eq:also-important.
+]
 
 If you do not wish to abbreviate the label, for example at the beginning of the
 sentence, you can use the
@@ -357,41 +395,55 @@ sentence, you can use the
   \Cref{...}
 ```
 
+#indent
 command. Here is an example:
 
-#quote[
-  \Cref{fig:onecol} is also quite important.
-] // TODO(@daskol)
+#quote(block: true)[
+  #indent
+  @fig:onecol[Figure] is also quite important.
+]
+
+#place(top, float: true,
+  block(width: 3.25in, height: fig.height)
+)
 
 == References
 
+#indent
 List and number all bibliographical references in 9-point Times, single-spaced,
 at the end of your paper. When referenced in the text, enclose the citation
 number in square brackets, for example~@Authors14. Where appropriate, include
 page numbers and the name(s) of editors of referenced books. When you cite
 multiple papers at once, please make sure that you cite them in numerical order
-like this @Alpher02 @Alpher03 @Alpher05 @Authors14b @Authors14. If you use the
+like this @Authors14 @Authors14b @Alpher02 @Alpher03 @Alpher05. If you use the
 template as advised, this will be taken care of automatically.
 
-```tex
-\begin{table}
-  \centering
-  \begin{tabular}{@{}lc@{}}
-    \toprule
-    Method & Frobnability \\
-    \midrule
-    Theirs & Frumpy \\
-    Yours & Frobbly \\
-    Ours & Makes one's heart Frob\\
-    \bottomrule
-  \end{tabular}
-  \caption{Results.   Ours is better.}
-  \label{tab:example}
-\end{table}
-``` <tab:example>
+#figure(
+  caption: [Results. Ours is better.],
+  placement: top,
+  table(
+    columns: 2,
+    align: (left, center),
+    row-gutter: 0pt,
+    stroke: none,
+    inset: (x, y) => (
+      top: if y == 0 or y == 1 { 5pt } else { 2.6pt },
+      bottom: if y == 0 or y == 3 { 5.4pt } else { 2.6pt },
+      left: if x == 0 { 0pt } else { 5pt },
+      right: if x == 1 { 5pt } else { 0pt },
+    ),
+    table.hline(stroke: 0.9pt),
+    table.header([Method], [Frobnability]),
+    table.hline(stroke: 0.4pt),
+    [Theirs], [Frumpy],
+    [Yours], [Frobbly],
+    [Ours], [Makes one's heart Frob],
+    table.hline(stroke: 0.9pt),
+)) <tab:example>
 
 == Illustrations, graphs, and photographs
 
+#indent
 All graphics should be centered. In #LaTeX, avoid using the `center`
 environment for this purpose, as this adds potentially unwanted whitespace.
 Instead use
@@ -420,6 +472,7 @@ width as in the example below
 
 == Color
 
+#indent
 Please refer to the author guidelines on the #conf-name #conf-year web page for
 a discussion of the use of color in your document.
 
@@ -431,6 +484,7 @@ discriminative feature to ease disambiguation.
 
 = Final copy
 
+#indent
 You must include your signed IEEE copyright release form when you submit your
 finished paper. We MUST have this form before your paper can be published in
 the proceedings.
