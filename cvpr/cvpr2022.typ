@@ -116,6 +116,15 @@
 
 #let ruler = make-ruler()  // Default CVPR 2022 ruler.
 
+#let corner-text(id, width: auto, fill: ruler-color) = {
+  block(width: width, align(center + horizon, {
+    set par(leading: 4.9pt)
+    set text(font: font-family-sans, fill: fill)
+    text(size: font-size.small, [CVPR\ ])
+    text(size: font-size.normal, [\##id])
+  }))
+}
+
 /**
  * cvpr2022 - Template for Computer Vision and Pattern Recognition Conference
  * (CVPR) 2022.
@@ -174,14 +183,19 @@
   set page(
     paper: "us-letter",
     margin: (left: 0.696in, right: 0.929in, top: 1in, bottom: 1.125in),
-    background: if accepted != none and not accepted { ruler },
+    background: if accepted != none and not accepted {
+      // Rullers on sides.
+      ruler
+      // Decorate top corners.
+      place(top + left, dx: -14.6pt, dy: 15.5pt, corner-text(id, width: 1in))
+      place(top + right, dx: 5pt, dy: 15.5pt, corner-text(id, width: 1in))
+    },
     header-ascent: 27.9pt,
     header: {
       set align(center)
       set text(
         font: font-family-sans,
         size: font-size.footnote,
-        weight: "bold",
         fill: ruler-color)
       strong[#conf-name #conf-year Submission \##id. #notice]
     },
