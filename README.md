@@ -17,7 +17,7 @@ conferences and journals during calendar year.
 - Conference on Learning Theory (COLT).
 - Empirical Methods in Natural Language Processing (EMNLP).
 - European Conference on Computer Vision (ECCV).
-- IEEE Conference on Computer Vision and Pattern Recognition (CVPR).
+- [IEEE Conference on Computer Vision and Pattern Recognition (CVPR)](cvpr).
 - IEEE International Conference on Computer Vision (ICCV).
 - International Conference on Learning Representations (ICLR).
 - International Joint Conference on Artificial Intelligence (IJCAI).
