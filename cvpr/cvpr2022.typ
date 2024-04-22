@@ -143,10 +143,10 @@
 }
 
 /**
- * h, h1, h2, h3 - Style rules for headings.
+ * h_, h1, h2, h3 - Style rules for headings.
  */
 
-#let h(body) = {
+#let h_(body) = {
   set text(size: font-size.normal, weight: "regular")
   set block(above: 11.9pt, below: 11.7pt)
   body
@@ -170,6 +170,76 @@
   set text(size: 10pt, weight: "bold")
   set block(above: 21.7pt, below: 12.8pt)
   body
+}
+
+#let format-affilation(affl) = {
+  // Department and institution on a seperate lines.
+  let lines = ()
+  if "department" in affl {
+    lines.push(affl.department)
+  }
+  if "institution" in affl {
+    lines.push(affl.institution)
+  }
+
+  // Address components on a single one.
+  let address = ()
+  if "location" in affl {
+    address.push(affl.location)
+  }
+  if "country" in affl {
+    address.push(affl.country)
+  }
+  if address.len() > 0 {
+    lines.push(address.join([, ]))
+  }
+
+  lines.join([\ ])
+}
+
+#let format-author(author, affls) = box(baseline: 100%, {
+  author.name
+  if "affl" in author {
+    [\ ]
+    author.affl
+      .map(it => format-affilation(affls.at(it)))
+      .join([\ ])
+  }
+  if "email" in author {
+    show raw: set text(
+      font: font-family-link,
+      size: font-size.small,
+      fill: black)
+    v(9pt, weak: true)
+    link(author.email, raw(author.email))
+  }
+})
+
+#let make-title(title, authors, affls, id, accepted) = {
+  // 1. Title.
+  block(width: 100%, spacing: 0pt, {
+    set align(center)
+    set text(size: font-size.Large, weight: "bold")
+    v(0.5in - 0.6pt)  // Visually perfect.
+    title
+  })
+  v(30pt, weak: true)
+
+  // 2. Authors and affilations.
+  block(width: 100%, spacing: 0pt, {
+    set align(center + top)
+    set text(size: font-size.large)
+    if accepted != none and not accepted{
+      [Anonymous CVPR submission\ ]
+      [\ ]
+      [Paper ID #id]
+    } else {
+      pad(left: 10pt, right: 12pt, {
+        authors.map(it => format-author(it, affls)).join(h(0.5in))
+      })
+    }
+  })
+  v(34.5pt, weak: true)
 }
 
 /**
@@ -201,10 +271,14 @@
   id: none,
   body,
 ) = {
-  // TODO(@daskol): Get rid of this later.
-  let anonymous = true
-  if accepted == none or accepted {
-    anonymous = false
+  // Deconstruct authors for convenience.
+  let (authors, affls) = if authors.len() == 2 {
+    authors
+  } else {
+    ((), ())
+  }
+  if accepted != none and not accepted {
+    authors = ((name: "Anonymous Author"), )
   }
 
   // If there is not submission id then use a placeholder.
@@ -212,18 +286,9 @@
     id = "*****"
   }
 
-  if anonymous {
-    authors = ([
-      Anonymous CVPR submission \
-      \
-      Paper ID #id
-    ], )
-  }
-
-  let author = ""  // TODO(@daskol): Fix this.
   set document(
     title: title,
-    author: author,
+    author: authors.map(it => it.name).join(", ", last: " and "),
     keywords: keywords,
     date: date)
 
@@ -238,7 +303,7 @@
       place(top + right, dx: 5pt, dy: 15.5pt, corner-text(id, width: 1in))
     },
     header-ascent: 27.9pt,
-    header: {
+    header: if accepted != none and not accepted {
       set align(center)
       set text(
         font: font-family-sans,
@@ -342,24 +407,7 @@
       it
     }
   }
-
-  block(width: 100%, spacing: 0pt, {
-    set align(center)
-    set text(size: font-size.Large, weight: "bold")
-    v(0.5in - 0.6pt)  // Visually perfect.
-    title
-  })
-  v(30pt, weak: true)
-  block(width: 100%, spacing: 0pt, {
-    set align(center)
-    set text(size: font-size.large)
-    let c = () // TODO(@daskol)
-    for value in range(authors.len()) {
-      c.push(1fr)
-    }
-    grid(columns: c, ..authors)
-  })
-  v(34.5pt, weak: true)
+  make-title(title, authors, affls, id, accepted)
 
   // NOTE It seems that there is a typo in formatting instructions and actual
   // gutter is 3/8 in not 5/16 in.

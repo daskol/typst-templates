@@ -1,8 +1,28 @@
 #import "/cvpr2022.typ": cvpr2022, conf-name, conf-year, eg, etal, indent
 #import "/logo.typ": LaTeX, TeX
 
+#let affls = (
+  one: (institution: "Institution1", location: "Institution1 address"),
+  two: (
+    institution: "Institution2",
+    location: "First line of institution1 address"),
+  airi: ("AIRI", "Moscow", "Russia"),
+  skoltech: (
+    department: "AI Center",
+    institution: "Skoltech",
+    location: "Moscow",
+    country: "Russia"),
+)
+
+#let authors = (
+  (name: "First Author", affl: ("one", ), email: "firstauthor@i1.org"),
+  (name: "Second Author", affl: ("two", ), email: "secondauthor@i2.org"),
+)
+
 #show: cvpr2022.with(
   title: [#LaTeX Author Guidelines for #conf-name~Proceedings],
+  authors: (authors, affls),
+  keywords: (),
   abstract: [
     The ABSTRACT is to be in fully justified italicized text, at the top of the
     left-hand column, below the author and affiliation information. Use the
@@ -13,6 +33,8 @@
     style and length.
   ],
   bibliography: bibliography("main.bib"),
+  accepted: false,
+  id: none,
 )
 
 = Introduction <sec:intro>
