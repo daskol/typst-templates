@@ -96,6 +96,14 @@
   37th Conference on Neural Information Processing Systems (NeurIPS 2023).
 ]
 
+#let get-notice(accepted) = if accepted == none {
+  return arxiv-notice
+} else if accepted {
+  return public-notice
+} else {
+  return anonymous-notice
+}
+
 #let format-author-names(authors) = {
   // Formats the author's names in a list with commas and a
   // final "and".
@@ -253,6 +261,7 @@
   bibliography: none,
   bibliography-opts: (:),
   accepted: false,
+  aux: (:),
   body,
 ) = {
   // Sanitize authors and affilations arguments.
@@ -277,15 +286,13 @@
     footer: locate(loc => {
       let i = counter(page).at(loc).first()
       if i == 1 {
-        let notice = ""
-        if accepted == none {
-          notice = arxiv-notice
-        } else if accepted {
-          notice = public-notice
+        let get-notice = if "get-notice" in aux {
+          aux.get-notice
         } else {
-          notice = anonymous-notice
+          get-notice
         }
-        return align(center, text(size: 9pt, notice))
+        let notice = get-notice(accepted)
+        return align(center, text(size: 9pt, [#notice]))
       } else {
         return align(center, text(size: font.normal, [#i]))
       }
