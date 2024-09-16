@@ -31,8 +31,8 @@
 #let font-family = ("Times New Roman", "CMU Serif", "Latin Modern Roman",
                     "New Computer Modern", "Times", "Serif")
 
-#let font-family-sans = ("Nimbus Sans", "CMU Sans Serif", "Latin Modern Sans",
-                         "New Computer Modern Sans", "Sans")
+#let font-family-sans = ("Arial", "TeX Gyre Heros", "New Computer Modern Sans",
+                         "CMU Sans Serif", "Sans")
 
 #let font-family-mono = ("CMU Typewriter Text", "Latin Modern Mono",
                          "New Computer Modern Mono", "Mono")
@@ -312,10 +312,12 @@
       strong[#conf-name #conf-year Submission \##id. #notice]
     },
     footer-descent: 23.4pt, // Visually perfect.
-    footer: locate(loc => {
-      let ix = counter(page).at(loc).first()
-      return align(center, text(size: font-size.normal, [#ix]))
-    }),
+    footer: if accepted != none and not accepted {
+      locate(loc=>{
+        let ix=counter(page).at(loc).first()
+        return align(center, text(size: font-size.normal, [#ix]))
+      })
+    },
   )
 
   set text(font: font-family, size: font-size.normal)
@@ -418,7 +420,7 @@
     body
 
     if bibliography != none {
-      set std-bibliography(title: [References], style: "ieee")
+      set std-bibliography(title: [References], style: "ieee.csl")
       show std-bibliography: set text(size: font-size.small)
       bibliography
     }
