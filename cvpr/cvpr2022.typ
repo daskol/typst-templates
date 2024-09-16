@@ -313,10 +313,10 @@
     },
     footer-descent: 23.4pt, // Visually perfect.
     footer: if accepted != none and not accepted {
-      locate(loc => {
-      let ix = counter(page).at(loc).first()
-      return align(center, text(size: font-size.normal, [#ix]))
-    })
+      locate(loc=>{
+        let ix=counter(page).at(loc).first()
+        return align(center, text(size: font-size.normal, [#ix]))
+      })
     },
   )
 
