@@ -36,6 +36,7 @@
 #let make_figure_caption(it) = {
   set align(center)
   block({
+    set align(left)
     set text(size: font.normal)
     it.supplement
     if it.numbering != none {
@@ -49,9 +50,8 @@
 }
 
 #let make_figure(caption_above: false, it) = {
-  // set align(center + top)
-  // let body = block(breakable: false, width: 100%, {
-  let body = {
+  let body = block(width: 100%, {
+    set align(center)
     set text(size: font.normal)
     if caption_above {
       v(1em, weak: true)  // Does not work at the block beginning.
@@ -64,12 +64,12 @@
       it.caption
       v(1em, weak: true)  // Does not work at the block ending.
     }
-  }
+  })
 
   if it.placement == none {
     return body
   } else {
-    return place(it.placement + center, body, float: true, clearance: 2.3em)
+    return place(it.placement, body, float: true, clearance: 2.3em)
   }
 }
 
