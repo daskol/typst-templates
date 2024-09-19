@@ -37,7 +37,10 @@
   ],
   bibliography: bibliography("main.bib"),
   bibliography-opts: (title: none, full: true),  // Only for example paper.
-  appendix: include "appendix.typ",
+  appendix: [
+    #include "appendix.typ"
+    #include "checklist.typ"
+  ],
   accepted: false,
 )
 
