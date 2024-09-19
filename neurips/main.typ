@@ -1,5 +1,4 @@
-#import "@preview/tablex:0.0.8": cellx, hlinex, tablex
-#import "/neurips2024.typ": neurips2024, paragraph, url
+#import "/neurips.typ": botrule, midrule, neurips2024, paragraph, toprule, url
 #import "/logo.typ": LaTeX, LaTeXe, TeX
 
 #let affls = (
@@ -255,33 +254,25 @@ typesetting high-quality, professional tables:
 
 This package was used to typeset @sample-table.
 
-// Tickness values are taken from booktabs.
-#let toprule = hlinex(stroke: (thickness: 0.08em))
-#let bottomrule = toprule
-#let midrule = hlinex(stroke: (thickness: 0.05em))
-#let rows = (
-  toprule,
-  cellx(colspan: 2, align: center)[Part], (), [],
-  hlinex(start: 0, end: 2, stroke: (thickness: 0.05em)),
-  [Name], [Description], [Size ($mu$)],
-  midrule,
-  [Dendrite], [Input terminal ], [$~100$],
-  [Axon    ], [Output terminal], [$~10$],
-  [Soma    ], [Cell body      ], [up to $10^6$],
-  bottomrule,
-)
-
 #figure(
-  tablex(
+  caption: [Sample table title.],
+  placement: top,
+  table(
     columns: 3,
     align: left + horizon,
-    auto-vlines: false,
-    auto-hlines: false,
-    header-rows: 2,
-    ..rows),  // TODO(@daskol): Fix gutter between rows in body.
-  caption: [Sample table title.],
-  kind: table,
-  placement: top,
+    stroke: none,
+    toprule,
+    table.header(
+      table.cell(colspan: 2, align: center)[Part], [],
+      table.hline(start: 0, end: 2, stroke: (thickness: 0.05em)),
+      [Name], [Description], [Size ($mu$m)],
+    ),
+    midrule,
+    [Dendrite], [Input terminal ], [$~100$],
+    [Axon    ], [Output terminal], [$~10$],
+    [Soma    ], [Cell body      ], [up to $10^6$],
+    botrule,
+  ),  // TODO(@daskol): Fix gutter between rows in body.
 ) <sample-table>
 
 == Math

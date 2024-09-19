@@ -12,6 +12,11 @@
 // Workaround for the lack of an `std` scope.
 #let std-bibliography = bibliography
 
+// Tickness values are taken from booktabs.
+#let botrule = table.hline(stroke: (thickness: 0.08em))
+#let midrule = table.hline(stroke: (thickness: 0.05em))
+#let toprule = botrule
+
 #let anonymous-notice = [
   Submitted to 38th Conference on Neural Information Processing Systems
   (NeurIPS 2024). Do not distribute.

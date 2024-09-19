@@ -10,3 +10,6 @@
 
 #import "/neurips2023.typ": font, neurips2023, paragraph, url
 #import "/neurips2024.typ": neurips2024
+
+// Horizontal lines in table taken from booktabs.
+#import "/neurips2024.typ": botrule, midrule, toprule
