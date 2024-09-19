@@ -15,8 +15,8 @@ Typst will create a new directory with all the files needed to get you started.
 
 ## Configuration
 
-This template exports the `neurips2023` function with the following named
-arguments.
+This template exports the `neurips2023` and `neurips2024` function with the
+following named arguments.
 
 - `title`: The paper's title as content.
 - `authors`: An array of author dictionaries. Each of the author dictionaries
@@ -27,23 +27,86 @@ arguments.
 - `bibliography`: The result of a call to the bibliography function or none.
   The function also accepts a single, positional argument for the body of the
   paper.
+- `appendix`: A content which is placed after bibliography.
 - `accepted`: If this is set to `false` then anonymized ready for submission
   document is produced; `accepted: true` produces camera-redy version. If
   the argument is set to `none` then preprint version is produced (can be
   uploaded to arXiv).
 
-The template will initialize your package with a sample call to the `neurips2023`
-function in a show rule. If you want to change an existing project to use this
-template, you can add a show rule at the top of your file.
+The template will initialize your package with a sample call to the
+`neurips2024` function in a show rule. If you want to change an existing
+project to use this template, you can add a show rule at the top of your file
+as follows.
+
+```typst
+#import "@preview/bloated-neurips:0.5.0": neurips2024
+
+#show: neurips2024.with(
+  title: [Formatting Instructions For NeurIPS 2024],
+  authors: (authors, affls),
+  keywords: ("Machine Learning", "NeurIPS"),
+  abstract: [
+    The abstract paragraph should be indented ½ inch (3 picas) on both the
+    left- and right-hand margins. Use 10 point type, with a vertical spacing
+    (leading) of 11 points. The word *Abstract* must be centered, bold, and in
+    point size 12. Two line spaces precede the abstract. The abstract must be
+    limited to one paragraph.
+  ],
+  bibliography: bibliography("main.bib"),
+  appendix: [
+    #include "appendix.typ"
+    #include "checklist.typ"
+  ],
+  accepted: false,
+)
+
+#lorem(42)
+```
+
+With template of version v0.5.0 or newer, one can override some parts.
+Specifically, `get-notice` entry of `aux` directory parameter of show rule
+allows to adjust the NeurIPS 2024 template to Science4DL workshop as follows.
+
+```typst
+#import "@preview/bloated-neurips:0.5.0": neurips
+
+#let get-notice(accepted) = if accepted == none {
+  return [Preprint. Under review.]
+} else if accepted {
+  return [
+    Workshop on Scientific Methods for Understanding Deep Learning, NeurIPS
+    2024.
+  ]
+} else {
+  return [
+    Submitted to Workshop on Scientific Methods for Understanding Deep
+    Learning, NeurIPS 2024.
+  ]
+}
+
+#let science4dl2024(
+  title: [], authors: (), keywords: (), date: auto, abstract: none,
+  bibliography: none, appendix: none, accepted: false, body,
+) = {
+  show: neurips.with(
+    title: title,
+    authors: authors,
+    keywords: keywords,
+    date: date,
+    abstract: abstract,
+    accepted: false,
+    aux: (get-notice: get-notice),
+  )
+  body
+}
+```
 
 ## Issues
 
-This template is developed at [daskol/typst-templates][1] repo. Please report
-all issues there.
-
 - The biggest and the most important issues is related to line ruler. We are
   not aware of universal method for numbering lines in the main body of a
-  paper.
+  paper. Fortunately, line numbering support has been implemented at
+  [typst/typst#4516][4]. Let's wait for the next major release v0.12.0!
 
 - There is an issue in Typst with spacing between figures and between figure
   with floating placement. The issue is that there is no way to specify gap
@@ -75,10 +138,10 @@ all issues there.
 
   See [README.md][1] for details.
 
-- NeurIPS 2023 instructions discuss bibliography in vague terms. Namely, there
-  is not specific requirements. Thus we stick to `ieee` bibliography style
-  since we found it in several accepted papers and it is similar to that in the
-  example paper.
+- NeurIPS 2023/2024 instructions discuss bibliography in vague terms. Namely,
+  there is not specific requirements. Thus we stick to `ieee` bibliography
+  style since we found it in several accepted papers and it is similar to that
+  in the example paper.
 
 - It is unclear how to render notice in the bottom of the title page in case of
   final (`accepted: true`) or preprint (`accepted: none`) submission.
@@ -86,3 +149,4 @@ all issues there.
 [1]: example-paper.latex.pdf
 [2]: example-paper.typst.pdf
 [3]: ../#colored-annotations
+[4]: https://github.com/typst/typst/pull/4516

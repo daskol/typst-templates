@@ -1,5 +1,4 @@
-#import "@preview/tablex:0.0.8": cellx, hlinex, tablex
-#import "/neurips2023.typ": *
+#import "/neurips.typ": botrule, midrule, neurips2024, paragraph, toprule, url
 #import "/logo.typ": LaTeX, LaTeXe, TeX
 
 #let affls = (
@@ -24,8 +23,8 @@
   (name: "Firstname2 Lastname2", affl: ("airi", "skoltech"), equal: true),
 )
 
-#show: neurips2023.with(
-  title: [Formatting Instructions For NeurIPS 2023],
+#show: neurips2024.with(
+  title: [Formatting Instructions For NeurIPS 2024],
   authors: (authors, affls),
   keywords: ("Machine Learning", "NeurIPS"),
   abstract: [
@@ -37,25 +36,26 @@
   ],
   bibliography: bibliography("main.bib"),
   bibliography-opts: (title: none, full: true),  // Only for example paper.
+  appendix: [
+    #include "appendix.typ"
+    #include "checklist.typ"
+  ],
   accepted: false,
 )
 
-= Submission of papers to NeurIPS 2023
+= Submission of papers to NeurIPS 2024
 
 Please read the instructions below carefully and follow them faithfully.
-*Important:* This year the checklist will be submitted separately from the main
-paper in OpenReview, please review it well ahead of the submission deadline:
-#url("https://neurips.cc/public/guides/PaperChecklist")
 
 == Style
 
-Papers to be submitted to NeurIPS 2023 must be prepared according to the
+Papers to be submitted to NeurIPS 2024 must be prepared according to the
 instructions presented here. Papers may only be up to *nine* pages long,
 including figures. Additional pages _containing only acknowledgments and
 references_ are allowed. Papers that exceed the page limit will not be
 reviewed, or in any other way considered for presentation at the conference.
 
-The margins in 2023 are the same as those in previous years.
+The margins in 2024 are the same as those in previous years.
 
 Authors are required to use the NeurIPS #LaTeX style files obtainable at the
 NeurIPS website as indicated below. Please make sure you use the current files
@@ -68,14 +68,14 @@ rejection.
 The style files for NeurIPS and other conference information are available on
 the website at
 
-#align(center)[
-  #url("http://www.neurips.cc/")
-]
+#align(center, block(spacing: 15pt, {
+  url("http://www.neurips.cc/")
+}))
 
-The file `neurips_2023.pdf` contains these instructions and illustrates the
+The file `neurips_2024.pdf` contains these instructions and illustrates the
 various formatting requirements your NeurIPS paper must satisfy.
 
-The only supported style file for NeurIPS 2023 is `neurips_2023.sty`, rewritten
+The only supported style file for NeurIPS 2024 is `neurips_2024.sty`, rewritten
 for #LaTeXe. *Previous style files for #LaTeX 2.09, Microsoft Word, and RTF
 are no longer supported!*
 
@@ -97,7 +97,7 @@ anonymize your submission and add line numbers to aid review. Please do _not_
 refer to these line numbers in your paper as they will be removed during
 generation of camera-ready copies.
 
-The file `neurips_2023.tex` may be used as a "shell" for writing your paper.
+The file `neurips_2024.tex` may be used as a "shell" for writing your paper.
 All you have to do is replace the author, title, abstract, and text of the
 paper with your own.
 
@@ -172,10 +172,13 @@ in inline text.  For example,
 ```
 produces
 
-#quote(block: true)[Hasselmo, et al.~(1995) investigated\dots]
+#{
+  show quote: set block(spacing: 15pt)
+  quote(block: true)[Hasselmo, et al.~(1995) investigated\dots]
+}
 
 If you wish to load the `natbib` package with options, you may add the
-following before loading the `neurips_2023` package:
+following before loading the `neurips_2024` package:
 
 ```tex
     \PassOptionsToPackage{options}{natbib}
@@ -185,7 +188,7 @@ If `natbib` clashes with another package you load, you can add the optional
 argument `nonatbib` when loading the style file:
 
 ```tex
-    \usepackage[nonatbib]{neurips_2023}
+    \usepackage[nonatbib]{neurips_2024}
 ```
 
 As submission is double blind, refer to your own published work in the third
@@ -194,6 +197,8 @@ previous work [4]." If you cite your other papers that are not widely available
 (e.g., a journal paper under review), use anonymous author names in the
 citation, e.g., an author of the form "A.~Anonymous" and include a copy of the
 anonymized paper in the supplementary material.
+
+#v(7pt)  // In order to match original template.
 
 == Footnotes
 
@@ -204,6 +209,8 @@ footnote with a horizontal rule of 2~inches (12~picas).
 
 Note that footnotes are properly typeset _after_ punctuation marks.#footnote[As
 in this example.]
+
+#v(7pt)  // In order to match original template.
 
 == Figures
 
@@ -222,6 +229,10 @@ proper nouns); figures are numbered consecutively.
 You may use color figures.  However, it is best for the figure captions and the
 paper body to be legible if the paper is printed in either black/white or in
 color.
+
+// In order to match original template.
+#pagebreak()
+#v(-9pt)
 
 == Tables <tables>
 
@@ -243,33 +254,25 @@ typesetting high-quality, professional tables:
 
 This package was used to typeset @sample-table.
 
-// Tickness values are taken from booktabs.
-#let toprule = hlinex(stroke: (thickness: 0.08em))
-#let bottomrule = toprule
-#let midrule = hlinex(stroke: (thickness: 0.05em))
-#let rows = (
-  toprule,
-  cellx(colspan: 2, align: center)[Part], (), [],
-  hlinex(start: 0, end: 2, stroke: (thickness: 0.05em)),
-  [Name], [Description], [Size ($mu$)],
-  midrule,
-  [Dendrite], [Input terminal ], [$~100$],
-  [Axon    ], [Output terminal], [$~10$],
-  [Soma    ], [Cell body      ], [up to $10^6$],
-  bottomrule,
-)
-
 #figure(
-  tablex(
+  caption: [Sample table title.],
+  placement: top,
+  table(
     columns: 3,
     align: left + horizon,
-    auto-vlines: false,
-    auto-hlines: false,
-    header-rows: 2,
-    ..rows),  // TODO(@daskol): Fix gutter between rows in body.
-  caption: [Sample table title.],
-  kind: table,
-  placement: top,
+    stroke: none,
+    toprule,
+    table.header(
+      table.cell(colspan: 2, align: center)[Part], [],
+      table.hline(start: 0, end: 2, stroke: (thickness: 0.05em)),
+      [Name], [Description], [Size ($mu$m)],
+    ),
+    midrule,
+    [Dendrite], [Input terminal ], [$~100$],
+    [Axon    ], [Output terminal], [$~10$],
+    [Soma    ], [Cell body      ], [up to $10^6$],
+    botrule,
+  ),  // TODO(@daskol): Fix gutter between rows in body.
 ) <sample-table>
 
 == Math
@@ -355,19 +358,12 @@ moreover, you are required to declare funding (financial activities supporting
 the submitted work) and competing interests (related financial activities
 outside the submitted work). More information about this disclosure can be
 found at:
-#url("https://neurips.cc/Conferences/2023/PaperInformation/FundingDisclosure")
+#url("https://neurips.cc/Conferences/2024/PaperInformation/FundingDisclosure")
 
 Do *not* include this section in the anonymized submission, only in the final
 paper. You can use the `ack` environment provided in the style file to
 autmoatically hide this section in the anonymized submission.
 ]
-
-= Supplementary Material
-
-Authors may wish to optionally include extra information (complete proofs,
-additional experiments and plots) in the appendix. All such materials should be
-part of the supplemental material (submitted separately) and should NOT be
-included in the main submission.
 
 // We typset reference section header manualy in order to reproduce example
 // paper. No special effort is required (a user should not override
