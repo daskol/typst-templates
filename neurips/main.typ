@@ -66,9 +66,9 @@ rejection.
 The style files for NeurIPS and other conference information are available on
 the website at
 
-#align(center)[
-  #url("http://www.neurips.cc/")
-]
+#align(center, block(spacing: 15pt, {
+  url("http://www.neurips.cc/")
+}))
 
 The file `neurips_2024.pdf` contains these instructions and illustrates the
 various formatting requirements your NeurIPS paper must satisfy.
@@ -170,7 +170,10 @@ in inline text.  For example,
 ```
 produces
 
-#quote(block: true)[Hasselmo, et al.~(1995) investigated\dots]
+#{
+  show quote: set block(spacing: 15pt)
+  quote(block: true)[Hasselmo, et al.~(1995) investigated\dots]
+}
 
 If you wish to load the `natbib` package with options, you may add the
 following before loading the `neurips_2024` package:
@@ -193,6 +196,8 @@ previous work [4]." If you cite your other papers that are not widely available
 citation, e.g., an author of the form "A.~Anonymous" and include a copy of the
 anonymized paper in the supplementary material.
 
+#v(7pt)  // In order to match original template.
+
 == Footnotes
 
 Footnotes should be used sparingly. If you do require a footnote, indicate
@@ -202,6 +207,8 @@ footnote with a horizontal rule of 2~inches (12~picas).
 
 Note that footnotes are properly typeset _after_ punctuation marks.#footnote[As
 in this example.]
+
+#v(7pt)  // In order to match original template.
 
 == Figures
 
@@ -220,6 +227,10 @@ proper nouns); figures are numbered consecutively.
 You may use color figures.  However, it is best for the figure captions and the
 paper body to be legible if the paper is printed in either black/white or in
 color.
+
+// In order to match original template.
+#pagebreak()
+#v(-9pt)
 
 == Tables <tables>
 
