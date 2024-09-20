@@ -269,6 +269,7 @@
   appendix: none,
   accepted: false,
   id: none,
+  aux: (:),
   body,
 ) = {
   // Deconstruct authors for convenience.
@@ -309,7 +310,8 @@
         font: font-family-sans,
         size: font-size.footnote,
         fill: ruler-color)
-      strong[#conf-name #conf-year Submission \##id. #notice]
+      let year = aux.at("conf-year", default: conf-year)
+      strong[#conf-name #year Submission \##id. #notice]
     },
     footer-descent: 23.4pt, // Visually perfect.
     footer: if accepted != none and not accepted {
@@ -414,10 +416,15 @@
   // NOTE It seems that there is a typo in formatting instructions and actual
   // gutter is 3/8 in not 5/16 in.
   columns(2, gutter: 0.3125in, {
-    align(center, text(size: font-size.large)[*Abstract*])
-    v(17.6pt, weak: true)
-    emph[#abstract\ \ ]
-    body
+    // Render abstract.
+    block(width: 100%, {
+      set par(first-line-indent: 0pt)
+      align(center, text(size: font-size.large)[*Abstract*])
+      v(17.6pt, weak: true)
+      emph[#abstract\ \ ]
+    })
+
+    body  // Render paper body.
 
     if bibliography != none {
       set std-bibliography(title: [References], style: "ieee.csl")

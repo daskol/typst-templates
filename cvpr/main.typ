@@ -1,4 +1,4 @@
-#import "/cvpr2022.typ": cvpr2022, conf-name, conf-year, eg, etal, indent
+#import "/cvpr.typ": cvpr2025, conf-name, conf-year, eg, etal, indent
 #import "/logo.typ": LaTeX, TeX
 
 #let affls = (
@@ -19,7 +19,7 @@
   (name: "Second Author", affl: ("two", ), email: "secondauthor@i2.org"),
 )
 
-#show: cvpr2022.with(
+#show: cvpr2025.with(
   title: [#LaTeX Author Guidelines for #conf-name~Proceedings],
   authors: (authors, affls),
   keywords: (),
@@ -39,7 +39,6 @@
 
 = Introduction <sec:intro>
 
-#indent
 Please follow the steps outlined below when submitting your manuscript to the
 IEEE Computer Society Press. This style guide now has several important
 modifications (for example, you are no longer warned against the use of sticky
@@ -48,18 +47,15 @@ version.
 
 == Language
 
-#indent
 All manuscripts must be in English.
 
 == Dual submission
 
-#indent
 Please refer to the author guidelines on the #conf-name #conf-year web page for
 a discussion of the policy on dual submissions.
 
 == Paper length
 
-#indent
 Papers, excluding the references section, must be no longer than eight pages in
 length. The references section will not be included in the page count, and
 there is no limit on the length of the references section. For example, a paper
@@ -76,7 +72,6 @@ presentation in eight pages if it is reviewed in eleven.
 
 == The ruler
 
-#indent
 The #LaTeX style defines a printed ruler which should be present in the version
 submitted for review. The ruler is provided in order that reviewers may comment
 on particular lines in the paper without circumlocution. If you are preparing a
@@ -94,7 +89,6 @@ would expect that the approximate location will be adequate.
 
 == Paper ID
 
-#indent
 Make sure that the Paper ID from the submission system is visible in the
 version submitted for review (replacing the "\*\*\*\*\*" you see in this
 document). If you are using the #LaTeX template, *make sure to update paper ID
@@ -102,7 +96,6 @@ in the appropriate place in the tex file*.
 
 == Mathematics
 
-#indent
 Please number all of your sections and displayed equations as in these
 examples:
 
@@ -123,7 +116,6 @@ Mermin's description of how to write mathematics:
 
 == Blind review
 
-#indent
 Many authors misunderstand the concept of anonymizing for blind review. Blind
 review does not mean that one must remove citations to one's own work --- in
 fact it is often impossible to review a paper unless the previous citations are
@@ -150,7 +142,6 @@ An example of a bad paper just asking to be rejected:
   [1] Removed for blind review
 ]
 
-#indent
 An example of an acceptable paper:
 
 #quote(block: true)[
@@ -315,7 +306,6 @@ because reference~@Alpher03 has just two authors.
 
 = Formatting your paper <sec:formatting>
 
-#indent
 All text must be in a two-column format. The total allowable size of the text
 area is $6 7/8$ inches (17.46 cm) wide by $8 7/8$ inches (22.54 cm) high.
 Columns are to be $3 1/4$ inches (8.25 cm) wide, with a $5/(16)$ inch (0.8 cm)
@@ -328,7 +318,6 @@ the bottom edge of the page.
 
 == Margins and page numbering
 
-#indent
 All printed material, including text, illustrations, and charts, must be kept
 within a print area $6 7/8$ inches (17.46 cm) wide by $8 7/8$ inches (22.54 cm)
 high. Page numbers should be in the footer, centered and $3/4$ inches from the
@@ -338,7 +327,6 @@ template takes care of this when used properly.
 
 == Type style and fonts
 
-#indent
 Wherever Times is specified, Times Roman may also be used. If neither is
 available on your word processor, please use the font closest in appearance to
 Times to which you have access.
@@ -381,7 +369,6 @@ your text on the same line.
 
 == Footnotes
 
-#indent
 Please use footnotes#footnote[This is what a footnote looks like. It often
 distracts the reader from the main flow of the argument.] sparingly. Indeed,
 try to avoid footnotes altogether and include necessary peripheral observations
@@ -391,7 +378,6 @@ which it is referenced. Use Times 8-point type, single-spaced.
 
 == Cross-references
 
-#indent
 For the benefit of author(s) and readers, please use the
 
 ```tex
@@ -431,7 +417,6 @@ command. Here is an example:
 
 == References
 
-#indent
 List and number all bibliographical references in 9-point Times, single-spaced,
 at the end of your paper. When referenced in the text, enclose the citation
 number in square brackets, for example~@Authors14. Where appropriate, include
@@ -465,7 +450,6 @@ template as advised, this will be taken care of automatically.
 
 == Illustrations, graphs, and photographs
 
-#indent
 All graphics should be centered. In #LaTeX, avoid using the `center`
 environment for this purpose, as this adds potentially unwanted whitespace.
 Instead use
@@ -494,7 +478,6 @@ width as in the example below
 
 == Color
 
-#indent
 Please refer to the author guidelines on the #conf-name #conf-year web page for
 a discussion of the use of color in your document.
 
@@ -506,7 +489,6 @@ discriminative feature to ease disambiguation.
 
 = Final copy
 
-#indent
 You must include your signed IEEE copyright release form when you submit your
 finished paper. We MUST have this form before your paper can be published in
 the proceedings.
