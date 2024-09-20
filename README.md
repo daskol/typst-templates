@@ -9,9 +9,20 @@ without special requirement to use LaTeX. They also provides a template and an
 example paper in LaTeX. With official author instructions, these materials
 enable us to make our own template in Typst mark up language. We start with
 template for ICML and are going to add templates for other [Core A\*][1]
-conferences and journals during calendar year.
+conferences and journals during next calendar years. The fields of research is
+below.
 
+- Artificial intelligence (4602).
+- Computer vision and multimedia computation (4603).
+- Data management and data science (4605).
+- Machine learning (4611).
+
+The list of A* conferences of the fields given follows.
+
+- ACM International Conference on Computer Graphics and Interactive Techniques
+  (SIGGRAPH).
 - ACM International Conference on Knowledge Discovery and Data Mining (KDD).
+- ACM International World Wide Web Conference (WWW).
 - Association for Computational Linguistics (ACL).
 - Association for the Advancement of Artificial Intelligence (AAAI).
 - Conference on Learning Theory (COLT).
@@ -19,10 +30,16 @@ conferences and journals during calendar year.
 - European Conference on Computer Vision (ECCV).
 - [IEEE Conference on Computer Vision and Pattern Recognition (CVPR)](cvpr).
 - IEEE International Conference on Computer Vision (ICCV).
+- International Conference on Automated Planning and Scheduling (ICAPS).
 - [International Conference on Learning Representations (ICLR)](iclr).
 - International Joint Conference on Artificial Intelligence (IJCAI).
 - International World Wide Web Conference (WWW).
 - [International Conference on Machine Learning (ICML)](icml).
+- International Conference on the Principles of Knowledge Representation and
+  Reasoning (KR).
+- International Joint Conference on Artificial Intelligence (IJCAI).
+- International Joint Conference on Autonomous Agents and Multiagent Systems
+  (AAMAS).
 - [Neural Information Processing System (NeurIPS)](neurips).
 
 Additionally, we are going to provide templates for popular machine learning
