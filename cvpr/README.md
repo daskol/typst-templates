@@ -19,8 +19,8 @@ Here are an example paper in [LaTeX][1] and in [Typst][2].
 
 ## Configuration
 
-This template exports the `cvpr2022` function with the following named
-arguments.
+This template exports the `cvpr2022` and `cvpr2025` styling rule with the
+following named arguments.
 
 - `title`: The paper's title as content.
 - `authors`: An array of author dictionaries. Each of the author dictionaries
@@ -40,9 +40,31 @@ arguments.
   uploaded to arXiv).
 - `id`: Identifier of a submission.
 
-The template will initialize your package with a sample call to the `cvpr2022`
+The template will initialize your package with a sample call to the `cvpr2025`
 function in a show rule. If you want to change an existing project to use this
 template, you can add a show rule at the top of your file.
+
+```typst
+#import "@preview/blind-cvpr:0.5.0": cvpr2025
+
+#show: cvpr2025.with(
+  title: [LaTeX Author Guidelines for CVPR Proceedings],
+  authors: (authors, affls),
+  keywords: (),
+  abstract: [
+    The ABSTRACT is to be in fully justified italicized text, at the top of the
+    left-hand column, below the author and affiliation information. Use the
+    word "Abstract" as the title, in 12-point Times, boldface type, centered
+    relative to the column, initially capitalized. The abstract is to be in
+    10-point, single-spaced type. Leave two blank lines after the Abstract,
+    then begin the main text. Look at previous CVPR abstracts to get a feel for
+    style and length.
+  ],
+  bibliography: bibliography("main.bib"),
+  accepted: false,
+  id: none,
+)
+```
 
 ## Issues
 
@@ -65,18 +87,39 @@ template, you can add a show rule at the top of your file.
 
   Also, we add `indent` constant as a shortcut for `h(12pt)`.
 
+  This issue is relevant to CVPR 2022. In the 2025 template there is no
+  indentaino of the first paragraph in section.
+
 - At the moment Typst v0.11.0 does not allow flexible customization of citation
   styles. Specifically, CVPR 2022 citation lookes like `[42]` where number is
   colored hyperlink. In order to achive this, we shouuld provide custom
   CSL-style and then colorize number and put it into square parenthesis in
   typst markup.
 
+- CVPR 2022 requires simple ruler which enumerates lines in regular intervals
+  whilst CVPR2025 already requires a ruler which add line numers per line in
+  paragraph or heading. Thus we need the next major Typst release v0.12.0 for
+  ruler. With the next Typst release, we can do the following.
+
+  ```typst
+  set par.line(numbering: "1")
+  show figure: set par.line(numbering: none)
+  ```
+
+  For implementation details see [typst/typst#4516][6].
+
+- CVPR 2022 and 2025 requires IEEE-like bibliography style but does not follow
+  its guidelines closely. Since writing CSL-style files is tedious task, we
+  adopt close enough bibliography style from Zotero.
 
 ## References
 
 + CVPR 2022 conference [web site][4].
++ CVPR 2025 conference [web site][5].
 
 [1]: example-paper.latex.pdf
 [2]: example-paper.typst.pdf
 [3]: https://github.com/typst/typst/issues/311
 [4]: https://cvpr2022.thecvf.com/author-guidelines#dates
+[5]: https://cvpr.thecvf.com/Conferences/2025
+[6]: https://github.com/typst/typst/pull/4516
