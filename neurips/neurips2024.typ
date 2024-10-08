@@ -61,7 +61,7 @@
     keywords: keywords,
     date: date,
     abstract: abstract,
-    accepted: false,
+    accepted: accepted,
     aux: (get-notice: get-notice),
   )
   body
