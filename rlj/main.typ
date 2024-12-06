@@ -205,10 +205,12 @@ first reference in the source. For example, see @fig:example.
 #let example-image = rect(
   width: 4.25cm - 0.9pt, height: 4.25cm - 0.9pt, stroke: 0.45pt)
 
+#v(-8pt)
 #figure(
   caption: [Sample figure caption.],
   example-image,
 ) <fig:example>
+#v(-8pt)
 
 You may use color figures. However, it is best for the figure captions and the
 paper body to make sense if the paper is printed either in black/white or in
@@ -230,12 +232,10 @@ You may use subfigures, as shown in @fig:subfigureExample.
       example-image))
 }
 
-#figure(
-  caption: [An example using subfigures.],
-  kind: image,
-  gap: 10.5pt,
-  subfigures,
-) <fig:subfigureExample>
+// NOTE Figures, specifically @fig:example, allows a lot of stretching and
+// shrinking. Typst can not do it at the moment. Thus we shrink spaces
+// manually.
+#v(-2pt)
 
 == Tables <sec:tables>
 
@@ -244,6 +244,13 @@ The table number and title always appear after the table. See
 @tab:exampleTable. Place one line space before the table title, one line space
 above the table title, and one line space after the table. Tables are numbered
 consecutively.
+
+#figure(
+  caption: [An example using subfigures.],
+  kind: image,
+  gap: 10.5pt,
+  subfigures,
+) <fig:subfigureExample>
 
 #figure(
   caption: [Sample table caption],
