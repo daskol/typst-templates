@@ -34,13 +34,13 @@
     })
     let ex = shape.height  // ex = 4.57pt
 
-    let spacing = 12pt + font-size.Large / 2
+    let spacing = 9pt
     let above = 2.0 * ex + spacing
 
-    let spacing = 12pt + 6pt
+    let spacing = 6pt
     let below = 1.5 * ex + spacing
 
-    block(fill: aqua, above: above, below: below, body)
+    block(above: above, below: below, body)
   }
 }
 
@@ -58,34 +58,25 @@
     })
     let ex = shape.height  // ex = 4.47pt
 
-    let spacing = 12pt + font-size.large / 2
-    let above = 1.8 * ex + spacing - 0.1pt
+    let spacing = 7pt
+    let above = 1.8 * ex + spacing
 
-    // let shape = measure({
-    //   text(
-    //     size: font-size.normal,
-    //     weight: "regular",
-    //     top-edge: "bounds",
-    //     bottom-edge: "baseline",
-    //   )[x]
-    // })
-    // let ex = shape.height  // ex = 4.47pt
-    let spacing = 12pt + 6pt
-    let below = 0.8 * ex + spacing - 0.1pt
+    let spacing = 7pt
+    let below = 0.8 * ex + spacing
 
-    block(fill: aqua, above: above, below: below, body)
+    block(above: above, below: below, body)
   }
 }
 
 #let h3(body) = {
-  let spacing = 12pt + 6pt
+  let spacing = 6pt
   set text(size: font-size.normal, weight: "regular")
   context {
     let shape = measure(text(top-edge: "bounds", bottom-edge: "baseline")[x])
     let ex = shape.height // ex = 4.47pt
-    let above = 1.8 * ex + spacing - 1.5pt
-    let below = 0.5 * ex + spacing
-    block(fill: aqua, above: above, below: below, {
+    let above = 1.8 * ex + spacing
+    let below = 0.5 * ex + spacing + 1pt
+    block(above: above, below: below, {
       set text(size: font-size.normal, weight: "bold")
       body
     })
@@ -94,10 +85,10 @@
 
 #let h4(body) = {
   set text(size: font-size.normal, weight: "regular")
-  let spacing = 12pt + 6pt
+  let spacing = 7pt
   let above = spacing + 5pt
   let below = spacing
-  block(fill: aqua, above: above, below: below, body)
+  block(above: above, below: below, body)
 }
 
 #let appendix(body) = {
@@ -109,8 +100,8 @@
 
 #let summary-box(title: [Summary], body) = {
   set par(first-line-indent: 1em)
-  let inset = (x: 12pt, top: 12pt + 6pt, bottom: 12pt)
-  block(width: 100%, inset: inset, radius: 2mm, fill: rgb("#f1f4f7"), {
+  let inset = (x: 12pt, top: 9.3pt, bottom: 12pt)
+  block(width: 100%, above: 0pt, below: 0pt, inset: inset, radius: 2mm, fill: rgb("#f1f4f7"), {
     align(center, {
       set text(size: font-size.Large, weight: "bold")
       title
@@ -127,28 +118,32 @@
     let caveat = it.at("caveat", default: [None])
     [\ *Context:* #caveat]
   })
-  enum(tight: false, ..items)
+  v(-4pt)
+  enum(tight: false, spacing: 5pt, ..items)
 }
 
 #let make-cover(title, authors, keywords, summary, contribs) = {
-  v(12pt + 1pt - 0.35pt)  // Fixed.
-  block({
-    text(size: font-size.LARGE, weight: "bold", title)
-  })
-  v(6pt)
-  block(width: 100%, {
-    set text(size: font-size.large)
+  v(2pt)
+  block(width: 100%, below: 0pt, {
     set align(center)
+    set text(size: font-size.LARGE, top-edge: 11pt)
+    strong(title)
+  })
+  v(12.7pt)
+  block(width: 100%, below: 0pt, {
+    set align(center)
+    set text(size: font-size.large, top-edge: 11pt)
     [*Anonymous authors*\ Paper under double-blind review]
   })
-  v(4pt)
-  block(width: 100%, {
+  v(11pt)
+  block(width: 100%, below: 0pt, {
     set align(center)
     [*Keywords:* ] + keywords.join([, ])
   })
-  v(4pt)
+  v(22pt)
 
   summary-box(summary)
+  v(20pt)
   contrib-box(contribs)
   pagebreak()
 }
@@ -157,26 +152,24 @@
   set text(size: font-size.normal, weight: "regular")
   let shape = measure(text(top-edge: "bounds", bottom-edge: "baseline")[x])
   let ex = shape.height  // ex = 4.47pt
-  let spacing = 12pt + 6pt
 
-  // block(above: 0.05in + spacing, below: ex + spacing, {
-  block(above: 0.05in, below: ex + spacing, {
+  // TODO
+  // block(above: 0.05in, below: ex + 18pt, {
+  block(above: 0.05in, below: 0pt, {
     align(center, {
       set text(size: font-size.large, weight: "bold")
       [Abstract]
     })
     // Default spacing before and after `quote` in LaTeX is 10pt.
-    pad(x: 0.5in, top: 10pt - 1.5 * ex, bottom: 10pt, abstract)
+    pad(x: 0.5in, top: 10pt - 1.5 * ex + 1.7pt, bottom: 10pt, abstract)
   })
 }
 
 #let make-title(title, authors, affls, abstract, accepted: false) = {
-  let spacing = 12pt + 6pt
   v(0.15in)  // Fixed.
-  v(font-size.LARGE + 2pt - 0.35pt)  // Spacing.
-  block(below: 0.3in, {
+  block(above: 0pt, below: 0pt, {
     align(center, {
-      set text(size: 16pt, weight: "bold")
+      set text(size: font-size.LARGE, weight: "bold", top-edge: 19pt)
       title
     })
     if accepted == none or accepted {
@@ -187,11 +180,11 @@
       v(0.1in)
       [affilations]
     } else {
-      v(0.25in)
+      v(0.25in + 2pt)
       [*Anonymous authors*\ Paper under double-blind review\ ]
     }
   })
-  v(1.5 * spacing)
+  v(0.3in + 12.5pt)
 
   make-abstract(abstract)
 }
@@ -287,9 +280,8 @@
     header-ascent: 24pt - 0.35pt / 2,
   )
 
-  show text: set block(fill: aqua)
-  set text(size: 10pt, font: font-face.serif, top-edge: "baseline")
-  set par(justify: true, leading: 12pt, spacing: 12pt + 6pt)
+  set text(size: 10pt, font: font-face.serif, top-edge: 11pt)
+  set par(justify: true, leading: 1pt, spacing: 5pt)
   set par.line(
     numbering: n => text(fill: gray, [#n]),
     number-clearance: 11pt)
@@ -298,22 +290,19 @@
   set footnote.entry(
     clearance: 9pt,
     indent: 10pt,
-    gap: 9.5pt,
+    gap: 1.5pt,
     separator: line(length: 2in, stroke: 0.42pt)
   )
   show footnote.entry: it => {
-    set text(size: font-size.footnote, top-edge: "baseline")
-    set par(justify: true, leading: 9.5pt, spacing: 1.5 * 9.5pt)
+    set text(size: font-size.footnote, top-edge: 8pt)
+    set par(justify: true, leading: 1.5pt, spacing: 1.5pt)
     set par.line(numbering: none)
     it
   }
 
-  let spacing = 1.5 * 12pt
-  show list.where(tight: false): set list(spacing: spacing - 2pt)
-
-  let spacing = 1.5 * 12pt
-  show enum.where(tight: false): set enum(spacing: spacing - 2pt)
-
+  // Bullet and numbered lists.
+  show list.where(tight: false): set list(spacing: 3pt)
+  show enum.where(tight: false): set enum(spacing: 3pt)
 
   set heading(numbering: "1.1")
   show heading.where(level: 1): h1
