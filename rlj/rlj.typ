@@ -304,11 +304,19 @@
   show list.where(tight: false): set list(spacing: 3pt)
   show enum.where(tight: false): set enum(spacing: 3pt)
 
+  // Headings.
   set heading(numbering: "1.1")
   show heading.where(level: 1): h1
   show heading.where(level: 2): h2
   show heading.where(level: 3): h3
   show heading.where(level: 4): h4
+
+  show figure.where(kind: image): set block(above: 0.3in, below: 0.3in)
+  show figure.where(kind: image): set figure(gap: 13.5pt)
+
+  show figure.where(kind: table): set block(above: 12pt, below: 20pt)
+  show figure.where(kind: table): set figure(gap: 16.7pt)
+  show figure.where(kind: table): set figure.caption(position: top)
 
   make-cover(title, authors, keywords, summary, contributions)
   make-title(title, authors, affls, abstract)

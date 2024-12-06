@@ -200,17 +200,12 @@ figures are always referenced in the text before they appear, or on the same
 page that they appear. This will be ensured if the figure occurs after its
 first reference in the source. For example, see @fig:example.
 
-// This figure is after it was first referenced, and so latex will ensure it
-// appears on the same page that it is referenced or after.
-#figure(```latex
-\begin{figure}[ht]
-    \begin{center}
-        \fbox{\rule[-.5cm]{0cm}{4cm} \rule[-.5cm]{4cm}{0cm}}
-    \end{center}
-    \caption{Sample figure caption.}
-    \label{fig:example}
-\end{figure}
-```
+#let example-image = rect(
+  width: 4.25cm - 0.9pt, height: 4.25cm - 0.9pt, stroke: 0.45pt)
+
+#figure(
+  caption: [Sample figure caption.],
+  example-image,
 ) <fig:example>
 
 You may use color figures. However, it is best for the figure captions and the
@@ -219,28 +214,26 @@ color.
 
 You may use subfigures, as shown in @fig:subfigureExample.
 
-#figure(```latex
-\begin{figure}[htbp]
-    \centering
-    \begin{subfigure}[b]{0.45\textwidth}
-        \centering
-        %\includegraphics[width=\textwidth]{image1}
-        \fbox{\rule[-.5cm]{0cm}{4cm} \rule[-.5cm]{4cm}{0cm}} % Replace this line with the line above, where image1 is your image.
-        \caption{First subfigure}
-        \label{fig:sub1}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}[b]{0.45\textwidth}
-        \centering
-        %\includegraphics[width=\textwidth]{image2}
-        \fbox{\rule[-.5cm]{0cm}{4cm} \rule[-.5cm]{4cm}{0cm}} % Replace this line with the line above, where image2 is your image.
-        \caption{Second subfigure}
-        \label{fig:sub2}
-    \end{subfigure}
-    \caption{An example using subfigures.}
-    \label{fig:subfigureExample}
-\end{figure}
-```) <fig:subfigureExample>
+#let subfigures = {
+  set figure(kind: "subfigure", supplement: [], gap: 3.5pt)
+  show figure.where(kind: "subfigure"): set figure.caption(separator: [~])
+  show figure: set figure(numbering: "(a)")
+  grid(
+    columns: (1fr, 1fr),
+    figure(
+      caption: [First subfigure],
+      example-image),
+    figure(
+      caption: [Second subfigure],
+      example-image))
+}
+
+#figure(
+  caption: [An example using subfigures.],
+  kind: image,
+  gap: 10.5pt,
+  subfigures,
+) <fig:subfigureExample>
 
 == Tables <sec:tables>
 
@@ -250,21 +243,19 @@ The table number and title always appear after the table. See
 above the table title, and one line space after the table. Tables are numbered
 consecutively.
 
-#figure(```latex
-\begin{table}[htbp]
-    \caption{Sample table caption}
-    \begin{center}
-        \begin{tabular}{ll}
-            \multicolumn{1}{l}{\bf PART}  &\multicolumn{1}{l}{\bf DESCRIPTION}
-            \\ \hline \\
-            Actor         &Stores and updates the policy \\
-            Critic        &Stores and updates a value function \\
-        \end{tabular}
-    \end{center}
-    %\caption{Sample table caption}
-    \label{tab:exampleTable}
-\end{table}
-```) <tab:exampleTable>
+#figure(
+  caption: [Sample table caption],
+  table(
+    columns: 2,
+    align: (center, left),
+    stroke: none,
+    inset: (y: 0pt),
+    table.header(..([*PART*], [*DESCRIPTION*]).map(it => table.cell(inset: (bottom: 4pt), it))),
+    table.hline(stroke: 0.4pt),
+    [~     ], [~                            ],
+    [Actor ], [Stores and updates the policy],
+    [Critic], [Stores and updates a value function],
+  )) <tab:exampleTable>
 
 == Equations <sec:equations>
 
