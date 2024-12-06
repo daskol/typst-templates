@@ -1,5 +1,6 @@
 #import "/logo.typ": LaTeX, LaTeX2e
-#import "/rlj.typ": contribution, rlj, url
+#import "/rlj.typ": (
+  appendix, acknowledgments, contribution, impact-statement, rlj, url)
 
 #let affls = (
   amii: ("Alberta Machine Intelligence Institute (Amii)", ),
@@ -105,6 +106,7 @@
   summary: summary,
   contributions: contribs,
   running-title: [Enter Your Running Title Here],
+  supplementary: include "supplementary.typ",
 )
 
 = Submission of papers to RLJ/RLC <sec:submission>
@@ -357,15 +359,16 @@ for .pdf graphics. See Section~4.4 in the graphics bundle documentation
 A number of width problems arise when LaTeX cannot properly hyphenate a line.
 Please give LaTeX hyphenation hints using the `\-` command.
 
-= Broader Impact Statement <sec:broaderImpact>
-
-In this optional section, RLJ/RLC encourages authors to discuss possible
-repercussions of their work, notably any potential negative impact that a user
-of this research should be aware of.
+#impact-statement[
+  In this optional section, RLJ/RLC encourages authors to discuss possible
+  repercussions of their work, notably any potential negative impact that a
+  user of this research should be aware of.
+]
 
 // Appendices.
-
-#let appendix(body) = body
+//
+// There are two options for stylizing appendices: use `appendix` show rule or
+// pass appendix content to `appendix` keyword of `rlj` show rule.
 #show: appendix
 
 = The first appendix <sec:appendix1>
@@ -381,36 +384,14 @@ reviewed, and can contain content central to the claims of the paper.
 This is an example of a second appendix. If there is only a single section in
 the appendix, you may simply call it "Appendix" as follows:
 
-= Appendix
+#heading(numbering: none)[Appendix]
 
-// No label, since this can't be referenced meaningfully with \ref{}.
 This format should only be used if there is a single appendix (unlike in this
 document).
 
-= Acknowledgments <sec:ack>
-
-Use unnumbered third level headings for the acknowledgments. All
-acknowledgments, including those to funding agencies, go at the end of the
-paper. Only add this information once your submission is accepted and
-deanonymized. The acknowledgments do not count towards the 8--12 page limit.
-
-// AUTHOR: If your paper has no supplementary materials, you may comment out
-//         the line below, which creates the title for the supplementary
-//         materials.
-
-#highlight[\beginSupplementaryMaterials]
-
-Content that appears after the references are not part of the "main text," have
-no page limits, are not necessarily reviewed, and should not contain any claims
-or material central to the paper.
-
-If your paper includes supplementary materials, use the
-
-```latex
-    \beginSupplementaryMaterials
-```
-
-command as in this example, which produces the title and disclaimer above.
-
-If your paper does not include supplementary materials, this command can be
-removed or commented out.
+#acknowledgments[
+  Use unnumbered third level headings for the acknowledgments. All
+  acknowledgments, including those to funding agencies, go at the end of the
+  paper. Only add this information once your submission is accepted and
+  deanonymized. The acknowledgments do not count towards the 8--12 page limit.
+]

@@ -92,11 +92,12 @@
 }
 
 #let appendix(body) = {
+  counter(heading).update(0)
   set heading(numbering: "A.1")
   body
 }
 
-#let rule-appendix = appendix
+#let appendix-rule = appendix
 
 #let summary-box(title: [Summary], body) = {
   set par(first-line-indent: 1em)
@@ -189,6 +190,19 @@
   make-abstract(abstract)
 }
 
+#let make-supplementary(supplementary) = {
+  block(width: 100%, {
+    set align(center)
+    text(size: font-size.LARGE, top-edge: 12.28pt)[*Supplementary Materials*]
+    v(-0.5pt)
+    emph[The following content was not necessarily subject to peer review.]
+    v(4pt)
+    line(length: 100%, stroke: 0.4pt)
+    v(1.9pt)
+  })
+  supplementary
+}
+
 /**
  * rlj - Template for Reinforcement Learning Journal (and Conference).
  *
@@ -216,6 +230,7 @@
   summary: [],
   contributions: (),
   running-title: none,
+  supplementary: none,
   aux: (:),
   body,
 ) = {
@@ -282,9 +297,9 @@
 
   set text(size: 10pt, font: font-face.serif, top-edge: 11pt)
   set par(justify: true, leading: 1pt, spacing: 5pt)
-  set par.line(
-    numbering: n => text(fill: gray, [#n]),
-    number-clearance: 11pt)
+  // set par.line(
+  //   numbering: n => text(fill: gray, [#n]),
+  //   number-clearance: 11pt)
 
   // Footnote's `\baselineskip` is 9.5pt.
   set footnote.entry(
@@ -311,9 +326,11 @@
   show heading.where(level: 3): h3
   show heading.where(level: 4): h4
 
+  // Image figures.
   show figure.where(kind: image): set block(above: 0.3in, below: 0.3in)
   show figure.where(kind: image): set figure(gap: 13.5pt)
 
+  // Table figures.
   show figure.where(kind: table): set block(above: 12pt, below: 20pt)
   show figure.where(kind: table): set figure(gap: 16.7pt)
   show figure.where(kind: table): set figure.caption(position: top)
@@ -322,13 +339,31 @@
   make-title(title, authors, affls, abstract)
   body
 
+  if appendix != none {
+    show: appendix-rule
+    appendix
+  }
+
   set std-bibliography(title: [References], style: "apa")
   if bibliography != none {
     bibliography
   }
 
-  show: rule-appendix
+  if supplementary != none {
+    pagebreak(weak: true)
+    make-supplementary(supplementary)
+  }
 }
+
+#let aux-statement(title: [], body) = {
+  heading(level: 3, numbering: none, outlined: false, title)
+  body
+}
+
+#let acknowledgments(body) = aux-statement(title: [Acknowledgments], body)
+
+#let impact-statement(body) = aux-statement(
+  title: [Broader Impact Statement], body)
 
 /**
  * Auxiliary function for contribution representation (aka struct/type
