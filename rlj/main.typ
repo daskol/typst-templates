@@ -275,7 +275,6 @@ equality or inequality symbols so that it is visually clear where each
 expression (which may span more than one line) begins and ends, as in the
 following example.
 
-#set math.equation(numbering: "(1)")
 #let nows = h(0pt)
 #let eq = $nows=nows$
 $ Pr(A_2 eq a_2)

@@ -381,6 +381,8 @@
  *   appendix: Content to append after bibliography section.
  *   accepted: Valid values are `none`, `false`, and `true`. Missing value
  *   (`none`) is designed to prepare arxiv publication. Default is `false`.
+ *   aux: Dictionary of auxiliary options. For example, `lineno` boolean key
+ *   forces line numbering.
  */
 #let rlj(
   title: [],
@@ -473,9 +475,24 @@
 
   set text(size: 10pt, font: font-face.serif, top-edge: 11pt)
   set par(justify: true, leading: 1pt, spacing: 5pt)
-  // set par.line(
-  //   numbering: n => text(fill: gray, [#n]),
-  //   number-clearance: 11pt)
+
+  let lineno(accepted, aux, body) = {
+    let skip = if "lineno" in aux {
+      not aux.lineno
+    } else {
+      accepted == none or accepted
+    }
+    if skip {
+      body
+    } else {
+      set par.line(
+        numbering: n => text(fill: gray, [#n]),
+        number-clearance: 11pt)
+      body
+    }
+  }
+
+  show: lineno.with(accepted, aux)
 
   // Footnote's `\baselineskip` is 9.5pt.
   set footnote.entry(
@@ -502,6 +519,9 @@
   show heading.where(level: 3): h3
   show heading.where(level: 4): h4
 
+  // Set up equations.
+  set math.equation(numbering: "(1)")
+
   // Image figures.
   show figure.where(kind: image): set block(above: 0.3in, below: 0.3in)
   show figure.where(kind: image): set figure(gap: 13.5pt)
@@ -523,6 +543,7 @@
 
   set std-bibliography(title: [References], style: "apa")
   if bibliography != none {
+    set par(spacing: 10pt)
     bibliography
   }
 
