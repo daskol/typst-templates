@@ -594,7 +594,7 @@
     appendix
   }
 
-  set std-bibliography(title: [References], style: "apa")
+  set std-bibliography(title: [References], style: "rlj.csl")
   if bibliography != none {
     set par(spacing: 10pt)
     bibliography
