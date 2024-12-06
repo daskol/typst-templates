@@ -289,7 +289,7 @@ where $times$ denotes scalar multiplication split across multiple lines.
 You may use the style of your choice when referencing expressions by number,
 including the following forms:
 
-- In (@eq:secondActionPr[]), there is no summation over $a_2$ because it is defined
+- In @eq:secondActionPr, there is no summation over $a_2$ because it is defined
   on the left side of the equation. #footnote[This format is sometimes
   preferred because often referenced expressions are inequalities or
   definitions, not equations. Notice the use of `eqref` in place of `ref` in

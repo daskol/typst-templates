@@ -10,6 +10,9 @@
   serif: ("Times New Roman", ),
 )
 
+#let dark-blue = rgb(0, 0, 70%)
+#let cite-color = dark-blue
+
 #let font-size = (
   footnote: 8.0pt,
   small: 9.0pt,
@@ -531,6 +534,56 @@
   show figure.where(kind: table): set figure(gap: 16.7pt)
   show figure.where(kind: table): set figure.caption(position: top)
 
+  // Colorize bibliography citations.
+  show cite: it => {
+    if it.form == "normal" {
+      box({
+        [(]
+        cite(it.key, form: "author")
+        [,~]
+        cite(it.key, form: "year")
+        [)]
+      })
+    } else if it.form == "prose" {
+      box({
+        cite(it.key, form: "author")
+        [~(]
+        cite(it.key, form: "year")
+        [)]
+      })
+    } else if it.form == "author" or it.form == "year" {
+      set text(fill: cite-color)
+      it
+    } else {
+      it
+    }
+  }
+
+  // Colorize references to equations, figures, tables, etc.
+  show ref: it => {
+    let el = it.element
+    if el != none and el.func() == math.equation {
+      let ix = numbering("1", ..counter(math.equation).at(el.location()))
+      let body = if it.supplement == auto or it.supplement == [] {
+        [(#text(fill: cite-color, ix))]
+      } else {
+        [#it.supplement~#text(fill: cite-color, ix)]
+      }
+      link(el.location(), body)
+    } else if el != none and el.func() == figure {
+      let ix = numbering("1", ..counter(figure.where(kind: el.kind)).at(el.location()))
+      let supplement = if it.supplement != auto {
+        it.supplement
+      } else {
+        el.supplement
+      }
+      let body = [#supplement~#text(fill: cite-color, ix)]
+      link(el.location(), body)
+    } else {
+      it
+    }
+  }
+
   make-cover(
     title, authors, keywords, summary, contributions, accepted: accepted)
   make-title(title, authors, affls, abstract, accepted: accepted)
@@ -575,4 +628,4 @@
 /**
  * Auxiliary routine to render links as monospaced text.
  */
-#let url(uri) = link(uri, raw(uri))
+#let url(uri) = link(uri, text(fill: cite-color, raw(uri)))
