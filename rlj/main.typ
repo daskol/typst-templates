@@ -92,6 +92,7 @@
 
 #show: rlj.with(
   title: [Formatting Instructions for RLJ/RLC Submissions],
+  authors: (authors, affls),
   abstract: [
     The abstract paragraph should be indented 1/2~inch on both left and
     right-hand margins. Use 10~point type, with a vertical spacing of

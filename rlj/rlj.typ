@@ -123,7 +123,9 @@
   enum(tight: false, spacing: 5pt, ..items)
 }
 
-#let make-cover(title, authors, keywords, summary, contribs) = {
+#let make-cover(
+  title, authors, keywords, summary, contribs, accepted: false,
+) = {
   v(2pt)
   block(width: 100%, below: 0pt, {
     set align(center)
@@ -133,8 +135,14 @@
   v(12.7pt)
   block(width: 100%, below: 0pt, {
     set align(center)
-    set text(size: font-size.large, top-edge: 11pt)
-    [*Anonymous authors*\ Paper under double-blind review]
+    if accepted != none and not accepted {
+      set text(size: font-size.large, top-edge: 11pt)
+      [*Anonymous authors*\ Paper under double-blind review]
+    } else {
+      v(-2pt)  // Unclear why.
+      set text(size: font-size.large, top-edge: 11pt)
+      authors.map(it => [*#it.name*]).join([, ])
+    }
   })
   v(11pt)
   block(width: 100%, below: 0pt, {
@@ -166,6 +174,165 @@
   })
 }
 
+#let groupby(arr, key_fn: x => x) = {
+  return arr.fold((:), (acc, it) => {
+    let key = key_fn(it)
+    let values = acc.at(key, default: ())
+    values.push(it)
+    acc.insert(key, values)
+    return acc
+  })
+}
+
+#let index-affilations(authors, affls) = {
+  // Normalize `affl` field of author dictionary.
+  let flat-affls = authors.map(it => it.affl).flatten().dedup()
+
+  // Assign an index to each distinct affilation.
+  let uniq-affls = flat-affls.filter(it => {
+    if it not in affls {
+      return false
+    }
+    let affl = affls.at(it)
+    return "comment" not in affl
+  })
+  let affl2index = uniq-affls.enumerate(start: 1).fold((:), (acc, it) => {
+    let (ix, affl) = it
+    acc.insert(affl, ix)
+    return acc
+  })
+
+  // Assign an index to each distinct comment.
+  let uniq-affls = flat-affls.filter(it => {
+    if it not in affls {
+      return false
+    }
+    let affl = affls.at(it)
+    return "comment" in affl
+  })
+  let comment2index = uniq-affls.enumerate(start: 1).fold((:), (acc, it) => {
+    let (ix, affl) = it
+    acc.insert(affl, ix)
+    return acc
+  })
+
+  return (affl: affl2index, comment: comment2index)
+}
+
+#let make-affilation(affl) = {
+  if type(affl) == str {
+    return affl
+  } else if type(affl) == array {
+    return affl.join([, ])
+  }
+
+  let parts = ()
+  if "department" in affl {
+    parts.push(affl.department)
+  }
+  if "institution" in affl {
+    parts.push(affl.institution)
+  }
+  if "location" in affl {
+    parts.push(affl.location)
+  }
+  if "country" in affl {
+    parts.push(affl.country)
+  }
+  return parts.join([, ])
+}
+
+#let make-affilations(authors, affls) = {
+}
+
+#let make-emails(authors) = {
+  let emails = authors
+    .filter(it => "email" in it)
+    .map(it => it.email)
+
+  let get_domain(email) = {
+    return email.split("@").last()
+  }
+
+  let domain2email = groupby(emails, key_fn: get_domain)
+  let compressed-emails = domain2email.pairs().map(pair => {
+    let (domain, emails) = pair
+    if emails.len() > 1 {
+      let names = emails.map(it => it.trim("@" + domain, at: end)).join(",")
+      return "{" + names + "}@" + domain
+    } else {
+      return emails.first()
+    }
+  })
+
+  return compressed-emails.map(it => if it.starts-with("{") {
+    return raw(it)
+  } else {
+    return link(it, raw(it))
+  }).join([, ])
+}
+
+#let make-authors(authors, affls) = {
+  // Normalize `affl` field of author dictionary.
+  let authors = authors.map(it => if "affl" not in it {
+    it.affl = ()
+    return it
+  } else if type(it.affl) == array {
+    return it
+  } else {
+    it.affl = (it.affl, )
+    return it
+  })
+
+  // Map affilations and comments to ordinals.
+  let index = index-affilations(authors, affls)
+
+  set text(size: font-size.large, weight: "regular")
+  let names = authors.map(it => {
+    let affls = it.affl
+      .map(it => index.affl.at(it, default: none))
+      .filter(it => it != none)
+      .map(it => numbering("1", it))
+    let comments = it.affl
+      .map(it => index.comment.at(it, default: none))
+      .filter(it => it != none)
+      .map(it => numbering("*", it))
+    let indices = affls + comments
+    box(strong(it.name) + super(indices.join(",")))
+  })
+  v(4pt)
+  names.join([, ])
+  v(-2pt)
+
+  set text(size: font-size.normal, weight: "regular")
+  let emails = make-emails(authors)
+  emails
+
+  set text(size: font-size.normal, weight: "regular")
+  let affilations = index.affl.pairs().map(it => {
+    let (tag, ix) = it
+    let affl = affls.at(tag, default: none)
+    if affl == none {
+      return none
+    }
+    super[#ix] + h(0.02em) + strong(make-affilation(affl))
+  })
+  v(8.5pt)
+  affilations.join([\ ])
+
+  set text(size: font-size.normal, weight: "regular")
+  let comments = index.comment.pairs().map(it => {
+    let (tag, ix) = it
+    let affl = affls.at(tag, default: none)
+    if affl == none {
+      return none
+    }
+    super(numbering("*",ix)) + h(0.02em) + affl.comment
+  })
+  v(1.9pt)
+  comments.join([\ ])
+}
+
 #let make-title(title, authors, affls, abstract, accepted: false) = {
   v(0.15in)  // Fixed.
   block(above: 0pt, below: 0pt, {
@@ -175,11 +342,8 @@
     })
     if accepted == none or accepted {
       v(0.2in)
-      text(size: font-size.large, weight: "bold")[author]
-      v(-0.06in)
-      [`emails@example.org`]
-      v(0.1in)
-      [affilations]
+      make-authors(authors, affls)
+      v(-9.5pt)
     } else {
       v(0.25in + 2pt)
       [*Anonymous authors*\ Paper under double-blind review\ ]
@@ -243,6 +407,11 @@
   if accepted != none and not accepted {
     authors = ((name: "Anonymous Author"), )
   }
+  set document(
+    title: title,
+    author: authors.map(it => it.name),
+    keywords: keywords,
+    date: date)
 
   let running-title = if accepted == none or running-title == none {
     []
@@ -253,9 +422,16 @@
   let running-title-notice = if accepted == none {
     []
   } else if accepted {
-    [Reinforcement Learning Journal 2025]
+    [Reinforcement Learning Journal #h(1fr) 2025]
   } else {
     [Under review for RLC 2025, to be published in RLJ 2025]
+  }
+  let running-title-notice-cover = if accepted == none {
+    []
+  } else if accepted {
+    [Reinforcement Learning Journal 2025]
+  } else {
+    running-title-notice
   }
 
   set page(
@@ -279,7 +455,7 @@
         if ix == 1 {
           grid(
             columns: (1fr, auto),
-            running-title-notice,
+            running-title-notice-cover,
             grid.vline(stroke: 0.35pt),
             grid.cell(inset: (y: 1pt), h(0.4em) + [*Cover Page*]))
         } else if calc.even(ix) {
@@ -335,8 +511,9 @@
   show figure.where(kind: table): set figure(gap: 16.7pt)
   show figure.where(kind: table): set figure.caption(position: top)
 
-  make-cover(title, authors, keywords, summary, contributions)
-  make-title(title, authors, affls, abstract)
+  make-cover(
+    title, authors, keywords, summary, contributions, accepted: accepted)
+  make-title(title, authors, affls, abstract, accepted: accepted)
   body
 
   if appendix != none {

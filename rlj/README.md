@@ -6,3 +6,5 @@
    of space above and below figure. Typst can not do such transformations at
    the moment. Thus we manually shrink spaces around the first example figure
    in order to preset pixel perfect template.
+3. Reference RLC/RLJ template mark comment with `\dagger` but this templates
+   stick to built-in numberings which starts with asterisk.
