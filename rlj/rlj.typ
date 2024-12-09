@@ -4,10 +4,8 @@
  * Reinforcement Learning Journal/Conference (RLJ/RLC) template.
  */
 
-#let std-bibliography = bibliography  // Due to argument shadowing.
-
 #let font-face = (
-  serif: ("Times New Roman", ),
+  serif: ("Times New Roman", "Libertinus Serif"),
 )
 
 #let dark-blue = rgb(0, 0, 70%)
@@ -177,9 +175,9 @@
   })
 }
 
-#let groupby(arr, key_fn: x => x) = {
+#let groupby(arr, key-fn: x => x) = {
   return arr.fold((:), (acc, it) => {
-    let key = key_fn(it)
+    let key = key-fn(it)
     let values = acc.at(key, default: ())
     values.push(it)
     acc.insert(key, values)
@@ -253,11 +251,11 @@
     .filter(it => "email" in it)
     .map(it => it.email)
 
-  let get_domain(email) = {
+  let get-domain(email) = {
     return email.split("@").last()
   }
 
-  let domain2email = groupby(emails, key_fn: get_domain)
+  let domain2email = groupby(emails, key-fn: get-domain)
   let compressed-emails = domain2email.pairs().map(pair => {
     let (domain, emails) = pair
     if emails.len() > 1 {
@@ -594,7 +592,7 @@
     appendix
   }
 
-  set std-bibliography(title: [References], style: "rlj.csl")
+  set std.bibliography(title: [References], style: "rlj.csl")
   if bibliography != none {
     set par(spacing: 10pt)
     bibliography

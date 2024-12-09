@@ -3,9 +3,8 @@
 ## Usage
 
 You can use this template in the Typst web app by clicking _Start from
-template_ on the dashboard and searching for `pioneering-rlj`.
-
-Alternatively, you can use the CLI to kick this project off using the command
+template_ on the dashboard and searching for `pioneering-rlj`. Alternatively,
+you can use the CLI to kick this project off using the command.
 
 ```shell
 typst init @preview/pioneering-rlj
