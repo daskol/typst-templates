@@ -46,6 +46,7 @@ Additionally, we are going to provide templates for popular machine learning
 scientific journals as well.
 
 - [Journal of Machine Learning Research (JMLR)](jmlr).
+- [Reinforcement Learning Conference/Journal (RLC/RLJ)](rlj).
 - [Transactions on Machine Learning Research (TMLR)](tmlr).
 
 ## Usage
