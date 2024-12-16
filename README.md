@@ -32,14 +32,13 @@ The list of A* conferences of the fields given follows.
 - IEEE International Conference on Computer Vision (ICCV).
 - International Conference on Automated Planning and Scheduling (ICAPS).
 - [International Conference on Learning Representations (ICLR)](iclr).
-- International Joint Conference on Artificial Intelligence (IJCAI).
-- International World Wide Web Conference (WWW).
 - [International Conference on Machine Learning (ICML)](icml).
 - International Conference on the Principles of Knowledge Representation and
   Reasoning (KR).
 - International Joint Conference on Artificial Intelligence (IJCAI).
 - International Joint Conference on Autonomous Agents and Multiagent Systems
   (AAMAS).
+- International World Wide Web Conference (WWW).
 - [Neural Information Processing System (NeurIPS)](neurips).
 
 Additionally, we are going to provide templates for popular machine learning
