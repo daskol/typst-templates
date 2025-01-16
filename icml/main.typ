@@ -105,8 +105,6 @@ versions of Word have the facility to do this automatically. Submissions will
 not be accepted in Word format or any format other than PDF. Really. We're not
 joking. Don't send Word.
 
-#vruler(page: 1)
-
 Those who use *\LaTeX* should avoid including Type-3 fonts. Those using `latex`
 and `dvips` may need the following two commands:
 
@@ -120,6 +118,8 @@ file. Newer #TeX distributions don't always need this option.
 Using `pdflatex` rather than `latex`, often gives better results. This program
 avoids the Type-3 font problem, and supports more advanced features in the
 `microtype` package.
+
+#vruler(page: 1)
 
 *Graphics files* should be a reasonable size, and included from
 an appropriate format. Use vector formats (.eps/.pdf) for plots,
@@ -216,8 +216,6 @@ required to look at the Supplementary Material when writing their review (they
 are not required to look at more than the first $8$ pages of the submitted
 document).
 
-#vruler(page: 2)
-
 === Camera-Ready Author Information <final-author>
 
 If a paper is accepted, a final camera-ready copy must be prepared. For
@@ -226,6 +224,8 @@ bottom rule surrounding the title. The authors' names should appear in 10~point
 bold type, in a row, separated by white space, and centered. Author names
 should not be broken across lines. Unbolded superscripted numbers, starting 1,
 should be used to refer to affiliations.
+
+#vruler(page: 2)
 
 Affiliations should be numbered in the order of appearance. A single footnote
 block of text should be used to list all the affiliations. (Academic
@@ -314,8 +314,6 @@ and you may set wide figures across both columns (use the environment
 `figure*` in #LaTeX). Always place two-column figures at the top or bottom of
 the page.
 
-#vruler(page: 3)
-
 #figure(
   image("icml-numpapers.svg"),
   caption: [
@@ -329,6 +327,8 @@ the page.
 ) <icml-historical>
 
 Add a dummy text here to get the same figure layout. #lorem(100)
+
+#vruler(page: 3, offset: -5.55in)
 
 == Algorithms
 
