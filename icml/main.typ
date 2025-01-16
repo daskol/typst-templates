@@ -1,3 +1,4 @@
+#import "icml.typ": icml2025
 #import "icml2024.typ": *
 #import "logo.typ": LaTeX, TeX
 
@@ -19,7 +20,7 @@
   (name: "Firstname1 Lastname1", affl: ("airi", "skoltech"), equal: true),
 )
 
-#show: icml2024.with(
+#show: icml2025.with(
   title: [
     Submission and Formatting Instructions for \
     International Conference on Machine Learning (ICML 2025)

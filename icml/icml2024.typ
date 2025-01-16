@@ -1,5 +1,8 @@
-// Workaround for the lack of an `std` scope.
-#let std-bibliography = bibliography
+/**
+ * icml2024.typ
+ *
+ * International Conference on Machine Learning (ICML) 2024.
+ */
 
 // Metrical size of page body.
 #let body = (
@@ -307,10 +310,18 @@
   header: none,
   appendix: none,
   accepted: false,
+  aux: (:),
   body,
 ) = {
   if header == none {
     header = title
+  }
+
+  // Allow customization of public notice.
+  let public-notice = if "public-notice" in aux {
+    aux.public-notice
+  } else {
+    public-notice
   }
 
   // Sanitize authors and affilations arguments.
@@ -391,6 +402,11 @@
   )
 
   // Main body font is Times (Type-1) font.
+  let font-family = if "font-family" in aux {
+    aux.font-family
+  } else {
+    font-family
+  }
   set columns(2, gutter: 0.25in)
   set par(justify: true, leading: 0.58em)
   set text(font: font-family, size: font.normal)
@@ -556,8 +572,8 @@
 
     // Display the bibliography, if any is given.
     if bibliography != none {
-      show std-bibliography: set text(size: font.normal)
-      set std-bibliography(title: "References", style: "icml2024.csl")
+      show std.bibliography: set text(size: font.normal)
+      set std.bibliography(title: "References", style: "icml.csl")
       bibliography
     }
   })
