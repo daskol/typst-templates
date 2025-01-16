@@ -48,110 +48,6 @@
   return author_names
 }
 
-#let statement(kind: "statement", supplement: none, content) = {
-  if supplement == none {
-    supplement = upper(kind.first()) + lower(kind.slice(1))
-  }
-  figure(
-    kind: kind,
-    supplement: [#supplement],
-    numbering: "1",
-    content,
-  )
-}
-
-#let statement_render(supplement_fn: strong, body_fn: emph, it) = {
-  block(above: 11.5pt, below: 11.5pt, {
-    supplement_fn({
-      it.supplement
-      if it.numbering != none {
-        [ ]
-
-        // Render prefix (heading) part of a counter.
-        let prefix = context {
-          let index = counter(heading).get()
-          let prefix = index.slice(0, -1)  // Ignore the last level.
-          let header = query(selector(heading).before(here())).at(-1)
-          return numbering(header.numbering, ..prefix)
-        }
-        [#prefix]
-
-        // Render last digit of a counter.
-        let ix = context {
-          let ix_assump = counter(figure.where(kind: "assumption")).get()
-          let ix_state = counter(figure.where(kind: "statement")).get()
-          let ix_notice = counter(figure.where(kind: "notice")).get()
-          let index = ix_assump.first() + ix_state.first() + ix_notice.first()
-          return numbering(it.numbering, index)
-        }
-        [#ix]
-      }
-      [. ]
-    })
-    body_fn(it.body)
-  })
-}
-
-#let notice_render(it) = statement_render(
-  supplement_fn: emph,
-  body_fn: body => body,
-  it)
-
-#let assumption(content) = {
-  statement(kind: "assumption", supplement: [Assumption], content)
-}
-
-#let definition(content) = {
-  statement(kind: "assumption", supplement: [Definition], content)
-}
-
-#let corollary(content) = { statement(supplement: [Corollary], content) }
-#let lemma(content) = { statement(supplement: [Lemma], content) }
-#let proposition(content) = { statement(supplement: [Proposition], content) }
-#let theorem(content) = { statement(supplement: [Theorem], content) }
-
-#let note(content) = { statement(kind: "notice", supplement: [Note], content) }
-#let remark(content) = {
-  statement(kind: "notice", supplement: [Remark], content)
-}
-
-// Render reference to theorem-like figures (definitions, lemmas, theorems, and
-// so on).
-#let render-ref-statement(it) = {
-  // Ignore all elements that are not figures and not theorem-like figures.
-  let el = it.element
-  if el == none or el.func() != figure {
-    return it
-  } else if el.kind not in ("assumption", "notice", "statement") {
-    return it
-  }
-
-  // Reference number for theorem-like figures has form
-  // "<section>.<number>". So, we get the section number if there is any.
-  let loc = el.location()
-  let ix_heading = counter(heading).at(loc)
-  let prefix = ix_heading.at(0, default: 0)
-
-  // And now we compute a number of a theorem-like figure in the section.
-  let ix_assump = counter(figure.where(kind: "assumption")).at(loc)
-  let ix_state = counter(figure.where(kind: "statement")).at(loc)
-  let ix_notice = counter(figure.where(kind: "notice")).at(loc)
-  let suffix = ix_assump.first() + ix_state.first() + ix_notice.first()
-
-  // Finally, render it as a content.
-  el.supplement
-  [~]
-  numbering("1.1", prefix, suffix)
-}
-
-// And a definition for a proof.
-#let proof(body) = block(spacing: 11.5pt, {
-  emph[Proof.]
-  [ ] + body
-  h(1fr)
-  box(scale(160%, origin: bottom + right, sym.square.stroked))
-})
-
 #let make_figure_caption(it) = {
   set align(center)
   block(width: 100%, {
@@ -419,13 +315,6 @@
       // h(7pt, weak: true
     }
 
-    // Reset "theorem"counters.
-    if it.level == 1 {
-      counter(figure.where(kind: "assumption")).update(0)
-      counter(figure.where(kind: "statement")).update(0)
-      counter(figure.where(kind: "notice")).update(0)
-    }
-
     set align(left)
     if it.level == 1 {
       text(size: font.large, weight: "bold")[
@@ -457,12 +346,6 @@
   show figure.caption.where(kind: image): it => make_figure_caption(it)
   show figure.where(kind: image): it => make_figure(it)
   show figure.where(kind: table): it => make_figure(it, caption_above: true)
-
-  show figure.where(kind: "assumption"): it => {
-    statement_render(body_fn: body => body, it)
-  }
-  show figure.where(kind: "statement"): it => statement_render(it)
-  show figure.where(kind: "notice"): it => notice_render(it)
 
   // Math equation numbering and referencing.
   set math.equation(numbering: "(1)")
@@ -502,8 +385,6 @@
       let color = rgb(0%, 8%, 45%)  // Originally `mydarkblue`. :D
       let content = text(fill: color, numb)
       link(el.location())[#el.supplement~#content]
-    } else {
-      render-ref-statement(it)
     }
   }
 

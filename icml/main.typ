@@ -1,5 +1,9 @@
-#import "icml.typ": icml2025
-#import "icml2024.typ": *
+#import "@preview/lemmify:0.1.6": default-theorems, new-theorems, thm-numbering-heading
+
+#import "icml.typ": (
+  icml2025, lemmify, vruler, assumption, corollary, definition, lemma, proof,
+  proposition, remark, theorem)
+#import "icml2024.typ": tablex, toprule, midrule, bottomrule, map-cells, cellx, font
 #import "logo.typ": LaTeX, TeX
 
 #let affls = (
@@ -37,6 +41,8 @@
   appendix: include "appendix.typ",
   accepted: false,
 )
+
+#show: lemmify // Theorems, propositions, definitions, etc.
 
 #vruler(offset: -1.7in)
 
