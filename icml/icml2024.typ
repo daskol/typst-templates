@@ -268,10 +268,12 @@
 
   set page(
     paper: "us-letter",
-    margin: (left: 0.75in,
-             right: 8.5in - (0.75in + 6.75in),
-             top: 1.0in,
-             bottom: 11in - 1in - 9in),
+    margin: (
+      left: 0.75in,
+      right: 8.5in - (0.75in + 6.75in),
+      top: 1.0in,
+      bottom: 11in - 1in - 9in),
+    columns: 2,
     header-ascent: 10pt,
     header: context {
       // The first page is a title page. It does not have running header.
@@ -296,6 +298,7 @@
       align(center, text(size: font.normal, [#i]))
     }
   )
+  set columns(gutter: 0.25in)
 
   // Main body font is Times (Type-1) font.
   let font-family = if "font-family" in aux {
@@ -303,7 +306,6 @@
   } else {
     font-family
   }
-  set columns(2, gutter: 0.25in)
   set par(justify: true, leading: 0.58em)
   set text(font: font-family, size: font.normal)
 
@@ -346,6 +348,14 @@
   show figure.caption.where(kind: image): it => make_figure_caption(it)
   show figure.where(kind: image): it => make_figure(it)
   show figure.where(kind: table): it => make_figure(it, caption_above: true)
+
+  // Configure numbered lists.
+  set enum(indent: 1.4em, spacing: 0.9em)
+  show enum: set block(above: 1.63em)
+
+  // Configure bullet lists.
+  set list(indent: 1.4em, spacing: 0.9em, marker: ([•], [‣], [⁃]))
+  show list: set block(above: 1.63em)
 
   // Math equation numbering and referencing.
   set math.equation(numbering: "(1)")
@@ -408,30 +418,34 @@
     )
   }
 
-  // Render title.
-  text(size: font.Large, weight: "bold")[
-    #v(0.5pt)
-    #line(length: 100%)
-    #v(1pt)
-    #set par(spacing: 18pt)
-    #align(center)[#title]
-    #v(1pt)
-    #line(length: 100%)
-  ]
+  place(top + center, float: true, scope: "parent", {
+    // Render title.
+    {
+      set align(center)
+      set par(spacing: 18pt)
+      set text(size: font.Large, weight: "bold")
+      v(0.5pt)
+      line(length: 100%)
+      v(1pt)
+      title
+      v(1pt)
+      line(length: 100%)
+    }
 
-  v(0.1in - 1pt)
+    v(0.1in - 1pt)
 
-  {
     // Render authors.
-    set align(center)
-    make-authors().map(it => {
-      box(inset: (left: 0.5em, right: 0.5em), it)
-    }).join()
-  }
+    {
+      set align(center)
+      make-authors().map(it => {
+        box(inset: (left: 0.5em, right: 0.5em), it)
+      }).join()
+    }
+  })
 
   v(0.2in)
 
-  columns(2, gutter: 0.25in, {
+  {
     set text(size: font.normal)
     set par(spacing: 11pt)
     // Render abstract.
@@ -457,10 +471,11 @@
       set std.bibliography(title: "References", style: "icml.csl")
       bibliography
     }
-  })
+  }
 
   if appendix != none {
-    pagebreak()
+    set page(columns: 1)
+    pagebreak(weak: true)
     counter(heading).update(0)
     counter("appendices").update(1)
     set heading(
