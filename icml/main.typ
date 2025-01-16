@@ -363,19 +363,22 @@ algorithm.sty and algorithmic.sty, which are supplied with this package.
   supplement: [Algorithm],
   caption: [Bubble Sort],
   placement: top,
-  algorithm({
-    import algorithmic: *
-    State[*Input:* data $x_i$, size $m$]
-    Until(cond: [_noChange_ is _true_], {
-      State[Initialize _noChange = true_.]
-      For(cond: [$i=1$ *to* $m-1$], {
-        If(cond: $x_i > x_(i + 1)$, {
-          State[Swap $x_i$ and $x_(i + 1)$]
-          State[_noChange = false_]
+  {
+    set table.cell(align: left)
+    algorithm({
+      import algorithmic: *
+      State[*Input:* data $x_i$, size $m$]
+      Until(cond: [_noChange_ is _true_], {
+        State[Initialize _noChange = true_.]
+        For(cond: [$i=1$ *to* $m-1$], {
+          If(cond: $x_i > x_(i + 1)$, {
+            State[Swap $x_i$ and $x_(i + 1)$]
+            State[_noChange = false_]
+          })
         })
       })
     })
-  })
+  }
 ) <alg-example>
 
 == Tables

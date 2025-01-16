@@ -400,14 +400,14 @@
 
   // Configure algorithm rendering.
   counter(figure.where(kind: "algorithm")).update(0)
-  show figure.caption.where(kind: "algorithm"): it => context {
-    strong[#it.supplement #it.counter.display(it.numbering)]
+  show figure.caption.where(kind: "algorithm"): it => block(width: 100%, {
+    set align(left)
+    context { strong[#it.supplement #it.counter.display(it.numbering)] }
     [ ]
     it.body
-  }
+  })
   show figure.where(kind: "algorithm"): it => {
-    place(top, float: true,
-      block(breakable: false, width: 100%, {
+    let render() = block(breakable: false, width: 100%, {
         set block(spacing: 0em)
         line(length: 100%, stroke: (thickness: 0.08em))
         block(spacing: 0.4em, it.caption)  // NOTE: No idea why we need it.
@@ -415,7 +415,11 @@
         it.body
         line(length: 100%, stroke: (thickness: 0.08em))
       })
-    )
+    if it.placement == none {
+      render()
+    } else {
+      place(it.placement, float: true, render())
+    }
   }
 
   place(top + center, float: true, scope: "parent", {
