@@ -15,8 +15,8 @@ Typst will create a new directory with all the files needed to get you started.
 
 ## Configuration
 
-This template exports the `icml2024` function with the following named
-arguments.
+This template exports the `icml2024` and `icml2025` styling rules with the
+following named arguments.
 
 - `title`: The paper's title as content.
 - `authors`: An array of author dictionaries. Each of the author dictionaries
@@ -31,8 +31,11 @@ arguments.
   document is produced; `accepted: true` produces camera-redy version. If
   the argument is set to `none` then preprint version is produced (can be
   uploaded to arXiv).
+- `aux`: Provide knobs for template adjusting. Specifically, it allows to
+  customize public notice with `public-notice` attribute or to override default
+  serif with `font-family`.
 
-The template will initialize your package with a sample call to the `icml2024`
+The template will initialize your package with a sample call to the `icml2025`
 function in a show rule. If you want to change an existing project to use this
 template, you can add a show rule at the top of your file.
 
