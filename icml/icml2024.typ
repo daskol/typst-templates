@@ -65,22 +65,22 @@
         [ ]
 
         // Render prefix (heading) part of a counter.
-        let prefix = locate(loc => {
-          let index = counter(heading).at(loc)
+        let prefix = context {
+          let index = counter(heading).get()
           let prefix = index.slice(0, -1)  // Ignore the last level.
-          let header = query(selector(heading).before(loc), loc,).at(-1)
+          let header = query(selector(heading).before(here())).at(-1)
           return numbering(header.numbering, ..prefix)
-        })
+        }
         [#prefix]
 
         // Render last digit of a counter.
-        let ix = locate(loc => {
-          let ix_assump = counter(figure.where(kind: "assumption")).at(loc)
-          let ix_state = counter(figure.where(kind: "statement")).at(loc)
-          let ix_notice = counter(figure.where(kind: "notice")).at(loc)
+        let ix = context {
+          let ix_assump = counter(figure.where(kind: "assumption")).get()
+          let ix_state = counter(figure.where(kind: "statement")).get()
+          let ix_notice = counter(figure.where(kind: "notice")).get()
           let index = ix_assump.first() + ix_state.first() + ix_notice.first()
           return numbering(it.numbering, index)
-        })
+        }
         [#ix]
       }
       [. ]
@@ -158,7 +158,7 @@
       it.supplement
       if it.numbering != none {
         [ ]
-        it.counter.display(it.numbering)
+        context { it.counter.display(it.numbering) }
       }
       it.separator
     })
@@ -366,9 +366,9 @@
              top: 1.0in,
              bottom: 11in - 1in - 9in),
     header-ascent: 10pt,
-    header: locate(loc => {
+    header: context {
       // The first page is a title page. It does not have running header.
-      let pageno = counter(page).at(loc).first()
+      let pageno = counter(page).get().first()
       if pageno == 1 {
         return
       }
@@ -382,12 +382,12 @@
         v(3.5pt) // By default, fancyhdr spaces 4pt.
         line(length: 100%, stroke: (thickness: 1pt))
       })
-    }),
+    },
     footer-descent: 25pt - font.normal,
-    footer: locate(loc => {
-      let i = counter(page).at(loc).first()
+    footer: context {
+      let i = counter(page).get().first()
       align(center, text(size: font.normal, [#i]))
-    })
+    }
   )
 
   // Main body font is Times (Type-1) font.
@@ -493,7 +493,7 @@
 
   // Configure algorithm rendering.
   counter(figure.where(kind: "algorithm")).update(0)
-  show figure.caption.where(kind: "algorithm"): it => {
+  show figure.caption.where(kind: "algorithm"): it => context {
     strong[#it.supplement #it.counter.display(it.numbering)]
     [ ]
     it.body
@@ -516,7 +516,7 @@
     #v(0.5pt)
     #line(length: 100%)
     #v(1pt)
-    #show par: set block(spacing: 18pt)
+    #set par(spacing: 18pt)
     #align(center)[#title]
     #v(1pt)
     #line(length: 100%)
@@ -536,7 +536,7 @@
 
   columns(2, gutter: 0.25in, {
     set text(size: font.normal)
-    show par: set block(spacing: 11pt)
+    set par(spacing: 11pt)
     // Render abstract.
     // ICML instruction tels that font size of `Abstract` must equal to 11 but
     // it does not like so.
@@ -581,7 +581,7 @@
 // correspond closely to LaTeX's booktabs but it is the best of what we have at
 // the moment.
 
-#import "@preview/tablex:0.0.7": cellx, hlinex, tablex
+#import "@preview/tablex:0.0.9": cellx, hlinex, tablex
 
 // Tickness values are taken from booktabs.
 #let toprule = hlinex(stroke: (thickness: 0.08em))
