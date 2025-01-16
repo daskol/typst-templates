@@ -1,9 +1,14 @@
 #import "@preview/lemmify:0.1.6": default-theorems, new-theorems, thm-numbering-heading
 
 #import "icml.typ": (
-  icml2025, lemmify, vruler, assumption, corollary, definition, lemma, proof,
-  proposition, remark, theorem)
-#import "icml2024.typ": tablex, toprule, midrule, bottomrule, map-cells, cellx, font
+  icml2025, lemmify, vruler,
+  // Constants and definitions.
+  font,
+  // Table rulers.
+  toprule, midrule, bottomrule,
+  // Theorem typesetting.
+  assumption, corollary, definition, lemma, proof, proposition, remark,
+  theorem)
 #import "logo.typ": LaTeX, TeX
 
 #let affls = (
@@ -418,29 +423,41 @@ should be flush left.
     inset.left = 0.5em
     inset.right = 0.5em
   }
-  return cellx(inset: inset)[
-    #text(size: font.small, smallcaps(content))
-  ]
+  return table.cell(inset: inset, {
+    set text(size: font.small)
+    smallcaps(content)
+  })
+}
+
+#let map-col(mapper, ix, jx, content, ..args) = {
+  return mapper(ix, jx, content, ..args)
+}
+
+#let map-row(mapper, ix, row, ..args) = {
+  return row.enumerate().map(el => map-col(mapper, ix, ..el, ..args))
+}
+
+#let map-cells(cells, mapper, ..args) = {
+  return cells.enumerate().map(el => map-row(mapper, ..el, ..args)).flatten()
 }
 
 #figure(
-  kind: table,
-  tablex(
+  caption: [
+    Classification accuracies for naive Bayes and flexible Bayes on various
+    data sets.
+  ],
+  placement: top,
+  table(
     columns: 4,
     align: (left + horizon, center + horizon, center + horizon, center + horizon),
     column-gutter: 0.6em,
-    auto-lines: false,
+    stroke: none,
     toprule,
     ..map-cells(header, format-cell, data-frame.header),
     midrule,
     ..map-cells(rows, format-cell, data-frame.body),
     bottomrule,
   ),
-  caption: [
-    Classification accuracies for naive Bayes and flexible Bayes on various
-    data sets.
-  ],
-  placement: top,
 ) <sample-table>
 
 Tables contain textual material, whereas figures contain graphical material.

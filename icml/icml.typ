@@ -14,6 +14,11 @@
 // Reexport constants and definitions.
 #import "/icml2024.typ": font
 
+// Tickness values are taken from booktabs.
+#let toprule = table.hline(stroke: (thickness: 0.08em))
+#let bottomrule = toprule
+#let midrule = table.hline(stroke: (thickness: 0.05em))
+
 /**
  * Initialize and customize @preview/lemmify package.
  */

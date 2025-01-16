@@ -474,29 +474,6 @@
   }
 }
 
-// NOTE We provide table support based on tablex package. It does not
-// correspond closely to LaTeX's booktabs but it is the best of what we have at
-// the moment.
-
-#import "@preview/tablex:0.0.9": cellx, hlinex, tablex
-
-// Tickness values are taken from booktabs.
-#let toprule = hlinex(stroke: (thickness: 0.08em))
-#let bottomrule = toprule
-#let midrule = hlinex(stroke: (thickness: 0.05em))
-
-#let map-col(mapper, ix, jx, content, ..args) = {
-  return mapper(ix, jx, content, ..args)
-}
-
-#let map-row(mapper, ix, row, ..args) = {
-  return row.enumerate().map(el => map-col(mapper, ix, ..el, ..args))
-}
-
-#let map-cells(cells, mapper, ..args) = {
-  return cells.enumerate().map(el => map-row(mapper, ..el, ..args)).flatten()
-}
-
 // Helper routine for turning off equation numbering.
 #let eq = it => {
   set math.equation(numbering: none)
