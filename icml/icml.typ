@@ -23,7 +23,7 @@
  * Initialize and customize @preview/lemmify package.
  */
 
-#import "@preview/lemmify:0.1.6": (
+#import "@preview/lemmify:0.1.7": (
   default-theorems, new-theorems, thm-numbering-heading)
 
 #let thm-styling(

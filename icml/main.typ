@@ -1,6 +1,4 @@
-#import "@preview/lemmify:0.1.6": default-theorems, new-theorems, thm-numbering-heading
-
-#import "icml.typ": (
+#import "/icml.typ": (
   icml2025, lemmify, vruler,
   // Constants and definitions.
   font,
@@ -9,7 +7,7 @@
   // Theorem typesetting.
   assumption, corollary, definition, lemma, proof, proposition, remark,
   theorem)
-#import "logo.typ": LaTeX, TeX
+#import "/logo.typ": LaTeX, TeX
 
 #let affls = (
   airi: ("AIRI", "Moscow", "Russia"),
