@@ -1,5 +1,8 @@
-// Workaround for the lack of an `std` scope.
-#let std-bibliography = bibliography
+/**
+ * icml2024.typ
+ *
+ * International Conference on Machine Learning (ICML) 2024.
+ */
 
 // Metrical size of page body.
 #let body = (
@@ -45,110 +48,6 @@
   return author_names
 }
 
-#let statement(kind: "statement", supplement: none, content) = {
-  if supplement == none {
-    supplement = upper(kind.first()) + lower(kind.slice(1))
-  }
-  figure(
-    kind: kind,
-    supplement: [#supplement],
-    numbering: "1",
-    content,
-  )
-}
-
-#let statement_render(supplement_fn: strong, body_fn: emph, it) = {
-  block(above: 11.5pt, below: 11.5pt, {
-    supplement_fn({
-      it.supplement
-      if it.numbering != none {
-        [ ]
-
-        // Render prefix (heading) part of a counter.
-        let prefix = locate(loc => {
-          let index = counter(heading).at(loc)
-          let prefix = index.slice(0, -1)  // Ignore the last level.
-          let header = query(selector(heading).before(loc), loc,).at(-1)
-          return numbering(header.numbering, ..prefix)
-        })
-        [#prefix]
-
-        // Render last digit of a counter.
-        let ix = locate(loc => {
-          let ix_assump = counter(figure.where(kind: "assumption")).at(loc)
-          let ix_state = counter(figure.where(kind: "statement")).at(loc)
-          let ix_notice = counter(figure.where(kind: "notice")).at(loc)
-          let index = ix_assump.first() + ix_state.first() + ix_notice.first()
-          return numbering(it.numbering, index)
-        })
-        [#ix]
-      }
-      [. ]
-    })
-    body_fn(it.body)
-  })
-}
-
-#let notice_render(it) = statement_render(
-  supplement_fn: emph,
-  body_fn: body => body,
-  it)
-
-#let assumption(content) = {
-  statement(kind: "assumption", supplement: [Assumption], content)
-}
-
-#let definition(content) = {
-  statement(kind: "assumption", supplement: [Definition], content)
-}
-
-#let corollary(content) = { statement(supplement: [Corollary], content) }
-#let lemma(content) = { statement(supplement: [Lemma], content) }
-#let proposition(content) = { statement(supplement: [Proposition], content) }
-#let theorem(content) = { statement(supplement: [Theorem], content) }
-
-#let note(content) = { statement(kind: "notice", supplement: [Note], content) }
-#let remark(content) = {
-  statement(kind: "notice", supplement: [Remark], content)
-}
-
-// Render reference to theorem-like figures (definitions, lemmas, theorems, and
-// so on).
-#let render-ref-statement(it) = {
-  // Ignore all elements that are not figures and not theorem-like figures.
-  let el = it.element
-  if el == none or el.func() != figure {
-    return it
-  } else if el.kind not in ("assumption", "notice", "statement") {
-    return it
-  }
-
-  // Reference number for theorem-like figures has form
-  // "<section>.<number>". So, we get the section number if there is any.
-  let loc = el.location()
-  let ix_heading = counter(heading).at(loc)
-  let prefix = ix_heading.at(0, default: 0)
-
-  // And now we compute a number of a theorem-like figure in the section.
-  let ix_assump = counter(figure.where(kind: "assumption")).at(loc)
-  let ix_state = counter(figure.where(kind: "statement")).at(loc)
-  let ix_notice = counter(figure.where(kind: "notice")).at(loc)
-  let suffix = ix_assump.first() + ix_state.first() + ix_notice.first()
-
-  // Finally, render it as a content.
-  el.supplement
-  [~]
-  numbering("1.1", prefix, suffix)
-}
-
-// And a definition for a proof.
-#let proof(body) = block(spacing: 11.5pt, {
-  emph[Proof.]
-  [ ] + body
-  h(1fr)
-  box(scale(160%, origin: bottom + right, sym.square.stroked))
-})
-
 #let make_figure_caption(it) = {
   set align(center)
   block(width: 100%, {
@@ -158,7 +57,7 @@
       it.supplement
       if it.numbering != none {
         [ ]
-        it.counter.display(it.numbering)
+        context { it.counter.display(it.numbering) }
       }
       it.separator
     })
@@ -307,10 +206,18 @@
   header: none,
   appendix: none,
   accepted: false,
+  aux: (:),
   body,
 ) = {
   if header == none {
     header = title
+  }
+
+  // Allow customization of public notice.
+  let public-notice = if "public-notice" in aux {
+    aux.public-notice
+  } else {
+    public-notice
   }
 
   // Sanitize authors and affilations arguments.
@@ -361,14 +268,16 @@
 
   set page(
     paper: "us-letter",
-    margin: (left: 0.75in,
-             right: 8.5in - (0.75in + 6.75in),
-             top: 1.0in,
-             bottom: 11in - 1in - 9in),
+    margin: (
+      left: 0.75in,
+      right: 8.5in - (0.75in + 6.75in),
+      top: 1.0in,
+      bottom: 11in - 1in - 9in),
+    columns: 2,
     header-ascent: 10pt,
-    header: locate(loc => {
+    header: context {
       // The first page is a title page. It does not have running header.
-      let pageno = counter(page).at(loc).first()
+      let pageno = counter(page).get().first()
       if pageno == 1 {
         return
       }
@@ -382,16 +291,21 @@
         v(3.5pt) // By default, fancyhdr spaces 4pt.
         line(length: 100%, stroke: (thickness: 1pt))
       })
-    }),
+    },
     footer-descent: 25pt - font.normal,
-    footer: locate(loc => {
-      let i = counter(page).at(loc).first()
+    footer: context {
+      let i = counter(page).get().first()
       align(center, text(size: font.normal, [#i]))
-    })
+    }
   )
+  set columns(gutter: 0.25in)
 
   // Main body font is Times (Type-1) font.
-  set columns(2, gutter: 0.25in)
+  let font-family = if "font-family" in aux {
+    aux.font-family
+  } else {
+    font-family
+  }
   set par(justify: true, leading: 0.58em)
   set text(font: font-family, size: font.normal)
 
@@ -401,13 +315,6 @@
     let number = if it.numbering != none {
       counter(heading).display(it.numbering)
       // h(7pt, weak: true
-    }
-
-    // Reset "theorem"counters.
-    if it.level == 1 {
-      counter(figure.where(kind: "assumption")).update(0)
-      counter(figure.where(kind: "statement")).update(0)
-      counter(figure.where(kind: "notice")).update(0)
     }
 
     set align(left)
@@ -442,11 +349,13 @@
   show figure.where(kind: image): it => make_figure(it)
   show figure.where(kind: table): it => make_figure(it, caption_above: true)
 
-  show figure.where(kind: "assumption"): it => {
-    statement_render(body_fn: body => body, it)
-  }
-  show figure.where(kind: "statement"): it => statement_render(it)
-  show figure.where(kind: "notice"): it => notice_render(it)
+  // Configure numbered lists.
+  set enum(indent: 1.4em, spacing: 0.9em)
+  show enum: set block(above: 1.63em)
+
+  // Configure bullet lists.
+  set list(indent: 1.4em, spacing: 0.9em, marker: ([•], [‣], [⁃]))
+  show list: set block(above: 1.63em)
 
   // Math equation numbering and referencing.
   set math.equation(numbering: "(1)")
@@ -486,21 +395,19 @@
       let color = rgb(0%, 8%, 45%)  // Originally `mydarkblue`. :D
       let content = text(fill: color, numb)
       link(el.location())[#el.supplement~#content]
-    } else {
-      render-ref-statement(it)
     }
   }
 
   // Configure algorithm rendering.
   counter(figure.where(kind: "algorithm")).update(0)
-  show figure.caption.where(kind: "algorithm"): it => {
-    strong[#it.supplement #it.counter.display(it.numbering)]
+  show figure.caption.where(kind: "algorithm"): it => block(width: 100%, {
+    set align(left)
+    context { strong[#it.supplement #it.counter.display(it.numbering)] }
     [ ]
     it.body
-  }
+  })
   show figure.where(kind: "algorithm"): it => {
-    place(top, float: true,
-      block(breakable: false, width: 100%, {
+    let render() = block(breakable: false, width: 100%, {
         set block(spacing: 0em)
         line(length: 100%, stroke: (thickness: 0.08em))
         block(spacing: 0.4em, it.caption)  // NOTE: No idea why we need it.
@@ -508,35 +415,43 @@
         it.body
         line(length: 100%, stroke: (thickness: 0.08em))
       })
-    )
+    if it.placement == none {
+      render()
+    } else {
+      place(it.placement, float: true, render())
+    }
   }
 
-  // Render title.
-  text(size: font.Large, weight: "bold")[
-    #v(0.5pt)
-    #line(length: 100%)
-    #v(1pt)
-    #show par: set block(spacing: 18pt)
-    #align(center)[#title]
-    #v(1pt)
-    #line(length: 100%)
-  ]
+  place(top + center, float: true, scope: "parent", {
+    // Render title.
+    {
+      set align(center)
+      set par(spacing: 18pt)
+      set text(size: font.Large, weight: "bold")
+      v(0.5pt)
+      line(length: 100%)
+      v(1pt)
+      title
+      v(1pt)
+      line(length: 100%)
+    }
 
-  v(0.1in - 1pt)
+    v(0.1in - 1pt)
 
-  {
     // Render authors.
-    set align(center)
-    make-authors().map(it => {
-      box(inset: (left: 0.5em, right: 0.5em), it)
-    }).join()
-  }
+    {
+      set align(center)
+      make-authors().map(it => {
+        box(inset: (left: 0.5em, right: 0.5em), it)
+      }).join()
+    }
+  })
 
   v(0.2in)
 
-  columns(2, gutter: 0.25in, {
+  {
     set text(size: font.normal)
-    show par: set block(spacing: 11pt)
+    set par(spacing: 11pt)
     // Render abstract.
     // ICML instruction tels that font size of `Abstract` must equal to 11 but
     // it does not like so.
@@ -556,14 +471,15 @@
 
     // Display the bibliography, if any is given.
     if bibliography != none {
-      show std-bibliography: set text(size: font.normal)
-      set std-bibliography(title: "References", style: "icml2024.csl")
+      show std.bibliography: set text(size: font.normal)
+      set std.bibliography(title: "References", style: "icml.csl")
       bibliography
     }
-  })
+  }
 
   if appendix != none {
-    pagebreak()
+    set page(columns: 1)
+    pagebreak(weak: true)
     counter(heading).update(0)
     counter("appendices").update(1)
     set heading(
@@ -575,29 +491,6 @@
     )
     appendix
   }
-}
-
-// NOTE We provide table support based on tablex package. It does not
-// correspond closely to LaTeX's booktabs but it is the best of what we have at
-// the moment.
-
-#import "@preview/tablex:0.0.7": cellx, hlinex, tablex
-
-// Tickness values are taken from booktabs.
-#let toprule = hlinex(stroke: (thickness: 0.08em))
-#let bottomrule = toprule
-#let midrule = hlinex(stroke: (thickness: 0.05em))
-
-#let map-col(mapper, ix, jx, content, ..args) = {
-  return mapper(ix, jx, content, ..args)
-}
-
-#let map-row(mapper, ix, row, ..args) = {
-  return row.enumerate().map(el => map-col(mapper, ix, ..el, ..args))
-}
-
-#let map-cells(cells, mapper, ..args) = {
-  return cells.enumerate().map(el => map-row(mapper, ..el, ..args)).flatten()
 }
 
 // Helper routine for turning off equation numbering.

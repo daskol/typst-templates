@@ -1,5 +1,13 @@
-#import "icml2024.typ": *
-#import "logo.typ": LaTeX, TeX
+#import "/icml.typ": (
+  icml2025, lemmify, vruler,
+  // Constants and definitions.
+  font,
+  // Table rulers.
+  toprule, midrule, bottomrule,
+  // Theorem typesetting.
+  assumption, corollary, definition, lemma, proof, proposition, remark,
+  theorem)
+#import "/logo.typ": LaTeX, TeX
 
 #let affls = (
   airi: ("AIRI", "Moscow", "Russia"),
@@ -19,10 +27,10 @@
   (name: "Firstname1 Lastname1", affl: ("airi", "skoltech"), equal: true),
 )
 
-#show: icml2024.with(
+#show: icml2025.with(
   title: [
     Submission and Formatting Instructions for \
-    International Conference on Machine Learning (ICML 2024)
+    International Conference on Machine Learning (ICML 2025)
   ],
   authors: (authors, affls),
   keywords: ("Machine Learning", "ICML"),
@@ -32,10 +40,12 @@
     Gross violations will trigger corrections at the camera-ready phase.
   ],
   bibliography: bibliography("main.bib"),
-  header: [Submission and Formatting Instructions for ICML 2024],
+  header: [Submission and Formatting Instructions for ICML 2025],
   appendix: include "appendix.typ",
   accepted: false,
 )
+
+#show: lemmify // Theorems, propositions, definitions, etc.
 
 #vruler(offset: -1.7in)
 
@@ -57,15 +67,15 @@ copies. Here is a brief summary:
 
 - Submissions must be in PDF.
 
-- *New to this year:* If your paper has appendices, submit the appendix
-  together with the main body and the references *as a single file*. Reviewers
-  will not look for appendices as a separate PDF file. So if you submit such an
-  extra file, reviewers will very likely miss it.
+- If your paper has appendices, submit the appendix together with the main body
+  and the references *as a single file*. Reviewers will not look for appendices
+  as a separate PDF file. So if you submit such an extra file, reviewers will
+  very likely miss it.
 
 - Page limit: The main body of the paper has to be fitted to 8 pages, excluding
-  references and appendices; the space for the latter two is not limited. For
-  the final version of the paper, authors can add one extra page to the main
-  body.
+  references and appendices; the space for the latter two is not limited in
+  pages, but the total file size may not exceed 10MB. For the final version of
+  the paper, authors can add one extra page to the main body.
 
 - *Do not include author information or acknowledgements* in your initial
   submission.
@@ -88,22 +98,9 @@ copies. Here is a brief summary:
 
 == Submitting Papers
 
-*Paper Deadline:* The deadline for paper submission that is advertised on the
-conference website is strict. If your full, anonymized, submission does not
-reach us on time, it will not be considered for publication.
-
 *Anonymous Submission:* ICML uses double-blind review: no identifying author
 information may appear on the title page or in the paper itself. @author-info
 gives further details.
-
-*Simultaneous Submission:* ICML will not accept any paper which, at the time of
-submission, is under review for another conference or has already been
-published. This policy also applies to papers that overlap substantially in
-technical content with conference papers under review or previously published.
-ICML submissions must not be submitted to other conferences and journals during
-ICML's review period. Informal publications, such as technical reports or
-papers in workshop proceedings which do not appear in print, do not fall under
-these restrictions.
 
 #v(6pt)  // TODO: Original is \medskip.
 
@@ -117,8 +114,6 @@ Authors using *Word* must convert their document to PDF. Most of the latest
 versions of Word have the facility to do this automatically. Submissions will
 not be accepted in Word format or any format other than PDF. Really. We're not
 joking. Don't send Word.
-
-#vruler(page: 1)
 
 Those who use *\LaTeX* should avoid including Type-3 fonts. Those using `latex`
 and `dvips` may need the following two commands:
@@ -134,6 +129,8 @@ Using `pdflatex` rather than `latex`, often gives better results. This program
 avoids the Type-3 font problem, and supports more advanced features in the
 `microtype` package.
 
+#vruler(page: 1)
+
 *Graphics files* should be a reasonable size, and included from
 an appropriate format. Use vector formats (.eps/.pdf) for plots,
 lossless bitmap formats (.png) for raster graphics with sharp lines, and
@@ -141,7 +138,7 @@ jpeg for photo-like images.
 
 The style file uses the `hyperref` package to make clickable links in
 documents. If this causes problems for you, add `nohyperref` as one of the
-options to the `icml2024` usepackage statement.
+options to the `icml2025` usepackage statement.
 
 == Submitting Final Camera-Ready Copy
 
@@ -152,15 +149,14 @@ formatting instructions.
 
 The footnote, "Preliminary work. Under review by the International Conference
 on Machine Learning (ICML). Do not distribute." must be modified to
-"_Proceedings of the 41#super("st") International Conference on Machine
-Learning_, Vienna, Austria, PMLR 235, 2024. Copyright 2024 by the
-author(s)."
+"_Proceedings of the 42#super[nd] International Conference on Machine
+Learning_, Vancouver, Canada. PMLR 267, 2025. Copyright 2025 by the author(s)."
 
 For those using the *#LaTeX* style file, this change (and others) is handled
-automatically by simply changing `\usepackage{icml2024}` to
+automatically by simply changing `\usepackage{icml2025}` to
 
 ```tex
-\usepackage[accepted]{icml2024}
+\usepackage[accepted]{icml2025}
 ```
 
 Authors using *Word* must edit the footnote on the first page of the document
@@ -172,7 +168,7 @@ above a horizontal rule which is $1$~point thick. The running head should be
 centered, bold and in $9$~point type. The rule should be $10$~points above the
 main text. For those using the *#LaTeX* style file, the original title is
 automatically set as running head using the `fancyhdr` package which is
-included in the ICML 2024 style file package. In case that the original title
+included in the ICML 2025 style file package. In case that the original title
 exceeds the size restrictions, a shorter form can be supplied by using
 
 ```tex
@@ -208,7 +204,7 @@ the rest of the title in lower case.
 == Author Information for Submission <author-info>
 
 ICML uses double-blind review, so author information must not appear. If you
-are using #LaTeX and the `icml2024.sty` file, use `\icmlauthor{...}` to specify
+are using #LaTeX and the `icml2025.sty` file, use `\icmlauthor{...}` to specify
 authors and `\icmlaffiliation{...}` to specify affiliations. (Read the TeX code
 used to produce this document for an example usage.) The author information
 will not be printed unless `accepted` is passed as an argument to the style
@@ -230,8 +226,6 @@ required to look at the Supplementary Material when writing their review (they
 are not required to look at more than the first $8$ pages of the submitted
 document).
 
-#vruler(page: 2)
-
 === Camera-Ready Author Information <final-author>
 
 If a paper is accepted, a final camera-ready copy must be prepared. For
@@ -240,6 +234,8 @@ bottom rule surrounding the title. The authors' names should appear in 10~point
 bold type, in a row, separated by white space, and centered. Author names
 should not be broken across lines. Unbolded superscripted numbers, starting 1,
 should be used to refer to affiliations.
+
+#vruler(page: 2)
 
 Affiliations should be numbered in the order of appearance. A single footnote
 block of text should be used to list all the affiliations. (Academic
@@ -256,7 +252,7 @@ corresponding authors and their emails (in the format Full Name
 \<email\@domain.com>) can follow the list of affiliations. Ideally only one or
 two names should be listed.
 
-A sample file with author names is included in the ICML2024 style file package.
+A sample file with author names is included in the ICML2025 style file package.
 Turn on the `[accepted]` option to the stylefile to see the names rendered. All
 of the guidelines above are implemented by the #LaTeX style file.
 
@@ -328,8 +324,6 @@ and you may set wide figures across both columns (use the environment
 `figure*` in #LaTeX). Always place two-column figures at the top or bottom of
 the page.
 
-#vruler(page: 3)
-
 #figure(
   image("icml-numpapers.svg"),
   caption: [
@@ -343,6 +337,8 @@ the page.
 ) <icml-historical>
 
 Add a dummy text here to get the same figure layout. #lorem(100)
+
+#vruler(page: 3, offset: -5.55in)
 
 == Algorithms
 
@@ -365,19 +361,22 @@ algorithm.sty and algorithmic.sty, which are supplied with this package.
   supplement: [Algorithm],
   caption: [Bubble Sort],
   placement: top,
-  algorithm({
-    import algorithmic: *
-    State[*Input:* data $x_i$, size $m$]
-    Until(cond: [_noChange_ is _true_], {
-      State[Initialize _noChange = true_.]
-      For(cond: [$i=1$ *to* $m-1$], {
-        If(cond: $x_i > x_(i + 1)$, {
-          State[Swap $x_i$ and $x_(i + 1)$]
-          State[_noChange = false_]
+  {
+    set table.cell(align: left)
+    algorithm({
+      import algorithmic: *
+      State[*Input:* data $x_i$, size $m$]
+      Until(cond: [_noChange_ is _true_], {
+        State[Initialize _noChange = true_.]
+        For(cond: [$i=1$ *to* $m-1$], {
+          If(cond: $x_i > x_(i + 1)$, {
+            State[Swap $x_i$ and $x_(i + 1)$]
+            State[_noChange = false_]
+          })
         })
       })
     })
-  })
+  }
 ) <alg-example>
 
 == Tables
@@ -425,29 +424,41 @@ should be flush left.
     inset.left = 0.5em
     inset.right = 0.5em
   }
-  return cellx(inset: inset)[
-    #text(size: font.small, smallcaps(content))
-  ]
+  return table.cell(inset: inset, {
+    set text(size: font.small)
+    smallcaps(content)
+  })
+}
+
+#let map-col(mapper, ix, jx, content, ..args) = {
+  return mapper(ix, jx, content, ..args)
+}
+
+#let map-row(mapper, ix, row, ..args) = {
+  return row.enumerate().map(el => map-col(mapper, ix, ..el, ..args))
+}
+
+#let map-cells(cells, mapper, ..args) = {
+  return cells.enumerate().map(el => map-row(mapper, ..el, ..args)).flatten()
 }
 
 #figure(
-  kind: table,
-  tablex(
+  caption: [
+    Classification accuracies for naive Bayes and flexible Bayes on various
+    data sets.
+  ],
+  placement: top,
+  table(
     columns: 4,
     align: (left + horizon, center + horizon, center + horizon, center + horizon),
     column-gutter: 0.6em,
-    auto-lines: false,
+    stroke: none,
     toprule,
     ..map-cells(header, format-cell, data-frame.header),
     midrule,
     ..map-cells(rows, format-cell, data-frame.body),
     bottomrule,
   ),
-  caption: [
-    Classification accuracies for naive Bayes and flexible Bayes on various
-    data sets.
-  ],
-  placement: top,
 ) <sample-table>
 
 Tables contain textual material, whereas figures contain graphical material.
@@ -501,13 +512,11 @@ An easy corollary of @thm-bigtheorem is the following:
   is interesting.
 ]
 
-#vruler(page: 4)
-
 == Citations and References
 
 Please use APA reference format regardless of your formatter or word processor.
 If you rely on the #LaTeX bibliographic facility, use `natbib.sty` and
-`icml2024.bst` included in the style-file package to obtain this format.
+`icml2025.bst` included in the style-file package to obtain this format.
 
 Citations within the text should include the authors' last names and year. If
 the authors' names are included in the sentence, place only the year in
@@ -540,6 +549,8 @@ Please put some effort into making references complete, presentable, and
 consistent, e.g. use the actual current name of authors. If using bibtex,
 please protect capital letters of names and abbreviations in titles, for
 example, use #box[\{B\}ayesian] or #box[\{L\}ipschitz] in your .bib file.
+
+#vruler(page: 4)
 
 = Accessibility
 
