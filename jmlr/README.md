@@ -73,13 +73,13 @@ template, you can add a show rule at the top of your file.
 
 - JMLR example paper is not not representative.
 
-- Leading in author affilations in in the original template is varying.
+- Leading in author affiliations in in the original template is varying.
 
 - There is no bibliography CSL-style. The closest one is
   `bristol-university-press`.
 
-- Another issue is related to Typst's inablity to produce colored annotation.
-  In order to mitigte the issue, we add a script which modifies annotations and
+- Another issue is related to Typst's inability to produce colored annotation.
+  In order to mitigate the issue, we add a script which modifies annotations and
   make them colored.
 
   ```shell
