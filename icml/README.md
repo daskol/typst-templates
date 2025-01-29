@@ -46,7 +46,7 @@ all issues there.
 
 ### Running Title
 
-1. Runing title should be 10pt above the main text. With top margin 1in it
+1. Running title should be 10pt above the main text. With top margin 1in it
    gives that a solid line should be located at 62pt. Actual, position is 57pt
    in the original template.
 2. Default value between header ruler and header text baseline is 4pt in
@@ -80,7 +80,7 @@ all issues there.
    APA-like style places entry year at the end of reference entry. In order to
    fix the issue, we need to describe ICML bibliography style in CSL-format.
 3. In the original template links are colored with dark blue. We can reproduce
-   appearance with some additional effort. First of all, `icml2024.csl` shoule
+   appearance with some additional effort. First of all, `icml2024.csl` should
    be updated as follows.
 
    ```
