@@ -83,7 +83,7 @@ all issues there.
    appearance with some additional effort. First of all, `icml2024.csl` should
    be updated as follows.
 
-   ```
+   ```diff
    diff --git a/icml/icml2024.csl b/icml/icml2024.csl
    index 3b9e9a2..3fe9f74 100644
    --- a/icml/icml2024.csl
