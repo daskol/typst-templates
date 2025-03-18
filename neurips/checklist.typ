@@ -70,7 +70,7 @@ IMPORTANT, please:
 ) = {
   set list(indent: 1em, tight: false)
   show list: set block(spacing: 10pt)
-  show par: set block(spacing: 5.8pt)
+  set block(spacing: 5.8pt)
   [
     *#name*
 

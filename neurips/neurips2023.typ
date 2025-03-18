@@ -35,7 +35,7 @@
 
 #let make_figure_caption(it) = {
   set align(center)
-  block({
+  block(context {
     set align(left)
     set text(size: font.normal)
     it.supplement
@@ -283,8 +283,8 @@
     margin: (left: 1.5in, right: 1.5in,
              top: 1.0in, bottom: 1in),
     footer-descent: 25pt - font.normal,
-    footer: locate(loc => {
-      let i = counter(page).at(loc).first()
+    footer: context {
+      let i = counter(page).at(here()).first()
       if i == 1 {
         let get-notice = if "get-notice" in aux {
           aux.get-notice
@@ -296,7 +296,7 @@
       } else {
         return align(center, text(size: font.normal, [#i]))
       }
-    }),
+    },
   )
 
   // In the original style, main body font is Times (Type-1) font but we use
@@ -424,7 +424,7 @@
   block(width: 100%, {
     set text(size: font.normal)
     set par(leading: 4.5pt)
-    show par: set block(spacing: 1.0em)  // Original 11pt.
+    set block(spacing: 1.0em)  // Original 11pt.
     make-authors(authors, affls)
     v(0.3in - 0.1in)
   })
@@ -454,7 +454,7 @@
     set text(size: font.normal)
     set par(leading: 0.55em)
     set par(leading: 0.43em)
-    show par: set block(spacing: 1.0em)  // Original 11pt.
+    set block(spacing: 1.0em)  // Original 11pt.
     body
 
     // Display the bibliography, if any is given.
