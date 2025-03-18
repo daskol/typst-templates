@@ -1,4 +1,4 @@
-#import "/neurips.typ": botrule, midrule, neurips2024, paragraph, toprule, url
+#import "/neurips.typ": botrule, midrule, neurips2025, paragraph, toprule, url
 #import "/logo.typ": LaTeX, LaTeXe, TeX
 
 #let affls = (
@@ -23,8 +23,8 @@
   (name: "Firstname2 Lastname2", affl: ("airi", "skoltech"), equal: true),
 )
 
-#show: neurips2024.with(
-  title: [Formatting Instructions For NeurIPS 2024],
+#show: neurips2025.with(
+  title: [Formatting Instructions For NeurIPS 2025],
   authors: (authors, affls),
   keywords: ("Machine Learning", "NeurIPS"),
   abstract: [
@@ -43,19 +43,19 @@
   accepted: false,
 )
 
-= Submission of papers to NeurIPS 2024
+= Submission of papers to NeurIPS 2025
 
 Please read the instructions below carefully and follow them faithfully.
 
 == Style
 
-Papers to be submitted to NeurIPS 2024 must be prepared according to the
+Papers to be submitted to NeurIPS 2025 must be prepared according to the
 instructions presented here. Papers may only be up to *nine* pages long,
 including figures. Additional pages _containing only acknowledgments and
 references_ are allowed. Papers that exceed the page limit will not be
 reviewed, or in any other way considered for presentation at the conference.
 
-The margins in 2024 are the same as those in previous years.
+The margins in 2025 are the same as those in previous years.
 
 Authors are required to use the NeurIPS #LaTeX style files obtainable at the
 NeurIPS website as indicated below. Please make sure you use the current files
@@ -72,10 +72,10 @@ the website at
   url("http://www.neurips.cc/")
 }))
 
-The file `neurips_2024.pdf` contains these instructions and illustrates the
+The file `neurips_2025.pdf` contains these instructions and illustrates the
 various formatting requirements your NeurIPS paper must satisfy.
 
-The only supported style file for NeurIPS 2024 is `neurips_2024.sty`, rewritten
+The only supported style file for NeurIPS 2025 is `neurips_2025.sty`, rewritten
 for #LaTeXe. *Previous style files for #LaTeX 2.09, Microsoft Word, and RTF
 are no longer supported!*
 
@@ -97,7 +97,7 @@ anonymize your submission and add line numbers to aid review. Please do _not_
 refer to these line numbers in your paper as they will be removed during
 generation of camera-ready copies.
 
-The file `neurips_2024.tex` may be used as a "shell" for writing your paper.
+The file `neurips_2025.tex` may be used as a "shell" for writing your paper.
 All you have to do is replace the author, title, abstract, and text of the
 paper with your own.
 
@@ -178,7 +178,7 @@ produces
 }
 
 If you wish to load the `natbib` package with options, you may add the
-following before loading the `neurips_2024` package:
+following before loading the `neurips_2025` package:
 
 ```tex
     \PassOptionsToPackage{options}{natbib}
@@ -188,7 +188,7 @@ If `natbib` clashes with another package you load, you can add the optional
 argument `nonatbib` when loading the style file:
 
 ```tex
-    \usepackage[nonatbib]{neurips_2024}
+    \usepackage[nonatbib]{neurips_2025}
 ```
 
 As submission is double blind, refer to your own published work in the third
@@ -358,7 +358,7 @@ moreover, you are required to declare funding (financial activities supporting
 the submitted work) and competing interests (related financial activities
 outside the submitted work). More information about this disclosure can be
 found at:
-#url("https://neurips.cc/Conferences/2024/PaperInformation/FundingDisclosure")
+#url("https://neurips.cc/Conferences/2025/PaperInformation/FundingDisclosure")
 
 Do *not* include this section in the anonymized submission, only in the final
 paper. You can use the `ack` environment provided in the style file to
