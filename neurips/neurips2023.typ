@@ -433,6 +433,23 @@
   // Vertical spacing between authors and abstract.
   v(6.5pt)  // Original 0.075in.
 
+  // Set up line numbering.
+  let lineno(accepted, aux, body) = {
+    let skip = if "lineno" in aux {
+      not aux.lineno
+    } else {
+      accepted == none or accepted
+    }
+    if skip {
+      body
+    } else {
+      set par.line(
+        numbering: n => text(size: 7pt)[#n],
+        number-clearance: 11pt)
+      body
+    }
+  }
+
   // Render abstract.
   block(width: 100%, {
     set text(size: 10pt)
@@ -443,6 +460,7 @@
     // but there is not predefined font size.
     align(center, text(size: 12pt)[*Abstract*])
     v(0.215em)  // Original 0.5ex.
+    show: lineno.with(accepted, aux)
     pad(left: 0.5in, right: 0.5in, abstract)
     v(0.43em)  // Original 0.5ex.
   })
@@ -451,6 +469,8 @@
 
   // Render main body
   {
+    show: lineno.with(accepted, aux)
+
     // Display body.
     set text(size: font.normal)
     set par(leading: 0.55em)
