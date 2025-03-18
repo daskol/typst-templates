@@ -301,8 +301,9 @@
 
   // In the original style, main body font is Times (Type-1) font but we use
   // OpenType analogue.
+  let font_ = aux.at("font", default: (family: font-family))
   set par(justify: true, leading: 0.55em)
-  set text(font: font-family, size: font.normal)
+  set text(font: font_.family, size: font.normal)
 
   // Configure quotation (similar to LaTeX's `quoting` package).
   show quote: set align(left)

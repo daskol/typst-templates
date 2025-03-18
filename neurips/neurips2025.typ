@@ -53,8 +53,12 @@
   bibliography-opts: (:),
   appendix: none,
   accepted: false,
+  aux: (:),
   body,
 ) = {
+  // Update auxiliarry parametetrs with notice getter.
+  aux.insert("get-notice", get-notice)
+
   show: neurips2023.with(
     title: title,
     authors: authors,
@@ -62,7 +66,7 @@
     date: date,
     abstract: abstract,
     accepted: accepted,
-    aux: (get-notice: get-notice),
+    aux: aux,
   )
   body
   // Display the bibliography, if any is given.
