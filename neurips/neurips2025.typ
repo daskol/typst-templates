@@ -18,14 +18,14 @@
 #let toprule = botrule
 
 #let anonymous-notice = [
-  Submitted to 38th Conference on Neural Information Processing Systems
-  (NeurIPS 2024). Do not distribute.
+  Submitted to 39th Conference on Neural Information Processing Systems
+  (NeurIPS 2025). Do not distribute.
 ]
 
 #let arxiv-notice = [Preprint. Under review.]
 
 #let public-notice = [
-  38th Conference on Neural Information Processing Systems (NeurIPS 2024).
+  39th Conference on Neural Information Processing Systems (NeurIPS 2025).
 ]
 
 #let get-notice(accepted) = if accepted == none {
@@ -37,13 +37,13 @@
 }
 
 /**
- * neurips2024
+ * neurips2025
  *
  * Args:
  *   accepted: Valid values are `none`, `false`, and `true`. Missing value
  *   (`none`) is designed to prepare arxiv publication. Default is `false`.
  */
-#let neurips2024(
+#let neurips2025(
   title: [],
   authors: (),
   keywords: (),

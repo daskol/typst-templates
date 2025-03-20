@@ -35,7 +35,7 @@
 
 #let make_figure_caption(it) = {
   set align(center)
-  block({
+  block(context {
     set align(left)
     set text(size: font.normal)
     it.supplement
@@ -283,8 +283,8 @@
     margin: (left: 1.5in, right: 1.5in,
              top: 1.0in, bottom: 1in),
     footer-descent: 25pt - font.normal,
-    footer: locate(loc => {
-      let i = counter(page).at(loc).first()
+    footer: context {
+      let i = counter(page).at(here()).first()
       if i == 1 {
         let get-notice = if "get-notice" in aux {
           aux.get-notice
@@ -296,13 +296,14 @@
       } else {
         return align(center, text(size: font.normal, [#i]))
       }
-    }),
+    },
   )
 
   // In the original style, main body font is Times (Type-1) font but we use
   // OpenType analogue.
+  let font_ = aux.at("font", default: (family: font-family))
   set par(justify: true, leading: 0.55em)
-  set text(font: font-family, size: font.normal)
+  set text(font: font_.family, size: font.normal)
 
   // Configure quotation (similar to LaTeX's `quoting` package).
   show quote: set align(left)
@@ -424,13 +425,30 @@
   block(width: 100%, {
     set text(size: font.normal)
     set par(leading: 4.5pt)
-    show par: set block(spacing: 1.0em)  // Original 11pt.
+    set block(spacing: 1.0em)  // Original 11pt.
     make-authors(authors, affls)
     v(0.3in - 0.1in)
   })
 
   // Vertical spacing between authors and abstract.
   v(6.5pt)  // Original 0.075in.
+
+  // Set up line numbering.
+  let lineno(accepted, aux, body) = {
+    let skip = if "lineno" in aux {
+      not aux.lineno
+    } else {
+      accepted == none or accepted
+    }
+    if skip {
+      body
+    } else {
+      set par.line(
+        numbering: n => text(size: 7pt)[#n],
+        number-clearance: 11pt)
+      body
+    }
+  }
 
   // Render abstract.
   block(width: 100%, {
@@ -442,6 +460,7 @@
     // but there is not predefined font size.
     align(center, text(size: 12pt)[*Abstract*])
     v(0.215em)  // Original 0.5ex.
+    show: lineno.with(accepted, aux)
     pad(left: 0.5in, right: 0.5in, abstract)
     v(0.43em)  // Original 0.5ex.
   })
@@ -450,11 +469,13 @@
 
   // Render main body
   {
+    show: lineno.with(accepted, aux)
+
     // Display body.
     set text(size: font.normal)
     set par(leading: 0.55em)
     set par(leading: 0.43em)
-    show par: set block(spacing: 1.0em)  // Original 11pt.
+    set block(spacing: 1.0em)  // Original 11pt.
     body
 
     // Display the bibliography, if any is given.

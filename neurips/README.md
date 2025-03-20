@@ -15,8 +15,8 @@ Typst will create a new directory with all the files needed to get you started.
 
 ## Configuration
 
-This template exports the `neurips2023` and `neurips2024` function with the
-following named arguments.
+This template exports the `neurips2023`, `neurips2024`, `neurips2025` function
+with the following named arguments.
 
 - `title`: The paper's title as content.
 - `authors`: An array of author dictionaries. Each of the author dictionaries
@@ -34,15 +34,15 @@ following named arguments.
   uploaded to arXiv).
 
 The template will initialize your package with a sample call to the
-`neurips2024` function in a show rule. If you want to change an existing
+`neurips2025` function in a show rule. If you want to change an existing
 project to use this template, you can add a show rule at the top of your file
 as follows.
 
 ```typst
-#import "@preview/bloated-neurips:0.5.0": neurips2024
+#import "@preview/bloated-neurips:0.7.0": neurips2025
 
-#show: neurips2024.with(
-  title: [Formatting Instructions For NeurIPS 2024],
+#show: neurips2025.with(
+  title: [Formatting Instructions For NeurIPS 2025],
   authors: (authors, affls),
   keywords: ("Machine Learning", "NeurIPS"),
   abstract: [
@@ -63,12 +63,12 @@ as follows.
 #lorem(42)
 ```
 
-With template of version v0.5.0 or newer, one can override some parts.
+With template of version v0.5.1 or newer, one can override some parts.
 Specifically, `get-notice` entry of `aux` directory parameter of show rule
-allows to adjust the NeurIPS 2024 template to Science4DL workshop as follows.
+allows to adjust the NeurIPS 2025 template to Science4DL workshop as follows.
 
 ```typst
-#import "@preview/bloated-neurips:0.5.0": neurips
+#import "@preview/bloated-neurips:0.7.0": neurips
 
 #let get-notice(accepted) = if accepted == none {
   return [Preprint. Under review.]
@@ -103,11 +103,6 @@ allows to adjust the NeurIPS 2024 template to Science4DL workshop as follows.
 
 ## Issues
 
-- The biggest and the most important issues is related to line ruler. We are
-  not aware of universal method for numbering lines in the main body of a
-  paper. Fortunately, line numbering support has been implemented at
-  [typst/typst#4516][4]. Let's wait for the next major release v0.12.0!
-
 - There is an issue in Typst with spacing between figures and between figure
   with floating placement. The issue is that there is no way to specify gap
   between subsequent figures. In order to have behaviour similar to original
@@ -136,17 +131,17 @@ allows to adjust the NeurIPS 2024 template to Science4DL workshop as follows.
       example-paper.typst.pdf example-paper-colored.typst.pdf
   ```
 
-  See [README.md][1] for details.
+  See [README.md][3] for details.
 
-- NeurIPS 2023/2024 instructions discuss bibliography in vague terms. Namely,
-  there is not specific requirements. Thus we stick to `ieee` bibliography
-  style since we found it in several accepted papers and it is similar to that
-  in the example paper.
+- NeurIPS 2023/2024/2025 instructions discuss bibliography in vague terms.
+  Namely, there is not specific requirements. Thus we stick to `ieee`
+  bibliography style since we found it in several accepted papers and it is
+  similar to that in the example paper.
 
 - It is unclear how to render notice in the bottom of the title page in case of
   final (`accepted: true`) or preprint (`accepted: none`) submission.
 
 [1]: example-paper.latex.pdf
 [2]: example-paper.typst.pdf
-[3]: ../#colored-annotations
+[3]: https://github.com/daskol/typst-templates/#colored-annotations
 [4]: https://github.com/typst/typst/pull/4516
