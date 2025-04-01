@@ -23,7 +23,8 @@ The list of A* conferences of the fields given follows.
   (SIGGRAPH).
 - ACM International Conference on Knowledge Discovery and Data Mining (KDD).
 - ACM International World Wide Web Conference (WWW).
-- Association for Computational Linguistics (ACL).
+- [Association for Computational Linguistics (ACL)][tracl] (by
+  [@alexanderkoller][alexanderkoller]).
 - Association for the Advancement of Artificial Intelligence (AAAI).
 - Conference on Learning Theory (COLT).
 - Empirical Methods in Natural Language Processing (EMNLP).
@@ -74,3 +75,5 @@ It is written with PyMuPDF library and inserts colored annotation.
 
 [1]: https://portal.core.edu.au/conf-ranks/?search=A*&by=rank&source=CORE2023&sort=aacronym
 [2]: https://typst.app/
+[tracl]: https://typst.app/universe/package/tracl/
+[alexanderkoller]: https://github.com/alexanderkoller
