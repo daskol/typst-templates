@@ -112,6 +112,9 @@ template, you can add a show rule at the top of your file.
   its guidelines closely. Since writing CSL-style files is tedious task, we
   adopt close enough bibliography style from Zotero.
 
+- With Typst 0.12.0, multi-column page layout is set in different way. Thus,
+  footnotes use full page width at the moment.
+
 ## References
 
 + CVPR 2022 conference [web site][4].

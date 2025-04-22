@@ -276,7 +276,7 @@ because reference~@Alpher03 has just two authors.
   it.caption
 }
 #show figure.caption.where(kind: "subfigure"): it => {
-  let ix = counter(figure.where(kind: "subfigure")).display("(a)")
+  let ix = context counter(figure.where(kind: "subfigure")).display("(a)")
   [#ix~#it.body]
 }
 
