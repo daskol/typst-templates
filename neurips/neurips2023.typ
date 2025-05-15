@@ -1,6 +1,3 @@
-// Workaround for the lack of an `std` scope.
-#let std-bibliography = bibliography
-
 // Metrical size of page body.
 #let viewport = (
   width: 5.5in,
@@ -484,12 +481,12 @@
         bibliography-opts.title = "References"
       }
       if "style" not in bibliography-opts {
-        bibliography-opts.style = "ieee"
+        bibliography-opts.style = "natbib.csl"
       }
       // NOTE It is allowed to reduce font to 9pt (small) but there is not
       // small font of size 9pt in original sty.
-      show std-bibliography: set text(size: font.small)
-      set std-bibliography(..bibliography-opts)
+      show std.bibliography: set text(size: font.small)
+      set std.bibliography(..bibliography-opts)
       bibliography
     }
   }

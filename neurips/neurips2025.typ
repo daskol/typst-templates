@@ -1,16 +1,13 @@
 /**
- * neurips2024.typ
+ * neurips2025.typ
  *
- * Template for The 38-th Annual Conference on Neural Information Processing
- * Systems (NeurIPS) 2024.
+ * Template for The 39-th Annual Conference on Neural Information Processing
+ * Systems (NeurIPS) 2025.
  *
- * [1]: https://neurips.cc/Conferences/2024
+ * [1]: https://neurips.cc/Conferences/2025
  */
 
 #import "/neurips2023.typ": font, neurips2023, paragraph, url
-
-// Workaround for the lack of an `std` scope.
-#let std-bibliography = bibliography
 
 // Tickness values are taken from booktabs.
 #let botrule = table.hline(stroke: (thickness: 0.08em))
@@ -75,12 +72,12 @@
       bibliography-opts.title = "References"
     }
     if "style" not in bibliography-opts {
-      bibliography-opts.style = "ieee"
+      bibliography-opts.style = "natbib.csl"
     }
     // NOTE It is allowed to reduce font to 9pt (small) but there is not
     // small font of size 9pt in original sty.
-    show std-bibliography: set text(size: font.small)
-    set std-bibliography(..bibliography-opts)
+    show std.bibliography: set text(size: font.small)
+    set std.bibliography(..bibliography-opts)
     bibliography
   }
 
