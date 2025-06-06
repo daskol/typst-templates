@@ -1,13 +1,19 @@
-#let std-bibliography = bibliography
+/**
+ * tmlr.typ
+ *
+ * Template for Transactions on Machine Learning Research (TMLR) journal.
+ *
+ * [1]: https://jmlr.org/tmlr/
+ * [2]: https://jmlr.org/tmlr/author-guide.html
+ * [2]: https://github.com/JmlrOrg/tmlr-style-file
+ */
 
 // We prefer to use CMU Bright variant instead of Computer Modern Bright when
 // ever it is possible.
-#let font-family = ("CMU Serif", "Latin Modern Roman", "New Computer Modern",
-                    "Serif")
+#let font-family = ("CMU Serif", "Latin Modern Roman", "New Computer Modern")
 #let font-family-sans = ("CMU Sans Serif", "Latin Modern Sans",
-                         "New Computer Modern Sans", "Sans")
-#let font-family-mono = ("Latin Modern Mono", "New Computer Modern Mono",
-                         "Mono")
+                         "New Computer Modern Sans")
+#let font-family-mono = ("Latin Modern Mono", "New Computer Modern Mono")
 
 #let font = (
   Large: 17pt,
@@ -49,8 +55,7 @@
   }).map(it => emph(it))
 
   return block(spacing: 0em, {
-    set par(justify: true, leading: 0.50em)  // Visually perfect.
-    show par: set block(spacing: 0em)
+    set par(justify: true, leading: 0.50em, spacing: 0em)  // Visually perfect.
     text(size: font.normal)[*#author.name*\ ]
     text(size: font.small)[#lines.join([\ ])]
   })
@@ -125,6 +130,23 @@
 }
 
 /**
+ * Show-rule for appendix styling.
+ */
+#let default-appendix(body) = {
+  set heading(numbering: "A.1")
+  counter(heading).update(0)
+  body
+}
+
+/**
+ * Show-rule for bibliography.
+ */
+#let default-bibliography(body) = {
+  set std.bibliography(title: [References], style: "tmlr.csl")
+  body
+}
+
+/**
  * tmlr
  *
  * Args:
@@ -184,22 +206,22 @@
              top: 1.18in,
              bottom: 11in - (1.18in + 9in)),
     header-ascent: 46pt,  // 1.5em in case of 10pt font
-    header: locate(loc => block(spacing: 0em, {
+    header: context block(spacing: 0em, {
       header(accepted, pubdate)
       v(3.5pt, weak: true)
       line(length: 100%, stroke: (thickness: 0.4pt))
-    })),
+    }),
     footer-descent: 20pt, // Visually perfect.
-    footer: locate(loc => {
+    footer: context {
+      let loc = here()
       let ix = counter(page).at(loc).first()
       return align(center, text(size: font.normal, [#ix]))
-    }))
+    })
 
   // The original style requirements is to use Computer Modern Bright but we
   // just use OpenType CMU Bright font.
   set text(font: font-family, size: font.normal)
-  set par(justify: true, leading: 0.52em)  // TODO: Why? Visually perfect.
-  show par: set block(spacing: 1.1em)
+  set par(justify: true, leading: 0.52em, spacing: 1.1em)  // Visually perfect.
 
   // Configure heading appearence and numbering.
   set heading(numbering: "1.1")
@@ -304,13 +326,12 @@
   body
 
   if bibliography != none {
-    set std-bibliography(title: [References], style: "tmlr.csl")
+    show: default-bibliography
     bibliography
   }
 
   if appendix != none {
-    set heading(numbering: "A.1")
-    counter(heading).update(0)
+    show: default-appendix
     appendix
   }
 }
