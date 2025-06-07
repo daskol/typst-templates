@@ -8,11 +8,13 @@
  * [2]: https://github.com/JmlrOrg/tmlr-style-file
  */
 
+// Lists of acceptable fonts.
+//
 // We prefer to use CMU Bright variant instead of Computer Modern Bright when
 // ever it is possible.
-#let font-family = ("CMU Serif", "Latin Modern Roman", "New Computer Modern")
-#let font-family-sans = ("CMU Sans Serif", "Latin Modern Sans",
-                         "New Computer Modern Sans")
+#let font-family = ("Latin Modern Roman", "New Computer Modern", "CMU Serif", )
+#let font-family-sans = ("Latin Modern Sans", "New Computer Modern Sans",
+                         "CMU Sans Serif")
 #let font-family-mono = ("Latin Modern Mono", "New Computer Modern Mono")
 
 #let font = (
@@ -23,6 +25,55 @@
   script: 8pt,
   small: 9pt,
 )
+
+/**
+ * Default font config (FC).
+ */
+#let font-config-default() = (
+  family: (serif: font-family,
+           sans: font-family-sans,
+           mono: font-family-mono),
+  size: font,
+)
+
+/**
+ * Ensure font config is valid.
+ */
+#let font-config-ensure(fc) = {
+  if fc == none {
+    return font-config-default()
+  } else if type(fc) == array and fc.len() != 2 {
+    return font-config-default()
+  } else if type(fc) == dictionary and fc.len() != 2 {
+    return font-config-default()
+  } else {
+    return fc
+  }
+}
+
+/**
+ * Merge auxiliary options to font config structure.
+ */
+#let font-config-merge(fc, aux) = {
+  if "font-family" in aux {
+    for kind in ("serif", "sans", "mono") {
+      if kind in aux.font-family {
+        fc.family.insert(kind, aux.font-family.at(kind))
+      }
+    }
+  }
+
+  if "font-size" in aux {
+    // Large, footnote, large, and so on.
+    for size in font.keys() {
+      if size in aux.font-family {
+        fc.family.insert(size, aux.font-family.at(size))
+      }
+    }
+  }
+
+  return fc
+}
 
 #let affl-keys = ("department", "institution", "location", "country")
 
@@ -39,7 +90,9 @@
   }
 }
 
-#let make-author(author, affls) = {
+#let make-author(author, affls, fc: none) = {
+  let fc = font-config-ensure(fc)
+
   let author-affls = if type(author.affl) == array {
     author.affl
   } else {
@@ -56,13 +109,14 @@
 
   return block(spacing: 0em, {
     set par(justify: true, leading: 0.50em, spacing: 0em)  // Visually perfect.
-    text(size: font.normal)[*#author.name*\ ]
-    text(size: font.small)[#lines.join([\ ])]
+    text(size: fc.size.normal)[*#author.name*\ ]
+    text(size: fc.size.small)[#lines.join([\ ])]
   })
 }
 
-#let make-email(author) = {
-  let label = text(size: font.small, emph(author.email))
+#let make-email(author, fc: none) = {
+  let fc = font-config-ensure(fc)
+  let label = text(size: fc.size.small, emph(author.email))
   return block(spacing: 0em, {
     // Compensate difference between name and email font sizes (10pt vs 9pt).
     v(1pt)
@@ -70,9 +124,9 @@
   })
 }
 
-#let make-authors(authors, affls) = {
+#let make-authors(authors, affls, fc: none) = {
   let cells = authors
-    .map(it => (make-author(it, affls), make-email(it)))
+    .map(it => (make-author(it, affls, fc: fc), make-email(it, fc: fc)))
     .join()
   return grid(
     columns: (2fr, 1fr),
@@ -81,26 +135,27 @@
     ..cells)
 }
 
-#let make-title(title, authors, abstract, review, accepted) = {
+#let make-title(title, authors, abstract, review, accepted, fc: none) = {
+  let fc = font-config-ensure(fc)
+
   // Render title.
-  v(-0.03in)  // Visually perfect.
+  v(-0.04in)  // Visually perfect.
   block(spacing: 0em, {
-    set block(spacing: 0em)
-    set par(leading: 10pt)  // Empirically found.
-    text(font: font-family-sans, size: font.Large, weight: "bold", title)
+    set par(leading: 8pt, spacing: 0em)  // Empirically found.
+    text(font: fc.family.sans, size: font.Large, weight: "bold", title)
   })
 
   // Render authors if paper is accepted or not accepted or ther is no
   // acceptance status (aka preprint).
   if accepted == none {
     v(31pt, weak: true)  // Visually perfect.
-    make-authors(..authors)
+    make-authors(..authors, fc: fc)
     v(-2pt)  // Visually perfect.
   } else if accepted {
     v(31pt, weak: true)  // Visually perfect.
-    make-authors(..authors)
+    make-authors(..authors, fc: fc)
     v(14.9pt, weak: true)  // Visually perfect.
-    let label = text(font: font-family-mono, weight: "bold", emph(review))
+    let label = text(font: fc.family.mono, weight: "bold", emph(review))
     [*Reviewed on OpenReview:* #link(review, label)]
   } else {
     v(0.3in + 0.2in - 3.5pt, weak: true)
@@ -109,21 +164,21 @@
       [*Paper under double-blind review*]
     })
   }
-  v(0.45in, weak: true)  // Visually perfect.
+  v(0.5in, weak: true)  // Visually perfect.
 
   // Render abstract.
   block(spacing: 0em, width: 100%, {
-    set text(size: font.normal)
-    set par(leading: 0.51em)  // Original 0.55em (or 0.45em?).
+    set text(size: fc.size.normal)
+    set par(leading: 4.5pt, spacing: 0em)  // Original 0.55em (or 0.45em?).
 
     // While all content is serif, headers and titles are sans serif.
     align(center,
       text(
-        font: font-family-sans,
-        size: font.large,
+        font: fc.family.sans,
+        size: fc.size.large,
         weight: "bold",
         [*Abstract*]))
-    v(22.2pt, weak: true)
+    v(22.4pt, weak: true)
     pad(left: 0.5in, right: 0.5in, abstract)
   })
   v(29.5pt, weak: true)  // Visually perfect.
@@ -174,6 +229,7 @@
   accepted: false,
   review: none,
   pubdate: none,
+  aux: (:),
   body,
 ) = {
   if pubdate == none {
@@ -190,6 +246,10 @@
   } else {
     ()
   }
+
+  // Prepare font config (FC).
+  let fc = font-config-default()
+  fc = font-config-merge(fc, aux)
 
   set document(
     title: title,
@@ -215,17 +275,17 @@
     footer: context {
       let loc = here()
       let ix = counter(page).at(loc).first()
-      return align(center, text(size: font.normal, [#ix]))
+      return align(center, text(size: fc.size.normal, [#ix]))
     })
 
   // The original style requirements is to use Computer Modern Bright but we
   // just use OpenType CMU Bright font.
-  set text(font: font-family, size: font.normal)
-  set par(justify: true, leading: 0.52em, spacing: 1.1em)  // Visually perfect.
+  set text(font: fc.family.serif, size: fc.size.normal)
+  set par(justify: true, leading: 5pt, spacing: 11pt)  // Visually perfect.
 
   // Configure heading appearence and numbering.
   set heading(numbering: "1.1")
-  show heading: set text(font: font-family-sans)
+  show heading: set text(font: fc.family.sans)
   show heading: it => {
     // Create the heading numbering.
     let number = if it.numbering != none {
@@ -248,21 +308,21 @@
     // TODO(@daskol): Use styles + measure to estimate ex.
     set align(left)
     if level == 1 {
-      text(size: font.large, weight: "bold", {
+      text(size: fc.size.large, weight: "bold", {
         let ex = 10pt
-        v(2.05 * ex, weak: true)  // Visually perfect.
+        v(2.1 * ex, weak: true)  // Visually perfect.
         [#prefix*#it.body*]
-        v(1.80 * ex, weak: true) // Visually perfect.
+        v(1.8 * ex, weak: true) // Visually perfect.
       })
     } else if level == 2 {
-      text(size: font.normal, weight: "bold", {
+      text(size: fc.size.normal, weight: "bold", {
         let ex = 6.78pt
-        v(2.8 * ex, weak: true)  // Visually perfect.
+        v(2.45 * ex, weak: true)  // Visually perfect.
         [#prefix*#it.body*]
         v(2.15 * ex, weak: true)  // Visually perfect. Original 1ex.
       })
     } else if level == 3 {
-      text(size: font.normal, weight: "bold", {
+      text(size: fc.size.normal, weight: "bold", {
         let ex = 6.78pt
         v(2.7 * ex, weak: true)  // Visually perfect.
         [#prefix*#it.body*]
@@ -321,7 +381,7 @@
   }
 
   // Render title + authors + abstract.
-  make-title(title, authors, abstract, review, accepted)
+  make-title(title, authors, abstract, review, accepted, fc: fc)
   // Render body as is.
   body
 
