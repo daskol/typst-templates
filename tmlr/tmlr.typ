@@ -342,8 +342,15 @@
     gap: 0.40em,
     indent: 12pt)  // Original 12pt.
 
-  // All captions either centered or aligned to the left.
-  show figure.caption: set align(left)
+  // All captions either centered or aligned to the left (See
+  // https://github.com/daskol/typst-templates/issues/6 for details).
+  show figure.caption: body => {
+    set align(center)
+    block(width: auto, {
+      set align(start)
+      body
+    })
+  }
 
   // Configure figures.
   show figure.where(kind: image): set figure.caption(position: bottom)
