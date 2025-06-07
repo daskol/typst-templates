@@ -39,6 +39,8 @@ This template exports the `tmlr` function with the following named arguments.
   uploaded to arXiv).
 - `review`: Hypertext link to review on OpenReview.
 - `pubdate`: Date of publication (used only month and date).
+- `aux`: Dictionary for adjusting show rules. For example, it overrides font
+  config (FC).
 
 The template will initialize your package with a sample call to the `tmlr`
 function in a show rule. If you want to change an existing project to use this
