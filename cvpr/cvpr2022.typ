@@ -29,13 +29,13 @@
 #let etal = emph[et~al]
 
 #let font-family = ("Times New Roman", "CMU Serif", "Latin Modern Roman",
-                    "New Computer Modern", "Times", "Serif")
+                    "New Computer Modern", "Libertinus Serif")
 
 #let font-family-sans = ("Arial", "TeX Gyre Heros", "New Computer Modern Sans",
-                         "CMU Sans Serif", "Sans")
+                         "CMU Sans Serif", "DejaVu Sans")
 
 #let font-family-mono = ("CMU Typewriter Text", "Latin Modern Mono",
-                         "New Computer Modern Mono", "Mono")
+                         "New Computer Modern Mono", "DejaVu Sans Mono")
 
 #let font-family-link = ("Courier New", "Nimbus Mono PS") + font-family-mono
 
@@ -106,7 +106,7 @@
   width: auto,
   height: 8.875in,
   gap: 30pt,
-) = locate(loc => {
+) = context {
   let margin = if margin == auto {
     (top: 1in - 0.5pt, left: 0.8125in, right: 0.929in)  // CVPR 2022 defaults.
   } else {
@@ -129,7 +129,7 @@
   dx = 7.571in + gap
   offset += num-lines
   xruler(right, dx, dy, width.right, height, offset, num-lines)
-})
+}
 
 #let ruler = make-ruler()  // Default CVPR 2022 ruler.
 
@@ -315,16 +315,17 @@
     },
     footer-descent: 23.4pt, // Visually perfect.
     footer: if accepted != none and not accepted {
-      locate(loc=>{
-        let ix=counter(page).at(loc).first()
+      context {
+        let ix = counter(page).get().first()
         return align(center, text(size: font-size.normal, [#ix]))
-      })
+      }
     },
   )
 
   set text(font: font-family, size: font-size.normal)
-  set par(justify: true, first-line-indent: 0.166666in, leading: 0.532em)
-  show par: set block(spacing: 0.54em)
+  set par(
+    first-line-indent: 0.166666in, leading: 0.532em, spacing:  0.54em,
+    justify: true)
   show raw: set text(font: font-family-mono, size: font-size.normal)
 
   // Configure heading appearence and numbering.
@@ -340,8 +341,7 @@
   show quote.where(block: true): it => {
     set block(spacing: 14pt)
     set pad(left: 20pt, right: 20pt)
-    set par(first-line-indent: 0em)
-    show par: set block(spacing: 9.8pt)
+    set par(first-line-indent: 0em, spacing: 9.8pt)
     it
   }
 
@@ -415,6 +415,9 @@
 
   // NOTE It seems that there is a typo in formatting instructions and actual
   // gutter is 3/8 in not 5/16 in.
+  //
+  // TODO(@daskol): Set number of columns in page settings. Otherwise,
+  // footnotes use all page width.
   columns(2, gutter: 0.3125in, {
     // Render abstract.
     block(width: 100%, {
