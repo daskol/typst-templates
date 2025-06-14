@@ -2,7 +2,7 @@
  * iclr.typ
  */
 
-#import "/iclr2025.typ": iclr2025
+#import "/iclr2025.typ": default-header-title, iclr2025
 
 /**
  * iclr - Template for International Conference on Learning Representations
@@ -19,7 +19,8 @@
  *   appendix: Content to append after bibliography section.
  *   accepted: Valid values are `none`, `false`, and `true`. Missing value
  *   (`none`) is designed to prepare arxiv publication. Default is `false`.
- *   id: Submission identifier.
+ *   aux: Auxiliary parameters to tune font settings (e.g. font familty) or
+ *   page decorations (e.g. page header).
  */
 #let iclr(
   title: [],
@@ -30,6 +31,7 @@
   bibliography: none,
   appendix: none,
   accepted: false,
+  aux: (:),
   body,
 ) = {
   show: iclr2025.with(
@@ -41,6 +43,7 @@
     bibliography: bibliography,
     appendix: appendix,
     accepted: accepted,
+    aux: aux,
   )
   body
 }
