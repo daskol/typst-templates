@@ -50,6 +50,8 @@ This template exports the `iclr` function with the following named arguments.
   document is produced; `accepted: true` produces camera-redy version. If
   the argument is set to `none` then preprint version is produced (can be
   uploaded to arXiv).
+- `aux`: Auxiliary parameters to tune font settings (e.g. font familty) or page
+  decorations (e.g. page header).
 
 The template will initialize your package with a sample call to the `iclr`
 function in a show rule. If you want to change an existing project to use this
