@@ -7,7 +7,6 @@
  * https://sciencejournals.ru/journal/danmiup/
  */
 
-
 /**
  * math
  *
@@ -67,11 +66,16 @@
       return align(center)[#ix]
     })
 
-  set text(size: 10pt)
+  set text(font: "Times New Roman", size: 10pt)
   set par(first-line-indent: (amount: 1.6em, all: true), justify: true)
 
   set heading(numbering: "1")
   set std.math.equation(numbering: "(1)")
 
   body
+
+  if bibliography != none {
+    set std.bibliography(title: [Список литературы])
+    bibliography
+  }
 }
