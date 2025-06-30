@@ -1,7 +1,7 @@
-#import "/aaai2024.typ": aaai2024
+#import "/aaai.typ": aaai2026
 #import "/logo.typ": LaTeX, LaTeXe as LaTeX2e, TeX
 
-#show: aaai2024.with(
+#show: aaai2026.with(
   title: [
     AAAI Press Anonymous Submission\ Instructions for Authors Using #LaTeX
   ],
@@ -11,7 +11,7 @@
     in the publication have a uniform appearance, authors must adhere to the
     following instructions.
   ],
-  bibliography: bibliography("main.bib"),
+  bibliography: bibliography("main.bib", full: true),
 )
 
 = Preparing an Anonymous Submission
@@ -625,6 +625,7 @@ your research. Please prepare complete and accurate citations.
     corrected or the PDF combined with others for the final proceedings. Crop
     your figures properly in a graphics program -- not in #LaTeX.
   ],
+  placement: top,
   image("figure1.svgz")) <fig1>
 
 #figure(
@@ -636,6 +637,8 @@ your research. Please prepare complete and accurate citations.
     Crop your figures properly in a graphics program. Don't just alter the
     bounding box.
   ],
+  placement: top,
+  scope: "parent",
   image("figure2.svgz")) <fig2>
 
 // Using the \centering command instead of \begin{center} ... \end{center} will
