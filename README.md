@@ -1,3 +1,7 @@
+![Linting and testing][on-push]
+
+[on-push]: https://github.com/daskol/typst-templates/actions/workflows/on-push.yml/badge.svg
+
 # Typst: Templates
 
 *A curated list of paper templates in the area of machine learning.*
