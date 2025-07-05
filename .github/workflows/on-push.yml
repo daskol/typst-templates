@@ -1,0 +1,28 @@
+name: Linting and testing
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+  packages: read
+
+jobs:
+
+  render:
+    name: Compile templates with Typst ${{ matrix.typst-version }}
+    runs-on: 'ubuntu-latest'
+    container:
+      image: 'ghcr.io/daskol/typst-templates'
+    strategy:
+      matrix:
+        typst-version: ['0.12.0', '0.13.0', '0.13.1']
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4.2.2
+      - name: Compile all
+        run: .github/scripts/render-templates.sh '${{ matrix.typst-version }}'
