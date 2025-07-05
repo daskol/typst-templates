@@ -106,7 +106,7 @@
   width: auto,
   height: 8.875in,
   gap: 30pt,
-) = locate(loc => {
+) = context {
   let margin = if margin == auto {
     (top: 1in - 0.5pt, left: 0.8125in, right: 0.929in)  // CVPR 2022 defaults.
   } else {
@@ -129,7 +129,7 @@
   dx = 7.571in + gap
   offset += num-lines
   xruler(right, dx, dy, width.right, height, offset, num-lines)
-})
+}
 
 #let ruler = make-ruler()  // Default CVPR 2022 ruler.
 
@@ -315,10 +315,10 @@
     },
     footer-descent: 23.4pt, // Visually perfect.
     footer: if accepted != none and not accepted {
-      locate(loc=>{
-        let ix=counter(page).at(loc).first()
+      context {
+        let ix=counter(page).at(here()).first()
         return align(center, text(size: font-size.normal, [#ix]))
-      })
+      }
     },
   )
 
