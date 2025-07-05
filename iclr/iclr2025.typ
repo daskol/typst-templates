@@ -91,7 +91,7 @@
   width: auto,
   height: 8.875in,
   gap: 30pt,
-) = locate(loc => {
+) = context {
   let margin = if margin == auto {
     (top: 1in - 0.5pt + 9.5pt, left: 1.75in - 1em, right: 1.75in)  // ICLR 2025 defaults.
   } else {
@@ -109,7 +109,7 @@
   let dy = margin.top
   let offset = lineno.get().at(0)
   xruler(left, dx, dy, width.left, height, offset, num-lines)
-})
+}
 
 #let ruler = make-ruler()  // Default CVPR 2022 ruler.
 
@@ -256,15 +256,15 @@
       line(length: 100%, stroke: 0.4pt)
     },
     footer-descent: 23.5pt, // Visually perfect.
-    footer: locate(loc => {
-      let ix = counter(page).at(loc).first()
+    footer: context {
+      let ix = counter(page).at(here()).first()
       return align(center, text(size: font-size.normal, [#ix]))
-    }),
+    },
   )
 
   set text(font: font-family, size: font-size.normal)
-  set par(justify: true, leading: 4.3pt)
-  show par: set block(spacing: 10pt)  // \topsep + \parskip + \partopsep
+  // Paragraph spacing is \topsep + \parskip + \partopsep.
+  set par(justify: true, leading: 4.3pt, spacing: 10pt)
   show raw: set text(font: font-family-mono, size: font-size.normal)
 
   // Configure heading appearence and numbering.
