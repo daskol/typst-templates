@@ -245,10 +245,10 @@
     paper: "us-letter",
     margin: (left: 1.25in, right: 1.25in, top: 1.25in + 4.5pt, bottom: 1in),
     header-ascent: 24pt + 0.25in + 4.5pt,
-    header: locate(loc => {
+    header: context {
       // The first page is a title page. Short title on even pages and authors
       // on odd ones.
-      let pageno = counter(page).at(loc).first()
+      let pageno = counter(page).at(here()).first()
       if pageno == 1 {
         // If this is preprint then there is nothing in header on title page.
         if is_preprint {
@@ -257,7 +257,7 @@
 
         let volume = pubdata.volume
         let year = pubdata.published-at.year()
-        let nopages = locate(loc => counter(page).final().at(0))
+        let nopages = counter(page).final().at(0)
 
         let format-date = (date, supplement) => {
           return date
@@ -282,10 +282,10 @@
         set text(size: font-size.small)
         smallcaps(short-title)
       }
-    }),
+    },
     footer-descent: 10%,
-    footer: locate(loc => {
-      let pageno = counter(page).at(loc).first()
+    footer: context {
+      let pageno = counter(page).at(here()).first()
       if pageno == 1 {
         set text(size: font-size.script)
         set par(first-line-indent: 0pt, justify: true)
@@ -318,7 +318,7 @@
         v(-1pt)  // Compensatation for what?
         align(center, text(size: font-size.small, [#pageno]))
       }
-    }),
+    },
   )
 
   // Basic paragraph and text settings.
@@ -386,10 +386,10 @@
       let rules = (h1, h2, h3)
       let rule = rules.at(it.level - 1, default: h)
       show: rule
-      let numb = locate(loc => {
+      let numb = context {
         let counter = counter(heading)
-        return numbering(it.numbering, ..counter.at(loc))
-      })
+        return numbering(it.numbering, ..counter.at(here()))
+      }
       block([Appendix~#numb~#it.body])
     }
 
