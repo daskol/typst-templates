@@ -20,14 +20,14 @@ luctus a, egestas a, turpis. Mauris lacinia lorem sit amet ipsum. Nunc quis
 urna dictum turpis accumsan semper.]
 
 #let formulas = (
-  $ accent(x, macron) 
+  $ accent(x, macron)
     = 1 / n sum_(i = 1)^(i = n) x_i
     = (x_1 + x_2 + dots + x_n) / n $,
   $ integral_0^infinity e^(-alpha x^2) dif x
     = 1/2 sqrt(integral_(-infinity)^infinity e^(-alpha x^2))
       dif x integral_(-infinity)^infinity e^(-alpha y^2) dif y
     = 1/ 2 sqrt(pi / alpha) $,
-  $ sum_(k = 0)^infinity a_0 q^k 
+  $ sum_(k = 0)^infinity a_0 q^k
     = lim_(n arrow.r infinity) sum_(k = 0)^n a_0 q^k
     = lim_(n arrow.r infinity) a_0 (1-q^(n + 1)) / (1-q)
     = a_0 / (1-q) $,

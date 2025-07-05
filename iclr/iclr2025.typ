@@ -344,7 +344,7 @@
         it.caption
       })
     }
-    
+
     if it.placement == none {
       render()
     } else {
