@@ -5,13 +5,13 @@
 #let std-bibliography = bibliography  // Due to argument shadowing.
 
 #let font-family = ("Times New Roman", "CMU Serif", "Latin Modern Roman",
-                    "New Computer Modern", "Times", "Serif")
+                    "New Computer Modern")
 
 #let font-family-sans = ("Nimbus Sans", "CMU Sans Serif", "Latin Modern Sans",
-                         "New Computer Modern Sans", "Sans")
+                         "New Computer Modern Sans")
 
 #let font-family-mono = ("CMU Typewriter Text", "Latin Modern Mono",
-                         "New Computer Modern Mono", "Mono")
+                         "New Computer Modern Mono")
 
 #let font-family-link = ("Courier New", "Nimbus Mono PS") + font-family-mono
 
@@ -32,8 +32,8 @@
  * Customized text elements.
  */
 
- #let header-title = (
-   [Under review as a conference paper at ICLR 2025],
+ #let default-header-title = (
+   [Under review as a conference paper at ICLR 2025],  // blind
    [Published as a conference paper at ICLR 2025],  // accepted
 )
 
@@ -209,6 +209,8 @@
  *   appendix: Content to append after bibliography section.
  *   accepted: Valid values are `none`, `false`, and `true`. Missing value
  *   (`none`) is designed to prepare arxiv publication. Default is `false`.
+ *   aux: Auxiliary parameters to tune font settings (e.g. font familty) or
+ *   page decorations (e.g. page header).
  *   id: Submission identifier.
  */
 #let iclr2025(
@@ -220,9 +222,14 @@
   bibliography: none,
   appendix: none,
   accepted: false,
+  aux: (:),
   id: none,
   body,
 ) = {
+  // Override defaults if needed.
+  let header-title = aux.at("header-title", default: default-header-title)
+  let font_ = aux.at("font", default: (family: font-family))
+
   let meta-authors = if accepted == none or accepted {
     authors.map(it => it.names.map(content-to-string)).join()
   } else {
@@ -262,14 +269,15 @@
     },
   )
 
-  set text(font: font-family, size: font-size.normal)
   // Paragraph spacing is \topsep + \parskip + \partopsep.
+  set text(font: font-family, size: font-size.normal)
   set par(justify: true, leading: 4.3pt, spacing: 10pt)
+
   show raw: set text(font: font-family-mono, size: font-size.normal)
 
   // Configure heading appearence and numbering.
   set heading(numbering: "1.1")
-  show heading: set text(font: font-family, weight: "regular")
+  show heading: set text(font: font_.family, weight: "regular")
   show heading: it => {
     // Create the heading numbering.
     let number = if it.numbering != none {
