@@ -7,11 +7,76 @@
 /// <reference types="tree-sitter-cli/dsl" />
 // @ts-check
 
+const ENTRY = 'ENTRY';
+const INTEGERS = 'INTEGERS';
+const FUNCTION = 'FUNCTION';
+const STRINGS = 'STRINGS';
+
 module.exports = grammar({
-  name: "bst",
+  name: 'bst',
+
+  extras: $ => [/\s/, $.comment],
 
   rules: {
-    // TODO: add the actual grammar rules
-    source_file: $ => "hello"
+    root: $ => repeat(choice($.comment, $.command)),
+
+    comment: $ => token(prec(-1, seq('%', /[^\n]*/))),
+
+    command: $ => choice(
+      $.entry, $.integers, $.strings, $.macro, $.function, $.read, $.execute,
+      $.iterate, $.sort, $.reverse,
+    ),
+
+    entry: $ => seq(token(/ENTRY/i), $.entries, $.ivars, $.svars),
+
+    entries: $ => seq('{', repeat($.id), '}'),
+
+    ivars: $ => $.vars,
+
+    svars: $ => $.vars,
+
+    vars: $ => seq('{', repeat($.id), '}'),
+
+    integers: $ => seq(token(/INTEGERS/i), $.ivars),
+
+    macro: $ => seq(token(/MACRO/i), '{', $.name, '}', '{', $.string, '}'),  // XXX
+
+    function: $ => seq(token(/FUNCTION/i), '{', $.name, '}', $.body),
+
+    name: $ => $.id,
+
+    body: $ => $.block,
+
+    block: $ => seq('{', repeat(choice($.literal, $.operator, $.builtin, $.ref, $.id, $.block)), '}'),
+
+    literal: $ => choice($.integer, $.string),
+
+    string: $ => seq('"', /[^"]*/, '"'),
+
+    integer: $ => seq('#', /-?\d+/),
+
+    operator: $ => choice('=', ':=', '*', '>', '<', '+', '-'),
+
+    builtin: $ => prec(-1, seq(/[A-Za-z_][A-Za-z0-9_.-]*/, '$')),
+
+    ref: $ => seq('\'', choice($.id, $.builtin)),
+
+    strings: $ => seq(token(/STRINGS/i), $.svars),
+
+    id: $ => /[A-Za-z_][A-Za-z0-9_.-]*/,
+
+    word: $ => /[A-Za-z_][A-Za-z0-9_.-]*/,
+
+    read: $ => token(/READ/i),
+
+    execute: $ => seq(token(/EXECUTE/i), '{', $.func, '}'),
+
+    func: $ => choice($.name, $.builtin),
+
+    iterate: $ => seq(token(/ITERATE/i), '{', $.func, '}'),
+
+    sort: $ => token(/SORT/i),
+
+    reverse: $ => seq(token(/REVERSE/i), '{', $.func, '}'),
   }
 });
