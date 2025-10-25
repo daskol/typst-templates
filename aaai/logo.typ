@@ -7,6 +7,7 @@
   box(T + kern(-0.1667em) + E + kern(-0.125em) + X)
 }
 #let LaTeX = context {
+  set text(bottom-edge: "baseline", top-edge: "x-height")
   let l = measure(text(10pt, "L"))
   let a = measure(text(7pt, "A"))
   let L = "L"
@@ -14,5 +15,6 @@
   box(L + kern(-0.36em) + A + kern(-0.15em) + TeX)
 }
 #let LaTeXe = context {
+  set text(bottom-edge: "baseline", top-edge: "x-height")
   box(LaTeX + sym.space.sixth + [2#text(baseline: 0.3em, $epsilon$)])
 }

@@ -17,7 +17,7 @@
 #let font-family-mono = ("Latin Modern Mono", "New Computer Modern Mono")
 
 #let font = (
-  LARGE: 14.4pt,
+  LARGE: 14.5pt,
   Large: 12pt,
   footnote: 10pt,
   large: 11pt,
@@ -127,10 +127,11 @@
   set align(center)
 
   // Render title.
-  v(0.70in)
+  v(1.25cm)
   block(spacing: 0em, {
-    set par(leading: 8pt, spacing: 0em)  // Empirically found.
-    text(font: fc.family.serif, size: font.LARGE, weight: "bold", title)
+    set text(font: fc.family.serif, size: font.LARGE)
+    set par(leading: 0.15em, spacing: 0em)
+    strong(title)
   })
 
   // Render authors if paper is accepted or not accepted or ther is no
@@ -153,27 +154,56 @@
     })
   }
 
-  v(0.75in)
+  v(0.5in)
 }
+
+#let h1(fc: none, body) = align(center, {
+  set text(size: fc.size.Large, weight: "bold")
+  set par(justify: false, leading: 0.53cm - 1em)
+  let leading = 0.53cm - 1em
+  v(0.64cm + leading)
+  body
+  v(0.21cm + leading)
+})
+
+#let h2(fc: none, body) = align(left, {
+  set text(size: fc.size.large, weight: "bold")
+  set par(justify: false, leading: 0.46cm - 1em)
+  let leading = 0.46cm - 1em
+  v(0.42cm + leading)
+  body
+  v(0.11cm + leading)
+})
+
+#let h3(fc: none, body) = align(left, {
+  set text(size: fc.size.normal, weight: "bold")
+  set par(justify: false, leading: 0.42cm - 1em)
+  let leading = 0.42cm - 1em
+  v(0.11cm + leading)
+  body
+  v(leading)
+})
+
+#let abstract-header(fc: none, body) = align(center, {
+  set text(size: fc.size.normal, weight: "bold")
+  set par(justify: false, leading: 0.42cm - 1em, spacing: 0pt)
+  body
+  v(0.11cm)
+})
+
+#let abstract-text(fc: none, body) = align(center, {
+  set text(size: fc.size.small)
+  set par(leading: 0.35cm - 1em, spacing: 0.35cm - 1em)
+  pad(left: 0.35cm, right: 0.35cm, body)
+})
 
 #let make-abstract(abstract, fc: none) = {
   let fc = font-config-ensure(fc)
 
-  // Render abstract.
   block(spacing: 0em, width: 100%, {
-    set text(size: fc.size.normal)
-    set par(leading: 4.5pt, spacing: 0em)  // Original 0.55em (or 0.45em?).
-
-    // While all content is serif, headers and titles are sans serif.
-    align(center,
-      text(
-        font: fc.family.serif,
-        size: fc.size.normal,
-        [*Abstract*]))
-    v(12pt)
-    pad(left: 1em, right: 1em, abstract)
+    abstract-header(fc: fc)[Abstract]
+    abstract-text(fc: fc, abstract)
   })
-  v(29.5pt, weak: true)  // Visually perfect.
 }
 
 #let make-title(title, authors, review, accepted, fc: none) = place(
@@ -197,8 +227,14 @@
 /**
  * Show-rule for bibliography.
  */
-#let default-bibliography(body) = {
-  set par(justify: true, first-line-indent: 0em, leading: 4.5pt, spacing: 7pt)
+#let default-bibliography(fc: none, body) = {
+  let fc = font-config-ensure(fc)
+  set text(size: fc.size.small)
+  set par(
+    justify: true,
+    first-line-indent: 0em,
+    leading: 0.35cm - 1em,
+    spacing: 0.11cm + (0.35cm - 1em))
   set std.bibliography(title: [References], style: "acl.csl")
   body
 }
@@ -264,13 +300,24 @@
     columns: 2,
     margin: (left: 0.75in, right: 0.75in, top: 0.75in, bottom: 1.25in))
 
-  set text(font: fc.family.serif, size: fc.size.normal)
-  set par(justify: true, first-line-indent: 1em, leading: 5pt, spacing: 6pt)
+  set columns(gutter: 0.35in)
+
+  set text(
+    font: fc.family.serif,
+    size: fc.size.normal,
+    top-edge: 1em,
+    bottom-edge: 0em)
+  let leading = 0.42cm - 1em
+  set par(
+    justify: true,
+    first-line-indent: 1em,
+    leading: leading,
+    spacing: leading)
 
   // Configure heading appearence and numbering.
   set heading(numbering: "1.1")
   show heading: set text(font: fc.family.serif)
-  show heading: it => block(width: 100%, {
+  show heading: it => block(width: 100%, spacing: 0pt, {
     // Render section with such names without numbering as level 3 heading.
     let unnumbered = (
       [Broader Impact Statement],
@@ -279,34 +326,18 @@
     )
     let level = it.level
 
-    // TODO(@daskol): Use styles + measure to estimate ex.
     if level == 1 {
-      set align(center)
-      text(size: fc.size.Large, weight: "bold", {
-        let ex = 10pt
-        v(2.1 * ex, weak: true)  // Visually perfect.
-        [*#it.body*]
-        v(1.8 * ex, weak: true) // Visually perfect.
-      })
+      h1(fc: fc, it.body)
     } else if level == 2 {
-      set align(left)
-      text(size: fc.size.large, weight: "bold", {
-        let ex = 6.78pt
-        v(2.45 * ex, weak: true)  // Visually perfect.
-        [*#it.body*]
-        v(2.15 * ex, weak: true)  // Visually perfect. Original 1ex.
-      })
+      h2(fc: fc, it.body)
     } else if level == 3 {
-      set align(left)
-      text(size: fc.size.normal, weight: "bold", {
-        v(3pt)
-        [*#it.body*]
-      })
+      h3(fc: fc, it.body)
     }
   })
 
   // Configure code blocks (listings).
   show raw: set block(spacing: 1.95em)
+  show raw: set block(spacing: 12pt)
 
   // Configure footnote (almost default).
   show footnote.entry: set text(size: 8pt)
@@ -314,7 +345,7 @@
     separator: line(length: 2in, stroke: 0.35pt),
     clearance: 6.65pt,
     gap: 0.40em,
-    indent: 12pt)  // Original 12pt.
+    indent: 12pt)
 
   // All captions either centered or aligned to the left (See
   // https://github.com/daskol/typst-templates/issues/6 for details).
@@ -336,12 +367,20 @@
   set table(inset: 4pt)
 
   // Configure numbered lists.
-  set enum(indent: 0.5em, spacing: 1.3em)
-  show enum: set block(above: 2em)
+  set enum(indent: 0.5em, spacing: 2 * leading)
+  show enum: it => {
+    set block(above: leading * 0.8, below: leading)
+    set par(leading: leading * 0.4)
+    it
+  }
 
   // Configure bullet lists.
-  set list(indent: 0.5em, spacing: 7pt, marker: ([•], [‣], [⁃]))
-  show list: set block(above: 7pt)
+  set list(indent: 0.5em, spacing: 2 * leading, marker: ([•], [‣], [⁃]))
+  show list: it => {
+    set block(above: leading * 0.8, below: leading)
+    set par(leading: leading * 0.4)
+    it
+  }
 
   // Configure math numbering and referencing.
   set math.equation(numbering: "(1)", supplement: [])
