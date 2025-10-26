@@ -1,0 +1,9 @@
+# Generated source files
+src/*.json linguist-generated
+src/parser.c linguist-generated
+src/tree_sitter/* linguist-generated
+
+# Python bindings
+tree_sitter_bst/** linguist-generated
+setup.py linguist-generated
+pyproject.toml linguist-generated

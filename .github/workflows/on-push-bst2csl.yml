@@ -1,0 +1,46 @@
+name: BST2CSL
+
+on:
+  push: &on-push
+    branches:
+      - main
+    paths:
+      - 'bst2csl/**'
+      - 'tree-sitter-bst/**'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'bst2csl/**'
+      - 'tree-sitter-bst/**'
+
+concurrency:
+  group: ${{github.workflow}}-${{github.ref}}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  packages: read
+
+jobs:
+  test:
+    name: Test `tree-sitter-bst` parser
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: tree-sitter-bst
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4.2.2
+
+      - uses: tree-sitter/setup-action/cli@c4c258862a6a7e43a7aef152256bbf659972c408  # v2
+
+      - name: Generate and build parser
+        run: |
+          tree-sitter generate
+
+      - name: Parse corpus of sample files
+        id: corpus-parsing
+        run: |
+          tar xfI corpus/corpus.tar.br brotli
+          patch --strip=1 --input=corpus/corpus.diff
+          tree-sitter parse -t -q --paths=corpus-index.txt

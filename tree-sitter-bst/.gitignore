@@ -1,0 +1,23 @@
+# Python artifacts
+/.venv/
+/build/
+/dist/
+*.egg-info
+*.whl
+*.so
+
+# Example dirs
+/examples/*/
+
+# Grammar volatiles
+*.wasm
+*.obj
+*.o
+
+# Archives
+*.tar.gz
+*.tgz
+*.zip
+
+# Ignore BST-files in corpus directory.
+/corpus/**/*.bst
