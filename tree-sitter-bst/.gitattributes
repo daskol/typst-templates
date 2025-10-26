@@ -6,6 +6,6 @@ src/parser.c linguist-generated
 src/tree_sitter/* linguist-generated
 
 # Python bindings
-bindings/python/** linguist-generated
+tree_sitter_bst/** linguist-generated
 setup.py linguist-generated
 pyproject.toml linguist-generated

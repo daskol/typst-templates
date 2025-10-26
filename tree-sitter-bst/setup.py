@@ -1,7 +1,7 @@
 from os import path
 from sysconfig import get_config_var
 
-from setuptools import Extension, find_packages, setup
+from setuptools import Extension, setup
 from setuptools.command.build import build
 from setuptools.command.build_ext import build_ext
 from setuptools.command.egg_info import egg_info
@@ -22,8 +22,6 @@ class BuildExt(build_ext):
             ext.extra_compile_args = ["-std=c11", "-fvisibility=hidden"]
         else:
             ext.extra_compile_args = ["/std:c11", "/utf-8"]
-        if path.exists("src/scanner.c"):
-            ext.sources.append("src/scanner.c")
         if ext.py_limited_api:
             ext.define_macros.append(("Py_LIMITED_API", "0x030A0000"))
         super().build_extension(ext)
@@ -43,10 +41,8 @@ class EggInfo(egg_info):
         self.filelist.recursive_include("queries", "*.scm")
         self.filelist.include("src/tree_sitter/*.h")
 
-
 setup(
-    packages=find_packages("bindings/python"),
-    package_dir={"": "bindings/python"},
+    packages=['tree_sitter_bst'],
     package_data={
         "tree_sitter_bst": ["*.pyi", "py.typed"],
         "tree_sitter_bst.queries": ["*.scm"],
@@ -56,7 +52,7 @@ setup(
         Extension(
             name="_binding",
             sources=[
-                "bindings/python/tree_sitter_bst/binding.c",
+                "tree_sitter_bst/binding.c",
                 "src/parser.c",
             ],
             define_macros=[
@@ -73,5 +69,5 @@ setup(
         "bdist_wheel": BdistWheel,
         "egg_info": EggInfo,
     },
-    zip_safe=False
+    zip_safe=False,
 )

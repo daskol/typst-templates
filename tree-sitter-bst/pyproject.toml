@@ -15,7 +15,7 @@ classifiers = [
 ]
 authors = [{ name = "Daniel Bershatsky", email = "daniel.bershatsky@gmail.com" }]
 requires-python = ">=3.10"
-license.text = "Apache-2.0"
+license = "Apache-2.0"
 readme = "README.md"
 
 [project.urls]
@@ -27,3 +27,9 @@ core = ["tree-sitter~=0.24"]
 [tool.cibuildwheel]
 build = "cp310-*"
 build-frontend = "build"
+
+[tool.setuptools.exclude-package-data]
+tree_sitter_bst = [
+  "binding.c",
+  "binding_test.py",
+]
