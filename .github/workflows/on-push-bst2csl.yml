@@ -42,4 +42,5 @@ jobs:
         id: corpus-parsing
         run: |
           tar xfI corpus/corpus.tar.br brotli
+          patch --strip=1 --input=corpus/corpus.diff
           tree-sitter parse -t -q --paths=corpus-index.txt

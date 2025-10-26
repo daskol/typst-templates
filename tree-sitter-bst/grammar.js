@@ -7,15 +7,10 @@
 /// <reference types="tree-sitter-cli/dsl" />
 // @ts-check
 
-const ENTRY = 'ENTRY';
-const INTEGERS = 'INTEGERS';
-const FUNCTION = 'FUNCTION';
-const STRINGS = 'STRINGS';
-
 module.exports = grammar({
   name: 'bst',
 
-  extras: $ => [/\s/, $.comment],
+  extras: $ => [/[\s　]/, $.comment],
 
   rules: {
     root: $ => repeat(choice($.comment, $.command)),
@@ -39,7 +34,9 @@ module.exports = grammar({
 
     integers: $ => seq(token(/INTEGERS/i), $.ivars),
 
-    macro: $ => seq(token(/MACRO/i), '{', $.name, '}', '{', $.string, '}'),  // XXX
+    macro: $ => seq(token(/MACRO/i), '{', $.pattern, '}', '{', $.string, '}'),  // XXX
+
+    pattern: $ => /[A-Za-z_][A-Za-z0-9_.-\/]*/,  // Similar to name or id.
 
     function: $ => seq(token(/FUNCTION/i), '{', $.name, '}', $.body),
 
@@ -47,7 +44,11 @@ module.exports = grammar({
 
     body: $ => $.block,
 
-    block: $ => seq('{', repeat(choice($.literal, $.operator, $.builtin, $.ref, $.id, $.block)), '}'),
+    block: $ => seq(
+      '{',
+      repeat(choice($.literal, $.operator, $.builtin, $.ref, $.id, $.block)),
+      '}',
+    ),
 
     literal: $ => choice($.integer, $.string),
 
@@ -55,17 +56,18 @@ module.exports = grammar({
 
     integer: $ => seq('#', /-?\d+/),
 
-    operator: $ => choice('=', ':=', '*', '>', '<', '+', '-'),
+    operator: $ => choice('=', ':=', '*', '>', '<', '+', '-', '&'),
 
-    builtin: $ => prec(-1, seq(/[A-Za-z_][A-Za-z0-9_.-]*/, '$')),
+    builtin: $ => prec(-1, /[A-Za-z_][A-Za-z0-9_.\-]*\$/),
 
     ref: $ => seq('\'', choice($.id, $.builtin)),
 
     strings: $ => seq(token(/STRINGS/i), $.svars),
 
-    id: $ => /[A-Za-z_][A-Za-z0-9_.-]*/,
+    // NOTE See biblatex.bst and achicago.bst.
+    id: $ => /[A-Za-z_][A-Za-z0-9_.\-+:<>&]*/,
 
-    word: $ => /[A-Za-z_][A-Za-z0-9_.-]*/,
+    word: $ => /[A-Za-z_][A-Za-z0-9_.\-]*/,
 
     read: $ => token(/READ/i),
 
