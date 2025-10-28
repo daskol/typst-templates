@@ -12,22 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""TBD"""
-
-from argparse import ArgumentParser, Namespace
 from pathlib import Path
 
-parser = ArgumentParser(description=__doc__)
-parser.add_argument('path', type=Path, help='path to bst-file')
+from bst2csl.module import Module
+
+data_dir = Path(__file__).parent / 'testdata'
 
 
-def compile_(path: Path):
-    from bst2csl.module import Module
-    m = Module.from_path(path)
-    print('functions:', m.list_functions())
-    print('module:   ', m)
+class TestModule:
 
-
-def main() -> None:
-    ns: Namespace = parser.parse_args()
-    compile_(ns.path)
+    def test_from_path(self):
+        m = Module.from_path(data_dir / 'sample.bst')
+        assert len(m.list_functions()) == 3
