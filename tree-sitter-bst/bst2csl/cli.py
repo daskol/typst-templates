@@ -15,8 +15,9 @@
 """TBD"""
 
 from argparse import ArgumentParser, Namespace
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from io import StringIO
+from itertools import count
 from pathlib import Path
 from string import ascii_lowercase
 from typing import IO, Any, Callable
@@ -28,6 +29,24 @@ parser = ArgumentParser(description=__doc__)
 parser.add_argument('path', type=Path)
 
 
+WriteFn = Callable[['Primitive', IO, list[Any], list[Any], str], None]
+
+def write_default(prim: 'Primitive', fp: IO, inputs: list[Any],
+                  outputs: list[Any], indent: str = ''):
+    names = (ascii_lowercase[i] for i in count())
+    inames = [next(names) for _ in inputs]
+    if len(outputs) > 0:
+        onames = [next(names) for _ in outputs]
+        parts = onames
+        parts.append('=')
+    else:
+        parts = []
+    parts.append(prim.name)
+    parts.extend(inames)
+    fp.write(indent)
+    fp.write(' '.join(parts))
+
+
 @dataclass(slots=True)
 class Primitive:
 
@@ -35,27 +54,25 @@ class Primitive:
 
     arity: int = 1
 
-    _write: Callable[[IO], None] | None = None
+    _write: WriteFn = write_default
 
     def __hash__(self) -> int:
         return id(self)
 
     def __str__(self) -> str:
         buf = StringIO()
-        self.write(buf)
+        self.write(buf, [], [])
         return buf.getvalue()
 
     def def_simple_eval(self, fn: Callable[..., Any]):
         TABLE[self] = fn
         return fn
 
-    def def_write(self, fn: Callable[[IO], None]):
+    def def_write(self, fn: WriteFn):
         self._write = fn
 
-    def write(self, fp: IO):
-        if self._write is not None:
-            self._write(fp)
-        pass
+    def write(self, fp: IO, inputs: list[Any], outputs: list[Any], indent=''):
+        return self._write(self, fp, inputs, outputs, indent)
 
 
 class SimpleUntyped:
@@ -141,6 +158,7 @@ def newline():
 def add_period_p(lhs, rhs):
     return (Variable(None), )
 
+
 PRIMITIVES = {
     ':=': assign_p,
     '=': equal_p,
@@ -158,16 +176,74 @@ PRIMITIVES = {
 
 @dataclass(slots=True)
 class Eq:
+    """An abstract representation of a single clause."""
 
     primitive: Primitive
+
     inputs: list[Any]
+
     outputs: list[Any]
 
     def __repr__(self) -> str:
-        arity = self.primitive.arity
-        parts = [ascii_lowercase[arity], '=', self.primitive.name]
-        parts.extend(x for x in ascii_lowercase[:arity])
-        return ' '.join(parts)
+        buf = StringIO()
+        self.write(buf)
+        return buf.getvalue()
+
+    def write(self, fp: IO, indent: str = ''):
+        self.primitive.write(fp, self.inputs, self.outputs, indent)
+
+
+@dataclass(slots=True)
+class Variable:
+    """An abstract representation of a value (or variable)."""
+
+    value: Any
+
+    name: str | None = None
+
+
+@dataclass(slots=True)
+class Expr:
+    """An abstract representation of a program.
+
+    The program is represented as a linearly ordered set of simple clauses.
+    These clauses are evaluated sequentially.
+    """
+
+    equations: list[Eq]
+
+    inputs: list[Variable] = field(default_factory=list)
+
+    outputs: list[Variable] = field(default_factory=list)
+
+    name: str | None = None
+
+    def __repr__(self) -> str:
+        buf = StringIO()
+        self.write(buf)
+        return buf.getvalue()
+
+    def write(self, fp: IO, indent: str = ''):
+        fp.write(indent)
+        if self.name is None:
+            fp.write('lambda')
+        else:
+            fp.write(self.name)
+
+        num_inputs = len(self.inputs)
+        num_outputs = len(self.outputs)
+        fp.write(f'({num_inputs} args) -> {num_outputs}-tuple {{\n')
+
+        for eq in self.equations:
+            eq.write(fp, indent + '  ')
+            fp.write(indent)
+            fp.write('\n')
+        fp.write(indent)
+        fp.write('}')
+
+
+Abstraction = Expr
+Term = Primitive | Variable
 
 
 def process_statement(node: Node):
@@ -196,36 +272,17 @@ def process_statement(node: Node):
             raise RuntimeError(f'Unknown statement of type \'{node.type}\'.')
 
 
-def process_function(node: Node):
+def process_function(node: Node) -> Expr:
+    print('```bst\n', node.text.decode('utf-8'), '\n```')
+
     name = node.child_by_field_name('name').text.decode('utf-8')
     body = node.child_by_field_name('body')
-    print(node.type, name)
-    return process_block(body)
+    expr = process_block(body)
+    expr.name = name
 
+    print(expr)
+    return expr
 
-@dataclass(slots=True)
-class Variable:
-
-    value: Any
-
-    name: str | None = None
-
-
-@dataclass(slots=True)
-class Expr:
-
-    equations: list[Eq]
-    name: str | None = None
-
-    def __repr__(self) -> str:
-        parts = ['{']
-        parts.extend(str(x) for x in self.equations)
-        parts.append('}')
-        return '\n'.join(parts)
-
-
-Abstraction = Expr
-Term = Primitive | Variable
 
 def process_block(node: Node):
     terms: list[Term] = []
@@ -262,16 +319,16 @@ def process_block(node: Node):
                     raise RuntimeError(f'Unknown built-in `{text}`.')
                 terms += [prim]
             case 'block':
-                print('```bst\n', term.text.decode('utf-8'), '\n```')
                 expr = process_block(term)
                 terms += [Variable(expr)]
+                # print('```bst\n', term.text.decode('utf-8'), '\n```')
+                # print(expr)
 
-    expr = reduce(terms)
-    print(expr)
-    return expr
+    return reduce(terms)
 
 
 def reduce(terms: list[Term]) -> Expr:
+    """Perform naive beta-reduction."""
     eqs = []
     stack = []
     inputs = []
@@ -292,9 +349,7 @@ def reduce(terms: list[Term]) -> Expr:
                 eqs.append(eq)
             case Variable():
                 stack += [term]
-    print('INPUTS:', inputs)
-    print('OUTPUTS:', stack)
-    return Expr(eqs)
+    return Expr(eqs, inputs, stack)
 
 
 def run(path: Path):
