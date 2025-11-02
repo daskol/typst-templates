@@ -61,6 +61,10 @@ class Primitive:
         TABLE[self] = fn
         return fn
 
+    def def_greedy_eval(self, fn: Callable[..., Any]):
+        TABLE_GREEDY[self] = fn
+        return fn
+
     def def_write(self, fn: WriteFn):
         self._write = fn
 
@@ -78,6 +82,7 @@ class SimpleUntyped:
 
 
 TABLE: dict[Primitive, callable] = {}
+TABLE_GREEDY: dict[Primitive, callable] = {}
 
 
 VM = [SimpleUntyped()]
@@ -106,17 +111,19 @@ mul_p = Primitive('*', 2)
 
 @equal_p.def_simple_eval
 def equal(lhs, rhs):
-    return (Variable(None), )
+    return (Var(None), )
 
 
 @mul_p.def_simple_eval
 def mul(x, y):
-    return (Variable(None), )
+    return (Var(None), )
 
 
 cond_p = Primitive('if', 3)
 empty_p = Primitive('empty')
 duplicate_p = Primitive('duplicate')
+pop_p = Primitive('pop')
+skip_p = Primitive('skip', 0)
 write_p = Primitive('write')
 add_period_p = Primitive('add_period')
 newline_p = Primitive('newline', 0)
@@ -129,12 +136,22 @@ def cond(pred, lhs, rhs):
 
 @duplicate_p.def_simple_eval
 def duplicate(val):
-    return val, Variable(val)
+    return val, Var(val)
 
 
 @empty_p.def_simple_eval
-def empty_p(val):
-    return Variable(None)
+def empty(val):
+    return (Var(None), )
+
+
+@pop_p.def_simple_eval
+def pop(_):
+    return ()
+
+
+@skip_p.def_simple_eval
+def skip():
+    return ()
 
 
 @write_p.def_simple_eval
@@ -149,7 +166,7 @@ def newline():
 
 @add_period_p.def_simple_eval
 def add_period_p(lhs, rhs):
-    return (Variable(None), )
+    return (Var(None), )
 
 
 PRIMITIVES = {
@@ -158,12 +175,14 @@ PRIMITIVES = {
     '+': add_p,
     '-': sub_p,
     '*': mul_p,
-    'if$': cond_p,
-    'empty$': empty_p,
-    'duplicate$': duplicate_p,
-    'write$': write_p,
     'add.period$': add_period_p,
+    'duplicate$': duplicate_p,
+    'empty$': empty_p,
+    'if$': cond_p,
     'newline$': newline_p,
+    'pop$': pop_p,
+    'skip$': skip_p,
+    'write$': write_p,
 }
 
 
@@ -187,12 +206,24 @@ class Eq:
 
 
 @dataclass(slots=True)
-class Variable:
+class Val:
+
+    val: Any
+
+    def __hash__(self) -> int:
+        return id(self)
+
+
+@dataclass(slots=True)
+class Var:
     """An abstract representation of a value (or variable)."""
 
     value: Any
 
     name: str | None = None
+
+    def __hash__(self) -> int:
+        return id(self)
 
 
 @dataclass(slots=True)
@@ -201,15 +232,35 @@ class Expr:
 
     The program is represented as a linearly ordered set of simple clauses.
     These clauses are evaluated sequentially.
+
+    Args:
+        equations: Ordered set of statements ready to evaluate.
+        inputs: Input values or literals.
+        outputs: Output variables.
+        params: Closure variables.
     """
 
     equations: list[Eq]
 
-    inputs: list[Variable] = field(default_factory=list)
+    inputs: list[Any] = field(default_factory=list)
 
-    outputs: list[Variable] = field(default_factory=list)
+    outputs: list[Var] = field(default_factory=list)
+
+    params: list[Var] = field(default_factory=list)
 
     name: str | None = None
+
+    @property
+    def num_inputs(self) -> int:
+        return len(self.inputs)
+
+    @property
+    def num_outputs(self) -> int:
+        return len(self.outputs)
+
+    @property
+    def signature(self) -> str:
+        return f'{self.num_inputs} -> {self.num_outputs}'
 
     def __repr__(self) -> str:
         buf = StringIO()
@@ -223,9 +274,7 @@ class Expr:
         else:
             fp.write(self.name)
 
-        num_inputs = len(self.inputs)
-        num_outputs = len(self.outputs)
-        fp.write(f'({num_inputs} args) -> {num_outputs}-tuple {{\n')
+        fp.write(f'({self.num_inputs} args) -> {self.num_outputs}-tuple {{\n')
 
         for eq in self.equations:
             eq.write(fp, indent + '  ')
@@ -236,7 +285,7 @@ class Expr:
 
 
 Abstraction = Expr
-Term = Primitive | Variable
+Term = Primitive | Val | Var
 
 
 def process_statement(node: Node):
@@ -266,14 +315,18 @@ def process_statement(node: Node):
 
 
 def process_function(node: Node) -> Expr:
-    print('```bst\n', node.text.decode('utf-8'), '\n```')
+    # print('```bst\n', node.text.decode('utf-8'), '\n```')
 
     name = node.child_by_field_name('name').text.decode('utf-8')
     body = node.child_by_field_name('body')
     expr = process_block(body)
     expr.name = name
 
-    print(expr)
+    if expr.name in SYMBOLS:
+        raise RuntimeError(f'Duplicated declaration of symbol {expr.name}.')
+    SYMBOLS[expr.name] = expr
+
+    # print(expr)
     return expr
 
 
@@ -284,21 +337,21 @@ def process_block(node: Node):
             case 'integer':
                 child = term.child_by_field_name('value')
                 value = int(child.text)
-                terms += [Variable(value)]
+                terms += [Val(value)]
             case 'string':
                 child = term.child_by_field_name('value')
                 value = child.text.decode('utf-8')
-                terms += [Variable(value)]
+                terms += [Val(value)]
             case 'ref':
                 child = term.child_by_field_name('symbol')
                 value = child.text.decode('utf-8')
-                terms += [Variable(None, name=value)]
+                terms += [Var(None, name=value)]
             case 'id':
                 # BST have only declaration and limited type information (const
                 # vs arrow). Hence, resolve all identifiers greedily. Also, we
                 # does not distinguish variables and references.
                 value = term.text.decode('utf-8')
-                terms += [Variable(None, name=value)]
+                terms += [Var(None, name=value)]
             case 'operator':
                 # All operators are binary except for assignment (:=) that has
                 # arity 2 and returns nothing.
@@ -313,7 +366,7 @@ def process_block(node: Node):
                 terms += [prim]
             case 'block':
                 expr = process_block(term)
-                terms += [Variable(expr)]
+                terms += [Val(expr)]
                 # print('```bst\n', term.text.decode('utf-8'), '\n```')
                 # print(expr)
 
@@ -330,19 +383,53 @@ def reduce(terms: list[Term]) -> Expr:
             case Primitive(_, arity):
                 missing_args = []
                 if (diff := arity - len(stack)) > 0:
-                    missing_args = [Variable(None) for _ in range(diff)]
+                    missing_args = [Var(None) for _ in range(diff)]
                     inputs.extend(missing_args)  # TODO(@daskol): Order?
                 args = missing_args + stack[-arity:]
 
-                result: tuple = bind(term, args)
+                if term == cond_p:
+                    _, lhs, rhs = args
+                    true_fn = resolve_symbol(lhs)
+                    false_fn = resolve_symbol(rhs)
+                    assert isinstance(true_fn, Expr)
+                    assert isinstance(false_fn, Expr)
+                    print('if$', true_fn.signature, false_fn.signature)
+
+                    length = max(true_fn.num_outputs, false_fn.num_outputs)
+                    result = tuple([Var(None) for _ in range(length)])
+                else:
+                    result: tuple = bind(term, args)
+
                 stack = stack[:-arity]
                 stack.extend(result)
 
                 eq = Eq(term, args, result)
                 eqs.append(eq)
-            case Variable():
+            case Val():
+                stack += [term]
+            case Var():
                 stack += [term]
     return Expr(eqs, inputs, stack)
+
+
+def resolve_symbol(sym: Val | Var) -> Expr:
+    match sym:
+        case Val(value):
+            return value
+        case Var(value, name):
+            if isinstance(value, Expr):
+                return value
+
+            if name is None:
+                raise RuntimeError(
+                    f'Failed to resolve anonymous symbol {value}.')
+
+            if (prim := PRIMITIVES.get(name)) is not None:
+                return reduce([prim])
+            return SYMBOLS[name]
+
+
+SYMBOLS: dict[str, Expr] = {}
 
 
 class Module:
@@ -388,6 +475,7 @@ class Module:
         ivars = {}
         svars = {}
         fields = {}
+        SYMBOLS.clear()  # TODO(@daskol): Make symbol table local to a module.
 
         while True:
             if (node := it.node) is None:
@@ -396,7 +484,7 @@ class Module:
             if node.type != 'comment':
                 ret = process_statement(node)
                 if isinstance(ret, Expr):
-                    funcs[ret.name] = Expr
+                    funcs[ret.name] = ret
 
             if not it.goto_next_sibling():
                 break
@@ -408,3 +496,58 @@ class Module:
 
     def get_function(self, name: str) -> Expr:
         return self.funcs[name]
+
+
+class GreedyEval:
+
+    def process(self, prim: Primitive, inputs, *args, **kwargs):
+        if (eval_fn := TABLE_GREEDY.get(prim)) is None:
+            raise RuntimeError(
+                f'Missing abstract evaluation function for primitive {prim}.')
+        return eval_fn(*inputs)
+
+
+@cond_p.def_greedy_eval
+def cond(pred, lhs, rhs):
+    if not isinstance(pred, int):
+        raise RuntimeError(f'Expected integer valued predicate: {pred}.')
+    if pred > 0:
+        return eval_expr(lhs, [])
+    else:
+        return eval_expr(rhs, [])
+
+
+def eval_expr(expr: Expr, args: list[Any]):
+    print(expr)
+    if len(expr.inputs) != len(args):
+        raise RuntimeError(
+            'Number of expression arguments does not match arity: '
+            f'{len(expr.inputs)} vs {len(args)}')
+
+    def read(sym: Val | Var):
+        if isinstance(sym, Val):
+            return sym.val
+        return env[sym]
+
+    def write(var: Var, val: Val):
+        env[var] = val  # TODO(@daskol): Is duplicated vars okay?
+
+    env = {}
+    for var, val in zip(expr.inputs, args):
+        write(var, val)
+
+    VM.append(GreedyEval())
+    try:
+        for i, eq in enumerate(expr.equations):
+            print(f'STEP {i: <4d}', eq)
+            print(env)
+            inputs = [read(x) for x in eq.inputs]
+            print('INTPUTS:', inputs)
+            outputs = bind(eq.primitive, inputs)
+            for var, val in zip(eq.outputs, outputs):
+                write(var, val)
+        return tuple([read(x) for x in expr.outputs])
+    except Exception:
+        raise
+    finally:
+        VM.pop()
