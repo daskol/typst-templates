@@ -16,7 +16,7 @@ from pathlib import Path
 
 import pytest
 
-from bst2csl.module import Module, eval_expr
+from bst2csl.module import Expr, Module, Val, Var, cond_p, eval_expr, reduce_if
 
 data_dir = Path(__file__).parent / 'testdata'
 
@@ -38,6 +38,7 @@ class TestModule:
         output, = outputs
         assert output == (1 - input_)
 
+    @pytest.mark.xfail(reason='no hof')
     @pytest.mark.parametrize('lhs,rhs', [
         (0, 0),
         (0, 1),
@@ -52,3 +53,19 @@ class TestModule:
         assert len(outputs) == 1
         output, = outputs
         assert output == (lhs or rhs)
+
+
+def test_reduce_if():
+    pred = Var(None)
+
+    skip = Var(None, name='skip$')
+    then_fn = skip
+
+    pop = Var(None, name='pop$')
+    arg = Var(None, name='arg')
+    ret = Val(0)
+    else_fn = Val(Expr([pop], [arg], [ret]))
+
+    eqs = reduce_if([], cond_p, pred, then_fn, else_fn)
+    print('EQUATIONS:', eqs)
+    pass

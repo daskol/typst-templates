@@ -24,6 +24,9 @@ parser.add_argument('path', type=Path, help='path to bst-file')
 def compile_(path: Path):
     from bst2csl.module import Module
     m = Module.from_path(path)
+    for name in m.list_functions():
+        fn = m.get_function(name)
+        print(fn)
     print('functions:', m.list_functions())
     print('module:   ', m)
 

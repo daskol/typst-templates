@@ -165,7 +165,7 @@ def newline():
 
 
 @add_period_p.def_simple_eval
-def add_period_p(lhs, rhs):
+def add_period(val):
     return (Var(None), )
 
 
@@ -379,37 +379,65 @@ def reduce(terms: list[Term]) -> Expr:
     stack = []
     inputs = []
     for term in terms:
-        match term:
-            case Primitive(_, arity):
-                missing_args = []
-                if (diff := arity - len(stack)) > 0:
-                    missing_args = [Var(None) for _ in range(diff)]
-                    inputs.extend(missing_args)  # TODO(@daskol): Order?
-                args = missing_args + stack[-arity:]
+        if isinstance(term, Val | Var):
+            stack += [term]
+            continue
 
-                if term == cond_p:
-                    _, lhs, rhs = args
-                    true_fn = resolve_symbol(lhs)
-                    false_fn = resolve_symbol(rhs)
-                    assert isinstance(true_fn, Expr)
-                    assert isinstance(false_fn, Expr)
-                    print('if$', true_fn.signature, false_fn.signature)
+        # Free var analysis.
+        print(type(term), term)
+        arity = term.arity  # TODO(@daskol): Evaluate arity.
+        missing_args = []
+        if (diff := arity - len(stack)) > 0:
+            missing_args = [Var(None) for _ in range(diff)]
+            inputs.extend(missing_args)  # TODO(@daskol): Order?
+        args = missing_args + stack[-arity:]
 
-                    length = max(true_fn.num_outputs, false_fn.num_outputs)
-                    result = tuple([Var(None) for _ in range(length)])
-                else:
-                    result: tuple = bind(term, args)
+        if term == cond_p:
+            pred, lhs, rhs = args
+            result = reduce_if(stack, term, pred, lhs, rhs)
+        else:
+            result: tuple = bind(term, args)
 
-                stack = stack[:-arity]
-                stack.extend(result)
+        stack = stack[:-arity]
+        stack.extend(result)
 
-                eq = Eq(term, args, result)
-                eqs.append(eq)
-            case Val():
-                stack += [term]
-            case Var():
-                stack += [term]
+        eq = Eq(term, args, result)
+        eqs.append(eq)
+
     return Expr(eqs, inputs, stack)
+
+
+def reduce_if(stack: list[Term], prim: Primitive, pred, lhs, rhs):
+    then_fn = resolve_symbol(lhs)
+    assert isinstance(then_fn, Expr)
+
+    else_fn = resolve_symbol(rhs)
+    assert isinstance(else_fn, Expr), f'{type(else_fn)}'
+    print('if$', then_fn.signature, else_fn.signature)
+
+    # Calculate signature of entire `if$` HOF.
+    num_ins = max(then_fn.num_inputs, else_fn.num_inputs)
+    num_outs = max(then_fn.num_inputs, else_fn.num_inputs)
+
+    if then_fn.num_inputs > else_fn.num_inputs:
+        else_fn = extend(else_fn, then_fn)
+    if then_fn.num_inputs < else_fn.num_inputs:
+        then_fn = extend(then_fn, else_fn)
+
+    # TODO(@daskol): Add expression extension and closing.
+
+    length = max(then_fn.num_outputs, else_fn.num_outputs)
+    result = tuple([Var(None) for _ in range(length)])
+    return result
+
+
+def extend(fn: Expr, target: Expr) -> Expr:
+    if fn.num_inputs >= target.num_inputs:
+        return fn
+
+    eq = Eq(call, fn.inputs, fn.outputs)
+    expr = Expr([eq], eq.inputs, eq.outputs)
+    return fn
 
 
 def resolve_symbol(sym: Val | Var) -> Expr:
