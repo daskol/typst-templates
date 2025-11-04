@@ -95,20 +95,56 @@ PRIMITIVE_IMPLEMENTATIONS = defaultdict[str, dict[Primitive, Callable]](dict)
 TABLE: dict[Primitive, callable] = {}
 TABLE_GREEDY: dict[Primitive, callable] = {}
 
+# Special primitives used in stack machine implementation and analysis.
 
-call_p = Primitive('call')
+call_p = Primitive('call')  # TODO(@daskol): Why?
 const_p = Primitive('const')  # Special primitive (intrinsic) for values.
 resolve_p = Primitive('resolve')  # Special primitive (intrinsic) for symbols.
+
+# Operators.
+
 assign_p = Primitive(':=', 2)
 equal_p = Primitive('=', 2)
+less_p = Primitive('<', 2)
+greater_p = Primitive('>', 2)
 add_p = Primitive('+', 2)
 sub_p = Primitive('-', 2)
-mul_p = Primitive('*', 2)
+mul_p = Primitive('*', 2)  # Concatenation.
+
+# High-order functions (and control flow operators).
+
 cond_p = Primitive('if', 3)
-empty_p = Primitive('empty')
-duplicate_p = Primitive('duplicate')
-pop_p = Primitive('pop')
-skip_p = Primitive('skip', 0)
-write_p = Primitive('write')
-add_period_p = Primitive('add_period')
+while_p = Primitive('while', 2)
+
+# Built-in functions.
+
+add_period_p = Primitive('add_period', 1)
+call_type_p = Primitive('call_type', 0)
+change_case = Primitive('change_case', 2)
+chr_to_int_p = Primitive('chr_to_int', 1)
+cite_p = Primitive('cite', 0)  # Only for INTERATE and REVERSE.
+duplicate_p = Primitive('duplicate', 1)
+empty_p = Primitive('empty', 1)
+format_name_p = Primitive('format_name', 3)
+global_max_p = Primitive('global_max', 0)  # Default is 5000 chars.
+int_to_chr_p = Primitive('int_to_chr', 1)
+int_to_str_p = Primitive('int_to_str', 1)
+missing_p = Primitive('missing', 1)
 newline_p = Primitive('newline', 0)
+num_names_p = Primitive('num_names', 1)
+pop_p = Primitive('pop', 1)
+preamble_p = Primitive('preamble', 0)
+purify_p = Primitive('purify', 1)
+quote_p = Primitive('quote', 0)
+skip_p = Primitive('skip', 0)
+sort_key_p = Primitive('sort_key', 0)
+stack_p = Primitive('stack')  # XXX Consume all stack.
+substring_p = Primitive('substring', 3)
+swap_p = Primitive('swap', 2)
+text_length_p = Primitive('text_length')
+text_prefix_p = Primitive('text_prefix', 2)
+top_p = Primitive('top', 1)
+type_p = Primitive('type', 0)
+warning_p = Primitive('warning', 1)
+width_p = Primitive('width', 1)
+write_p = Primitive('write', 1)
