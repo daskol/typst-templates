@@ -14,62 +14,21 @@
 
 from dataclasses import dataclass, field
 from io import StringIO
-from itertools import count
 from pathlib import Path
-from string import ascii_lowercase
-from typing import IO, Any, Callable, Self, cast
+from typing import IO, Any, Self, cast
 
+from bst2csl.primitive import (TABLE, TABLE_GREEDY, Primitive, add_p,
+                               add_period_p, assign_p, call_p, cond_p, const_p,
+                               duplicate_p, empty_p, equal_p, mul_p, newline_p,
+                               pop_p, resolve_p, skip_p, sub_p, write_p)
 from tree_sitter import Language, Node, Parser
 from tree_sitter_bst import language
 
-WriteFn = Callable[['Primitive', IO, list[Any], list[Any], str], None]
 
-def write_default(prim: 'Primitive', fp: IO, inputs: list[Any],
-                  outputs: list[Any], indent: str = ''):
-    names = (ascii_lowercase[i] for i in count())
-    inames = [next(names) for _ in inputs]
-    if len(outputs) > 0:
-        onames = [next(names) for _ in outputs]
-        parts = onames
-        parts.append('=')
-    else:
-        parts = []
-    parts.append(prim.name)
-    parts.extend(inames)
-    fp.write(indent)
-    fp.write(' '.join(parts))
+class PrettyPrinter:
 
-
-@dataclass(slots=True)
-class Primitive:
-
-    name: str
-
-    arity: int = 1
-
-    _write: WriteFn = write_default
-
-    def __hash__(self) -> int:
-        return id(self)
-
-    def __str__(self) -> str:
-        buf = StringIO()
-        self.write(buf, [], [])
-        return buf.getvalue()
-
-    def def_simple_eval(self, fn: Callable[..., Any]):
-        TABLE[self] = fn
-        return fn
-
-    def def_greedy_eval(self, fn: Callable[..., Any]):
-        TABLE_GREEDY[self] = fn
-        return fn
-
-    def def_write(self, fn: WriteFn):
-        self._write = fn
-
-    def write(self, fp: IO, inputs: list[Any], outputs: list[Any], indent=''):
-        return self._write(self, fp, inputs, outputs, indent)
+    def process(self, prim: Primitive, inputs, *args, **kwargs):
+        pass
 
 
 class SimpleUntyped:
@@ -81,10 +40,6 @@ class SimpleUntyped:
         return eval_fn(*inputs)
 
 
-TABLE: dict[Primitive, callable] = {}
-TABLE_GREEDY: dict[Primitive, callable] = {}
-
-
 VM = [SimpleUntyped()]
 
 def bind(prim: Primitive, *args, **kwargs) -> tuple:
@@ -92,22 +47,9 @@ def bind(prim: Primitive, *args, **kwargs) -> tuple:
     return vm.process(prim, *args, **kwargs)
 
 
-call_p = Primitive('call')
-const_p = Primitive('const')  # Special primitive (intrinsic) for values.
-resolve_p = Primitive('resolve')  # Special primitive (intrinsic) for symbols.
-
-assign_p = Primitive(':=', 2)
-
-
 @assign_p.def_simple_eval
 def assign(x, y):
     return ()
-
-
-equal_p = Primitive('=', 2)
-add_p = Primitive('+', 2)
-sub_p = Primitive('-', 2)
-mul_p = Primitive('*', 2)
 
 
 @equal_p.def_simple_eval
@@ -118,16 +60,6 @@ def equal(lhs, rhs):
 @mul_p.def_simple_eval
 def mul(x, y):
     return (Var(None), )
-
-
-cond_p = Primitive('if', 3)
-empty_p = Primitive('empty')
-duplicate_p = Primitive('duplicate')
-pop_p = Primitive('pop')
-skip_p = Primitive('skip', 0)
-write_p = Primitive('write')
-add_period_p = Primitive('add_period')
-newline_p = Primitive('newline', 0)
 
 
 @cond_p.def_simple_eval
