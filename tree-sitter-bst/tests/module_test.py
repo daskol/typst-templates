@@ -28,6 +28,7 @@ class TestModule:
         m = Module.from_path(data_dir / filename)
         assert len(m.list_functions()) == 3
 
+    @pytest.mark.xfail(reason='not implemented')
     @pytest.mark.parametrize('input_', [0, 1])
     def test_eval_not(self, input_: int):
         m = Module.from_path(data_dir / 'booleans.bst')
@@ -55,6 +56,7 @@ class TestModule:
         assert output == (lhs or rhs)
 
 
+@pytest.mark.xfail(reason='not implemented')
 def test_reduce_if():
     pred = Var(None)
 

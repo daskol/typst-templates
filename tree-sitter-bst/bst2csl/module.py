@@ -17,7 +17,7 @@ from io import StringIO
 from itertools import count
 from pathlib import Path
 from string import ascii_lowercase
-from typing import IO, Any, Callable, Self
+from typing import IO, Any, Callable, Self, cast
 
 from tree_sitter import Language, Node, Parser
 from tree_sitter_bst import language
@@ -92,8 +92,9 @@ def bind(prim: Primitive, *args, **kwargs) -> tuple:
     return vm.process(prim, *args, **kwargs)
 
 
-const = Primitive('const')  # XXX
-call = Primitive('call')  # XXX
+call_p = Primitive('call')
+const_p = Primitive('const')  # Special primitive (intrinsic) for values.
+resolve_p = Primitive('resolve')  # Special primitive (intrinsic) for symbols.
 
 assign_p = Primitive(':=', 2)
 
@@ -187,25 +188,6 @@ PRIMITIVES = {
 
 
 @dataclass(slots=True)
-class Eq:
-    """An abstract representation of a single clause."""
-
-    primitive: Primitive
-
-    inputs: list[Any]
-
-    outputs: list[Any]
-
-    def __repr__(self) -> str:
-        buf = StringIO()
-        self.write(buf)
-        return buf.getvalue()
-
-    def write(self, fp: IO, indent: str = ''):
-        self.primitive.write(fp, self.inputs, self.outputs, indent)
-
-
-@dataclass(slots=True)
 class Val:
 
     val: Any
@@ -224,6 +206,27 @@ class Var:
 
     def __hash__(self) -> int:
         return id(self)
+
+
+@dataclass(slots=True, frozen=True)
+class Eq:
+    """An abstract representation of a single clause."""
+
+    primitive: Primitive
+
+    inputs: list[Any]
+
+    outputs: list[Any]
+
+    params: list[Val | Var] = field(default_factory=list)
+
+    def __repr__(self) -> str:
+        buf = StringIO()
+        self.write(buf)
+        return buf.getvalue()
+
+    def write(self, fp: IO, indent: str = ''):
+        self.primitive.write(fp, self.inputs, self.outputs, indent)
 
 
 @dataclass(slots=True)
@@ -288,7 +291,7 @@ Abstraction = Expr
 Term = Primitive | Val | Var
 
 
-def process_statement(node: Node):
+def process_statement(node: Node, symbols: dict[str, Expr] = {}):
     match node.type:
         case 'entry':
             pass
@@ -299,7 +302,7 @@ def process_statement(node: Node):
         case 'macro':
             pass
         case 'function':
-            return process_function(node)
+            return process_function(node, symbols)
         case 'read':
             pass
         case 'execute':
@@ -314,23 +317,27 @@ def process_statement(node: Node):
             raise RuntimeError(f'Unknown statement of type \'{node.type}\'.')
 
 
-def process_function(node: Node) -> Expr:
-    # print('```bst\n', node.text.decode('utf-8'), '\n```')
+def process_function(node: Node, symbols: dict[str, Expr]) -> Expr:
+    if (head := node.child_by_field_name('name')) is None:
+        raise RuntimeError
+    if (body := node.child_by_field_name('body')) is None:
+        raise RuntimeError
 
-    name = node.child_by_field_name('name').text.decode('utf-8')
-    body = node.child_by_field_name('body')
+    name = cast(bytes, head.text).decode('utf-8')
+    if name in symbols:
+        raise RuntimeError(f'Duplicated declaration of symbol {expr.name}.')
+
+    symbols[name] = Expr([], name='dummy')  # Insert a dummy expression.
     expr = process_block(body)
     expr.name = name
+    symbols[expr.name] = expr
 
-    if expr.name in SYMBOLS:
-        raise RuntimeError(f'Duplicated declaration of symbol {expr.name}.')
-    SYMBOLS[expr.name] = expr
-
+    # print('```bst\n', node.text.decode('utf-8'), '\n```')
     # print(expr)
     return expr
 
 
-def process_block(node: Node):
+def process_block(node: Node) -> Expr:
     terms: list[Term] = []
     for term in node.children_by_field_name('term'):
         match term.type:
@@ -367,10 +374,29 @@ def process_block(node: Node):
             case 'block':
                 expr = process_block(term)
                 terms += [Val(expr)]
-                # print('```bst\n', term.text.decode('utf-8'), '\n```')
-                # print(expr)
 
-    return reduce(terms)
+    # At the moment, we have an expression that is represented with values,
+    # variables, and primitives (i.e. callable-like). They are all concrete
+    # data instances but we need more abstract "functionalized" representation.
+    return remove_tags(terms)
+
+
+def remove_tags(terms: list[Term]) -> Expr:
+    """Map a sequence of AGDT-like terms to a sequence of tagless equations."""
+    eqs: list[Eq] = []
+    for term in terms:
+        if isinstance(term, Val):
+            eq = Eq(const_p, [], [], params=[term])
+            eqs.append(eq)
+        elif isinstance(term, Var):
+            eq = Eq(resolve_p, [], [], params=[term])
+            eqs.append(eq)
+        elif isinstance(term, Primitive):
+            eq = Eq(term, [], [])
+            eqs.append(eq)
+        else:
+            raise RuntimeError(f'Unexpected term of type {type(term)}.')
+    return Expr(eqs)
 
 
 def reduce(terms: list[Term]) -> Expr:
@@ -435,7 +461,7 @@ def extend(fn: Expr, target: Expr) -> Expr:
     if fn.num_inputs >= target.num_inputs:
         return fn
 
-    eq = Eq(call, fn.inputs, fn.outputs)
+    eq = Eq(call_p, fn.inputs, fn.outputs)
     expr = Expr([eq], eq.inputs, eq.outputs)
     return fn
 
@@ -460,10 +486,22 @@ def resolve_symbol(sym: Val | Var) -> Expr:
 SYMBOLS: dict[str, Expr] = {}
 
 
+@dataclass(slots=True)
+class Func:
+
+    name: str
+
+    source: str
+
+    expr: Expr
+
+    kind: Any = None
+
+
 class Module:
     """An internal joint representation of a program and its state."""
 
-    def __init__(self, funcs, symbols):
+    def __init__(self, funcs: dict[str, Func], symbols):
         self.funcs = funcs
         self.symbols = symbols
 
@@ -510,9 +548,9 @@ class Module:
                 raise RuntimeError  # TODO
 
             if node.type != 'comment':
-                ret = process_statement(node)
+                ret = process_statement(node, SYMBOLS)
                 if isinstance(ret, Expr):
-                    funcs[ret.name] = ret
+                    funcs[ret.name] = Func(ret.name or '', '', ret)
 
             if not it.goto_next_sibling():
                 break
@@ -522,7 +560,7 @@ class Module:
     def list_functions(self) -> list[str]:
         return [*self.funcs.keys()]
 
-    def get_function(self, name: str) -> Expr:
+    def get_function(self, name: str) -> Func:
         return self.funcs[name]
 
 
