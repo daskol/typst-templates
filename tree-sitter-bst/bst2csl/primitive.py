@@ -125,6 +125,7 @@ chr_to_int_p = Primitive('chr_to_int', 1)
 cite_p = Primitive('cite', 0)  # Only for INTERATE and REVERSE.
 duplicate_p = Primitive('duplicate', 1)
 empty_p = Primitive('empty', 1)
+entry_max_p = Primitive('entry_max', 0)  # TODO(@daskol): What is it?
 format_name_p = Primitive('format_name', 3)
 global_max_p = Primitive('global_max', 0)  # Default is 5000 chars.
 int_to_chr_p = Primitive('int_to_chr', 1)

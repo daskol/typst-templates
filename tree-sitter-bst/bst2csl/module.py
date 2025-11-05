@@ -17,10 +17,14 @@ from io import StringIO
 from pathlib import Path
 from typing import IO, Any, Self, cast
 
-from bst2csl.primitive import (TABLE, TABLE_GREEDY, Primitive, add_p,
-                               add_period_p, assign_p, call_p, cond_p, const_p,
-                               duplicate_p, empty_p, equal_p, mul_p, newline_p,
-                               pop_p, resolve_p, skip_p, sub_p, write_p)
+from bst2csl.primitive import (
+    TABLE, TABLE_GREEDY, Primitive, add_p, add_period_p, assign_p, call_p,
+    call_type_p, change_case_p, chr_to_int_p, cite_p, cond_p, const_p,
+    duplicate_p, empty_p, entry_max_p, equal_p, format_name_p, global_max_p,
+    greater_p, int_to_chr_p, int_to_str_p, less_p, missing_p, mul_p, newline_p,
+    num_names_p, pop_p, preamble_p, purify_p, quote_p, resolve_p, skip_p,
+    sort_key_p, stack_p, sub_p, substring_p, swap_p, text_length_p,
+    text_prefix_p, top_p, type_p, warning_p, while_p, width_p, write_p)
 from tree_sitter import Language, Node, Parser
 from tree_sitter_bst import language
 
@@ -105,16 +109,45 @@ def add_period(val):
 PRIMITIVES = {
     ':=': assign_p,
     '=': equal_p,
+    '<': less_p,
+    '>': greater_p,
     '+': add_p,
     '-': sub_p,
     '*': mul_p,
     'add.period$': add_period_p,
+    'add.period$': add_period_p,
+    'call.type$': call_type_p,
+    'change.case$': change_case_p,
+    'chr.to.int$': chr_to_int_p,
+    'cite$': cite_p,
     'duplicate$': duplicate_p,
     'empty$': empty_p,
+    'entry.max$': entry_max_p,
+    'format.name$': format_name_p,
+    'global.max$': global_max_p,
     'if$': cond_p,
+    'int.to.chr$': int_to_chr_p,
+    'int.to.str$': int_to_str_p,
+    'missing$': missing_p,
     'newline$': newline_p,
+    'newline$': newline_p,
+    'num.names$': num_names_p,
     'pop$': pop_p,
+    'preamble$': preamble_p,
+    'purify$': purify_p,
+    'quote$': quote_p,
     'skip$': skip_p,
+    'sort.key$': sort_key_p,
+    'stack$': stack_p,
+    'substring$': substring_p,
+    'swap$': swap_p,
+    'text.length$': text_length_p,
+    'text.prefix$': text_prefix_p,
+    'top$': top_p,
+    'type$': type_p,
+    'warning$': warning_p,
+    'while$': while_p,
+    'width$': width_p,
     'write$': write_p,
 }
 

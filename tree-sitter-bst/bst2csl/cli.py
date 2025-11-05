@@ -18,19 +18,35 @@ from argparse import ArgumentParser, Namespace
 from pathlib import Path
 
 parser = ArgumentParser(description=__doc__)
+parser.add_argument('-a', '--arg', type=str, default=[], action='append',
+                    help='function to call')
+parser.add_argument('-f', '--func', type=str, help='function to call')
 parser.add_argument('path', type=Path, help='path to bst-file')
 
 
-def compile_(path: Path):
+def compile_(path: Path, func: str | None = None, args=[]):
     from bst2csl.module import Module
     m = Module.from_path(path)
-    for name in m.list_functions():
+    for i, name in enumerate(m.list_functions()):
         fn = m.get_function(name)
-        print(fn)
+        print(f'{i: 3d} {name}')
     print('functions:', m.list_functions())
     print('module:   ', m)
+
+    if func is not None:
+        fn = m.get_function(func)
+        from bst2csl.ip.stack import evaluate
+        stack = []
+        for arg in args:
+            try:
+                val = int(arg)
+            except ValueError:
+                val = arg
+            stack.append(val)
+        stack = evaluate(fn.expr, stack)
+        print(stack)
 
 
 def main() -> None:
     ns: Namespace = parser.parse_args()
-    compile_(ns.path)
+    compile_(ns.path, ns.func, ns.arg)
