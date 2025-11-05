@@ -119,8 +119,8 @@ while_p = Primitive('while', 2)
 # Built-in functions.
 
 add_period_p = Primitive('add_period', 1)
-call_type_p = Primitive('call_type', 0)
-change_case = Primitive('change_case', 2)
+call_type_p = Primitive('call_type', 0)  # Only for INTERATE and REVERSE.
+change_case_p = Primitive('change_case', 2)
 chr_to_int_p = Primitive('chr_to_int', 1)
 cite_p = Primitive('cite', 0)  # Only for INTERATE and REVERSE.
 duplicate_p = Primitive('duplicate', 1)
@@ -137,8 +137,8 @@ preamble_p = Primitive('preamble', 0)
 purify_p = Primitive('purify', 1)
 quote_p = Primitive('quote', 0)
 skip_p = Primitive('skip', 0)
-sort_key_p = Primitive('sort_key', 0)
-stack_p = Primitive('stack')  # XXX Consume all stack.
+sort_key_p = Primitive('sort_key', 0)  # Used by SORT.
+stack_p = Primitive('stack')  # Consume all stack.
 substring_p = Primitive('substring', 3)
 swap_p = Primitive('swap', 2)
 text_length_p = Primitive('text_length')
