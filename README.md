@@ -77,7 +77,20 @@ repository. The script is plain and simple. One can use it as follows.
 
 It is written with PyMuPDF library and inserts colored annotation.
 
+## CI/CD
+
+At the moment, CI/CD pipeline tries only to render all available templates with
+a specific version of `typst` compiler. In order to run CI/CD checks locally,
+one can use container image `ghcr.io/daskol/typst-templates` to run script
+[`render-templates.sh`][render-templates.sh]. End-to-end command for local
+check follows.
+
+```bash
+make image test
+```
+
 [1]: https://portal.core.edu.au/conf-ranks/?search=A*&by=rank&source=CORE2023&sort=aacronym
 [2]: https://typst.app/
 [tracl]: https://typst.app/universe/package/tracl/
 [alexanderkoller]: https://github.com/alexanderkoller
+[render-templates.sh]: .github/scripts/render-templates.sh
