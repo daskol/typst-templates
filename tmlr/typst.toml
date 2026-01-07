@@ -1,10 +1,10 @@
 [package]
 name = "smooth-tmlr"
-version = "0.4.0"
-compiler = "0.10.0"
+version = "0.7.0"
+compiler = "0.13.0"
 entrypoint = "tmlr.typ"
 repository = "https://github.com/daskol/typst-templates"
-authors = ["Daniel Bershatsky <d.bershatsky2@skoltech.ru>"]
+authors = ["Daniel Bershatsky <https://github.com/daskol>"]
 license = "MIT"
 description = "Paper template for submission to Transaction on Machine Learning Research (TMLR)"
 keywords = [

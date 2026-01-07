@@ -1,10 +1,10 @@
 [package]
 name = "blind-cvpr"
-version = "0.5.0"
-compiler = "0.11.1"
+version = "0.7.0"
+compiler = "0.13.1"
 entrypoint = "cvpr.typ"
 repository = "https://github.com/daskol/typst-templates"
-authors = ["daskol"]
+authors = ["Daniel Bershatsky <https://github.com/daskol>"]
 license = "MIT"
 description = """
 CVPR-style paper template to publish at the Computer Vision and Pattern
