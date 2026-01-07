@@ -34,10 +34,10 @@ urna dictum turpis accumsan semper.]
   $ x_(1,2)
     = (-b plus.minus sqrt(b^2 - 4 a c )) / ( 2 a)
     = (-p plus.minus sqrt(p^2 - 4 q)) / 2 $,
-  $ (diff^2 Phi) / (diff x^2)
-    + (diff^2 Phi) / (diff y^2)
-    + (diff^2 Phi) / (diff z^2)
-    = 1 / c^2 (diff^2 Phi) / (diff t^2) $,
+  $ (partial^2 Phi) / (partial x^2)
+    + (partial^2 Phi) / (partial y^2)
+    + (partial^2 Phi) / (partial z^2)
+    = 1 / c^2 (partial^2 Phi) / (partial t^2) $,
   $ root(n, a) dot.c root(n, b) = root(n, a b) $,
   $ root(n, a) / root(n, b) =  root(n, a / b) $,
   $ a root(n, b) = root(n, a^n b) $,

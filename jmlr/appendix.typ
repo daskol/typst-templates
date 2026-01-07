@@ -33,7 +33,7 @@ $ P_(v)(i) = N_v^i / N, space.en i != 0; space.en
 
 These values represent the (empirical) probabilities of $v$ taking value $i !=
 0$ and 0 respectively. Entropies will be denoted by $H$. We aim to show that
-$(diff I_(u v)) / (diff P_(v 0)) < 0$....
+$(partial I_(u v)) / (partial P_(v 0)) < 0$....
 ]
 
 _Remainder omitted in this sample. See #link("http://www.jmlr.org/papers/") for
