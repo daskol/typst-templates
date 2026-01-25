@@ -2,7 +2,6 @@
  * iclr.typ
  */
 
-#import "/iclr2025.typ": default-header-title as default-header-title-2025, iclr2025
 #import "/iclr2026.typ": default-header-title, iclr2026
 
 /**
