@@ -7,14 +7,10 @@ template_ on the dashboard and searching for `pioneering-rlj`. Alternatively,
 you can use the CLI to kick this project off using the command.
 
 ```shell
-typst init @preview/pioneering-rlj
+typst init @preview/pioneering-rlj:0.7.0
 ```
 
 Typst will create a new directory with all the files needed to get you started.
-
-## Example Papers
-
-Here are an example paper in [LaTeX][1] and in [Typst][2].
 
 ## Configuration
 
@@ -78,7 +74,5 @@ template, you can add a show rule at the top of your file.
 + RLC/RLJ 2024 conference [web site][2025].
 + RLC/RLJ 2025 conference [web site][2025].
 
-[1]: example-paper.latex.pdf
-[2]: example-paper.typst.pdf
 [2024]: https://rl-conference.cc/2024/index.html
 [2025]: https://rl-conference.cc/index.html
