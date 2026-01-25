@@ -316,7 +316,7 @@
     footer-descent: 23.4pt, // Visually perfect.
     footer: if accepted != none and not accepted {
       let ix = context counter(page).get().first()
-      return align(center, text(size: font-size.normal, [#ix]))
+      align(center, text(size: font-size.normal, [#ix]))
     },
   )
 
