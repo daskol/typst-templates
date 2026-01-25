@@ -1,5 +1,5 @@
 #import "/logo.typ": LaTeX, LaTeXe
-#import "/iclr2025.typ": iclr2025
+#import "/iclr2026.typ": iclr2026
 
 #let author-note = footnote[
   Use footnote for providing further information about author (webpage,
@@ -39,8 +39,8 @@
   )
 )
 
-#show: iclr2025.with(
-  title: [Formatting Instructions for ICLR 2025\ Conference Submissions],
+#show: iclr2026.with(
+  title: [Formatting Instructions for ICLR 2026\ Conference Submissions],
   authors: authors,
   keywords: (),
   abstract: [
@@ -61,7 +61,7 @@
 
 #let url(uri) = link(uri, raw(uri))
 
-= Submission of conference papers to ICLR 2025
+= Submission of conference papers to ICLR 2026
 
 ICLR requires electronic submissions, processed by
 #url("https://openreview.net/"). See ICLR's website for more instructions.
@@ -74,7 +74,7 @@ carefully the instructions below, and follow them faithfully.
 
 == Style
 
-Papers to be submitted to ICLR 2025 must be prepared according to the
+Papers to be submitted to ICLR 2026 must be prepared according to the
 instructions presented here.
 
 Authors are required to use the ICLR #LaTeX style files obtainable at the ICLR
@@ -91,11 +91,11 @@ at:
   url("https://www.iclr.cc/")
 })
 
-The file `iclr2025_conference.pdf` contains these instructions and illustrates
+The file `iclr2026_conference.pdf` contains these instructions and illustrates
 the various formatting requirements your ICLR paper must satisfy. Submissions
-must be made using #LaTeX and the style files `iclr2025_conference.sty` and
-`iclr2025_conference.bst` (to be used with #LaTeXe). The file
-`iclr2025_conference.tex` may be used as a "shell" for writing your paper. All
+must be made using #LaTeX and the style files `iclr2026_conference.sty` and
+`iclr2026_conference.bst` (to be used with #LaTeXe). The file
+`iclr2026_conference.tex` may be used as a "shell" for writing your paper. All
 you have to do is replace the author, title, abstract, and text of the paper
 with your own.
 

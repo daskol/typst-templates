@@ -2,7 +2,8 @@
  * iclr.typ
  */
 
-#import "/iclr2025.typ": default-header-title, iclr2025
+#import "/iclr2025.typ": default-header-title as default-header-title-2025, iclr2025
+#import "/iclr2026.typ": default-header-title, iclr2026
 
 /**
  * iclr - Template for International Conference on Learning Representations
@@ -34,7 +35,7 @@
   aux: (:),
   body,
 ) = {
-  show: iclr2025.with(
+  show: iclr2026.with(
     title: title,
     authors: authors,
     keywords: keywords,
