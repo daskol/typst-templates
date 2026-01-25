@@ -66,6 +66,8 @@ typst init @preview/lucky-icml
 
 ## Utilities
 
+### Colored Annotations
+
 Typst of version 0.10.0 does not produce colored annotations. In order to
 mitigate the issue, we add [a simple script](colorize-annotations.py) to the
 repository. The script is plain and simple. One can use it as follows.
