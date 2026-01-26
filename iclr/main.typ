@@ -1,5 +1,5 @@
 #import "/logo.typ": LaTeX, LaTeXe
-#import "/iclr2025.typ": iclr2025
+#import "/iclr.typ": iclr2025
 
 #let author-note = footnote[
   Use footnote for providing further information about author (webpage,
