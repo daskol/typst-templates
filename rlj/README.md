@@ -7,7 +7,7 @@ template_ on the dashboard and searching for `pioneering-rlj`. Alternatively,
 you can use the CLI to kick this project off using the command.
 
 ```shell
-typst init @preview/pioneering-rlj:0.7.0
+typst init @preview/pioneering-rlj
 ```
 
 Typst will create a new directory with all the files needed to get you started.
@@ -43,7 +43,7 @@ function in a show rule. If you want to change an existing project to use this
 template, you can add a show rule at the top of your file.
 
 ```typst
-#import "@preview/pioneering-rlj": rlj
+#import "@preview/pioneering-rlj:0.7.0": rlj
 
 #show: rlj.with(
   title: [Formatting Instructions for RLJ/RLC Submissions],

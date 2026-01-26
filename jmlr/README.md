@@ -14,7 +14,7 @@ template_ on the dashboard and searching for `classic-jmlr`.
 Alternatively, you can use the CLI to kick this project off using the command
 
 ```shell
-typst init @preview/classic-jmlr:0.7.0
+typst init @preview/classic-jmlr
 ```
 
 Typst will create a new directory with all the files needed to get you started.
@@ -46,7 +46,7 @@ function in a show rule. If you want to change an existing project to use this
 template, you can add a show rule at the top of your file.
 
 ```typst
-#import "@preview/classic-jmlr": jmlr
+#import "@preview/classic-jmlr:0.7.0": jmlr
 #show: jmlr.with(
   title: [Sample JMLR Paper],
   authors: (authors, affls),

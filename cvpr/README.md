@@ -41,7 +41,7 @@ function in a show rule. If you want to change an existing project to use this
 template, you can add a show rule at the top of your file.
 
 ```typst
-#import "@preview/blind-cvpr:0.5.0": cvpr2025
+#import "@preview/blind-cvpr:0.7.0": cvpr2025
 
 #show: cvpr2025.with(
   title: [LaTeX Author Guidelines for CVPR Proceedings],
