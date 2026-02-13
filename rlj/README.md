@@ -12,10 +12,6 @@ typst init @preview/pioneering-rlj
 
 Typst will create a new directory with all the files needed to get you started.
 
-## Example Papers
-
-Here are an example paper in [LaTeX][1] and in [Typst][2].
-
 ## Configuration
 
 This template exports the `rlj` main styling rule with the following named
@@ -47,7 +43,7 @@ function in a show rule. If you want to change an existing project to use this
 template, you can add a show rule at the top of your file.
 
 ```typst
-#import "@preview/pioneering-rlj": rlj
+#import "@preview/pioneering-rlj:0.7.0": rlj
 
 #show: rlj.with(
   title: [Formatting Instructions for RLJ/RLC Submissions],
@@ -78,7 +74,5 @@ template, you can add a show rule at the top of your file.
 + RLC/RLJ 2024 conference [web site][2025].
 + RLC/RLJ 2025 conference [web site][2025].
 
-[1]: example-paper.latex.pdf
-[2]: example-paper.typst.pdf
 [2024]: https://rl-conference.cc/2024/index.html
 [2025]: https://rl-conference.cc/index.html

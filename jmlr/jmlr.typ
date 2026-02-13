@@ -106,7 +106,7 @@
   }).map(it => emph(it))
 
   return block(spacing: 0em, {
-    show par: set block(spacing: 5.5pt)
+    set par(spacing: 5.5pt)
     text(size: font-size.normal)[*#author.name*]
     set par(justify: true, leading: 5pt, first-line-indent: 0pt)
     text(size: font-size.small)[#lines.join([\ ])]
@@ -288,8 +288,7 @@
       let pageno = counter(page).at(here()).first()
       if pageno == 1 {
         set text(size: font-size.script)
-        set par(first-line-indent: 0pt, justify: true)
-        show par: set block(spacing: 9pt)
+        set par(first-line-indent: 0pt, justify: true, spacing: 9pt)
 
         // NOTE If this is preprint then we use metadata `date` for copyright
         // notice.
@@ -323,8 +322,9 @@
 
   // Basic paragraph and text settings.
   set text(font: font-family, size: font-size.normal)
-  set par(leading: 0.55em, first-line-indent: 17pt, justify: true)
-  show par: set block(spacing: 0.55em)
+  set par(
+    leading: 0.55em, first-line-indent: 17pt, justify: true,
+    spacing: 0.55em)
 
   // Configure heading appearence and numbering.
   set heading(numbering: "1.1")

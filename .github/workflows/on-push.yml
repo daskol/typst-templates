@@ -32,8 +32,12 @@ jobs:
     container:
       image: 'ghcr.io/daskol/typst-templates'
     strategy:
+      fail-fast: false
       matrix:
-        typst-version: ['0.12.0', '0.13.0', '0.13.1']
+        typst-version:
+          - '0.12.0'
+          - '0.13.0'
+          - '0.13.1'
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4.2.2
       - name: Compile all

@@ -1,18 +1,26 @@
 #!/usr/bin/env bash
+# A simple script to check that a template can be rendered with a specific
+# version of `typst` compiler.
+#
+#   PREFIX=build .github/scripts/render-templates.sh 0.14.0
 
 function render-template() {
     local typstc=${1-typst}
     local root=${2-.}
-    typst compile "${root}/main.typ" \
+    ${typstc} compile "${root}/main.typ" \
         --diagnostic-format=short \
         --format=pdf \
         --root="${root}"
 }
 
-typstc=typst
+typstc="typst"
+if [ -n "${PREFIX}" ]; then
+    typstc="${PREFIX}/bin/$typstc"
+fi
+
 typst_version=${1}
 if [ -n "${typst_version}" ]; then
-    typstc="typst-${typst_version}"
+    typstc="${typstc}-${typst_version}"
 fi
 
 if ! command -pv "${typstc}" >/dev/null; then
@@ -28,7 +36,10 @@ if [ -z "${roots}" ]; then
     exit 0
 fi
 
+rc=0  # Accumulate failures.
 while IFS= read -r root; do
     echo "try to render template located at ${root}"
-    render-template "$typstc" "$root"
+    render-template "$typstc" "$root" || rc=1
 done <<< "${roots}"
+
+exit "$rc"

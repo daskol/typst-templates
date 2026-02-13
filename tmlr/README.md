@@ -3,7 +3,7 @@
 ## Usage
 
 You can use this template in the Typst web app by clicking _Start from
-template_ on the dashboard and searching for `healthy-tmlr`.
+template_ on the dashboard and searching for `smooth-tmlr`.
 
 Alternatively, you can use the CLI to kick this project off using the command
 
@@ -12,10 +12,6 @@ typst init @preview/smooth-tmlr
 ```
 
 Typst will create a new directory with all the files needed to get you started.
-
-## Example Papers
-
-Here are an example paper in [LaTeX][1] and in [Typst][2].
 
 ## Configuration
 
@@ -85,6 +81,4 @@ template, you can add a show rule at the top of your file.
 
   See [README.md][3] for details.
 
-[1]: example-paper.latex.pdf
-[2]: example-paper.typst.pdf
-[3]: ../#colored-annotations
+[3]: https://github.com/daskol/typst-templates#colored-annotations

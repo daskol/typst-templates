@@ -4,3 +4,6 @@
 *.bst
 *.log
 *.out
+
+# Ignore build directory (prefix for `typst-*` compilers).
+/build

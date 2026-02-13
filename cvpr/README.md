@@ -13,10 +13,6 @@ typst init @preview/blind-cvpr
 
 Typst will create a new directory with all the files needed to get you started.
 
-## Example Papers
-
-Here are an example paper in [LaTeX][1] and in [Typst][2].
-
 ## Configuration
 
 This template exports the `cvpr2022` and `cvpr2025` styling rule with the
@@ -45,7 +41,7 @@ function in a show rule. If you want to change an existing project to use this
 template, you can add a show rule at the top of your file.
 
 ```typst
-#import "@preview/blind-cvpr:0.5.0": cvpr2025
+#import "@preview/blind-cvpr:0.7.0": cvpr2025
 
 #show: cvpr2025.with(
   title: [LaTeX Author Guidelines for CVPR Proceedings],
@@ -70,25 +66,6 @@ template, you can add a show rule at the top of your file.
 
 - In case of US Letter, column sizes + gap does not equals to text width (2 *
   3.25 + 5/16 != 6 + 7/8). It seems that correct gap should be 3/8.
-
-- At the moment of Typst v0.11.0, it is impossible to indent the first paragraph
-  in a section (see [typst/typst#311][3]). The workaround is to add indentation
-  manually as follows.
-
-  ```typst
-  == H2
-
-  #h(12pt)  Manually as space for the first paragraph.
-  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do.
-
-  // The second one is just fine.
-  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do.
-  ```
-
-  Also, we add `indent` constant as a shortcut for `h(12pt)`.
-
-  This issue is relevant to CVPR 2022. In the 2025 template there is no
-  indentaino of the first paragraph in section.
 
 - At the moment Typst v0.11.0 does not allow flexible customization of citation
   styles. Specifically, CVPR 2022 citation lookes like `[42]` where number is
@@ -120,8 +97,6 @@ template, you can add a show rule at the top of your file.
 + CVPR 2022 conference [web site][4].
 + CVPR 2025 conference [web site][5].
 
-[1]: example-paper.latex.pdf
-[2]: example-paper.typst.pdf
 [3]: https://github.com/typst/typst/issues/311
 [4]: https://cvpr2022.thecvf.com/author-guidelines#dates
 [5]: https://cvpr.thecvf.com/Conferences/2025

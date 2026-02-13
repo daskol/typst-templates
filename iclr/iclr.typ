@@ -2,7 +2,8 @@
  * iclr.typ
  */
 
-#import "/iclr2026.typ": default-header-title, iclr2026
+#import "/iclr2025.typ": iclr2025
+#import "/iclr2026.typ": iclr2026
 
 /**
  * iclr - Template for International Conference on Learning Representations

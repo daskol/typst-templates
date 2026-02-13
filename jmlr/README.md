@@ -4,7 +4,7 @@
 
 This is a Typst template for Journal of Machine Learning Research (JMLR). It is
 based on official [author guide][1], [formatting instructions][2], and
-[formatting error checklist][3] as well as the official [example paper][4].
+[formatting error checklist][3] as well as the official example paper.
 
 ## Usage
 
@@ -18,10 +18,6 @@ typst init @preview/classic-jmlr
 ```
 
 Typst will create a new directory with all the files needed to get you started.
-
-## Example Papers
-
-Here are an example paper in [LaTeX][5] and in [Typst][6].
 
 ## Configuration
 
@@ -50,7 +46,7 @@ function in a show rule. If you want to change an existing project to use this
 template, you can add a show rule at the top of your file.
 
 ```typst
-#import "@preview/classic-jmlr": jmlr
+#import "@preview/classic-jmlr:0.7.0": jmlr
 #show: jmlr.with(
   title: [Sample JMLR Paper],
   authors: (authors, affls),
@@ -71,7 +67,7 @@ template, you can add a show rule at the top of your file.
 
 ## Issues
 
-- JMLR example paper is not not representative.
+- JMLR example paper is not representative (too short).
 
 - Leading in author affiliations in in the original template is varying.
 
@@ -93,6 +89,4 @@ template, you can add a show rule at the top of your file.
 [2]: https://www.jmlr.org/format/format.html
 [3]: https://www.jmlr.org/format/formatting-errors.html
 [4]: https://github.com/jmlrorg/jmlr-style-file
-[5]: example-paper.latex.pdf
-[6]: example-paper.typst.pdf
-[7]: ../#colored-annotations
+[7]: https://github.com/daskol/typst-templates#colored-annotations
