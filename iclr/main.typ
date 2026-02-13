@@ -1,5 +1,5 @@
 #import "/logo.typ": LaTeX, LaTeXe
-#import "/iclr2026.typ": iclr2026
+#import "/iclr.typ": iclr
 
 #let author-note = footnote[
   Use footnote for providing further information about author (webpage,
@@ -39,7 +39,7 @@
   )
 )
 
-#show: iclr2026.with(
+#show: iclr.with(
   title: [Formatting Instructions for ICLR 2026\ Conference Submissions],
   authors: authors,
   keywords: (),
