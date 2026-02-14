@@ -1,15 +1,20 @@
 /**
- * iclr.typ
+ * iclr2026.typ
+ *
+ * Template for International Conference on Learning Representations (ICLR) 2026.
+ * This is a thin wrapper around iclr2025.typ with updated header titles.
  */
 
 #import "/iclr2025.typ": iclr2025
-#import "/iclr2026.typ": iclr2026
+
+#let default-header-title = (
+  [Under review as a conference paper at ICLR 2026],  // blind
+  [Published as a conference paper at ICLR 2026],  // accepted
+)
 
 /**
- * iclr - Template for International Conference on Learning Representations
- * (ICLR). This show-rule always points to the latest ICLR templates. If
- * reproducibility is required then one should prefer to usage template with
- * data suffix, e.g. `iclr2026`.
+ * iclr2026 - Template for International Conference on Learning Representations
+ * (ICLR) 2026.
  *
  * Args:
  *   title: Paper title.
@@ -24,8 +29,9 @@
  *   (`none`) is designed to prepare arxiv publication. Default is `false`.
  *   aux: Auxiliary parameters to tune font settings (e.g. font familty) or
  *   page decorations (e.g. page header).
+ *   id: Submission identifier.
  */
-#let iclr(
+#let iclr2026(
   title: [],
   authors: (),
   keywords: (),
@@ -35,9 +41,14 @@
   appendix: none,
   accepted: false,
   aux: (:),
+  id: none,
   body,
 ) = {
-  show: iclr2026.with(
+  // Merge aux with ICLR 2026 header-title as default.
+  let header-title = aux.at("header-title", default: default-header-title)
+  let aux = aux + (header-title: header-title)
+
+  show: iclr2025.with(
     title: title,
     authors: authors,
     keywords: keywords,
@@ -47,6 +58,7 @@
     appendix: appendix,
     accepted: accepted,
     aux: aux,
+    id: id,
   )
   body
 }

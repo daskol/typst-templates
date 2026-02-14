@@ -83,3 +83,4 @@ template, you can add a show rule at the top of your file.
 [3]: ../#colored-annotations
 [2024]: https://iclr.cc/Conferences/2024/CallForPapers
 [2025]: https://iclr.cc/Conferences/2025/CallForPapers
+[2026]: https://iclr.cc/Conferences/2026/CallForPapers
