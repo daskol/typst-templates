@@ -5,7 +5,7 @@
  * Timestamp: 2025-03-20T16:06:33.
  */
 
-#import "@preview/based:0.1.0": base64
+#import "@preview/based:0.2.0": base64
 
 
 

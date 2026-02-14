@@ -50,8 +50,8 @@ fallback font. Preferred font family to use can be configure via `aux` keyword
 argument of the template.
 
 ```typst
-#let fc = (font-family: (sans: ("Your Font Family", ...))
-#show: skoltech.with(..., aux: fc)
+#let fc = (font-family: (sans: ("Your Font Family", )))
+#show: skoltech.with(title: [...], author: [...], aux: fc)
 ```
 
 However, if your are Skoltech's student or faculty member then you have Futura
