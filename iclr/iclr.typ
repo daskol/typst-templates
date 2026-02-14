@@ -7,7 +7,9 @@
 
 /**
  * iclr - Template for International Conference on Learning Representations
- * (ICLR).
+ * (ICLR). This show-rule always points to the latest ICLR templates. If
+ * reproducibility is required then one should prefer to usage template with
+ * data suffix, e.g. `iclr2026`.
  *
  * Args:
  *   title: Paper title.
