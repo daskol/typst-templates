@@ -121,6 +121,9 @@
   }
   let indices = affl.map(it => str(affl2idx.at(it))).join(" ")
   let result = strong(author.name)
+  if "footnote" in author {
+    result += footnote(author.footnote)
+  }
   if affilated {
     result += super(typographic: false, indices)
   }
@@ -423,6 +426,7 @@
     set text(size: font.normal)
     set par(leading: 4.5pt)
     set block(spacing: 1.0em)  // Original 11pt.
+    set footnote(numbering: "*")
     make-authors(authors, affls)
     v(0.3in - 0.1in)
   })
