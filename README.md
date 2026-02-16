@@ -53,6 +53,10 @@ scientific journals as well.
 - [Reinforcement Learning Conference/Journal (RLC/RLJ)](rlj).
 - [Transactions on Machine Learning Research (TMLR)](tmlr).
 
+Also, there are an auxilliary templates like slides, reports, or theses.
+
+- [Skoltech Slides](skoltech/slides).
+
 ## Usage
 
 You can use this template in the [Typst][2] WebApp by clicking _Start from
