@@ -376,7 +376,7 @@
       )
       let color = rgb(0%, 8%, 45%)  // Originally `mydarkblue`. :D
       let content = link(el.location(), text(fill: color, numb))
-      [(#content)]
+      [Equation (#content)]
     } else {
       return it
     }
