@@ -26,13 +26,7 @@ def __getattr__(name):
     raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
 
 
-__all__ = [
-    "language",
-    # "HIGHLIGHTS_QUERY",
-    # "INJECTIONS_QUERY",
-    # "LOCALS_QUERY",
-    # "TAGS_QUERY",
-]
+__all__ = ['language']
 
 
 def __dir__():
