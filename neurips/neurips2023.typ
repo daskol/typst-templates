@@ -331,26 +331,27 @@
     }
 
     set align(left)
+    let gap = h(1em, weak: true)
     if it.level == 1 {
       // TODO: font.large?
       text(size: 12pt, weight: "bold", {
         let ex = 7.95pt
         v(2.7 * ex, weak: true)
-        [#number *#it.body*]
+        [#number #gap *#it.body*]
         v(2 * ex, weak: true)
       })
     } else if it.level == 2 {
       text(size: font.normal, weight: "bold", {
         let ex = 6.62pt
         v(2.70 * ex, weak: true)
-        [#number *#it.body*]
+        [#number #gap *#it.body*]
         v(2.03 * ex, weak: true)  // Original 1ex.
       })
     } else if it.level == 3 {
       text(size: font.normal, weight: "bold", {
         let ex = 6.62pt
         v(2.6 * ex, weak: true)
-        [#number *#it.body*]
+        [#number #gap *#it.body*]
         v(1.8 * ex, weak: true)  // Original -1em.
       })
     }
