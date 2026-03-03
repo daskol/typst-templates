@@ -12,55 +12,78 @@ module.exports = grammar({
 
   extras: $ => [/[\s　]/, $.comment],
 
+  supertypes: $ => [
+    $.statement,
+    $.term,
+    $.symbol,
+  ],
+
   rules: {
-    root: $ => repeat(choice($.comment, $.command)),
+    source_file: $ => repeat(choice($.comment, $.statement)),
 
     comment: $ => token(prec(-1, seq('%', /[^\n]*/))),
 
-    command: $ => choice(
+    statement: $ => choice(
       $.entry, $.integers, $.strings, $.macro, $.function, $.read, $.execute,
       $.iterate, $.sort, $.reverse,
     ),
 
-    entry: $ => seq(token(/ENTRY/i), $.entries, $.ivars, $.svars),
+    entry: $ => seq(
+      token(/ENTRY/i),
+      field('fields', $.entries),
+      field('integers', $.ivars),
+      field('strings', $.svars),
+    ),
 
     entries: $ => seq('{', repeat($.id), '}'),
 
-    ivars: $ => $.vars,
+    ivars: $ => $._vars,
 
-    svars: $ => $.vars,
+    svars: $ => $._vars,
 
-    vars: $ => seq('{', repeat($.id), '}'),
+    _vars: $ => seq('{', repeat($.id), '}'),
 
-    integers: $ => seq(token(/INTEGERS/i), $.ivars),
+    integers: $ => seq(token(/INTEGERS/i), field('integers', $.ivars)),
 
-    macro: $ => seq(token(/MACRO/i), '{', $.pattern, '}', '{', $.string, '}'),  // XXX
+    macro: $ => seq(
+      token(/MACRO/i),
+      '{', field('pattern', $.pattern), '}',
+      '{', field('subst', $.string), '}',
+    ),
 
     pattern: $ => /[A-Za-z_][A-Za-z0-9_.-\/]*/,  // Similar to name or id.
 
-    function: $ => seq(token(/FUNCTION/i), '{', $.name, '}', $.body),
-
-    name: $ => $.id,
-
-    body: $ => $.block,
-
-    block: $ => seq(
-      '{',
-      repeat(choice($.literal, $.operator, $.builtin, $.ref, $.id, $.block)),
-      '}',
+    function: $ => seq(
+      token(/FUNCTION/i),
+      '{', field('name', $.id), '}',
+      field('body', $.block),
     ),
 
-    literal: $ => choice($.integer, $.string),
+    block: $ => seq('{', field('term', repeat($.term)), '}'),
 
-    string: $ => seq('"', /[^"]*/, '"'),
+    term: $ => choice(
+      $.integer,
+      $.string,
+      $.ref,
+      $.id,
+      $.operator,
+      $.builtin,
+      $.block,
+    ),
 
-    integer: $ => seq('#', /-?\d+/),
+    string: $ => seq('"', field('value', $.string_value), '"'),
+
+    string_value: $ => /[^"]*/,
+
+    integer: $ => seq('#', field('value', $.integer_value)),
+
+    integer_value: $ => /-?\d+/,
 
     operator: $ => choice('=', ':=', '*', '>', '<', '+', '-', '&'),
 
     builtin: $ => prec(-1, /[A-Za-z_][A-Za-z0-9_.\-]*\$/),
 
-    ref: $ => seq('\'', choice($.id, $.builtin)),
+    ref: $ => seq('\'', field('symbol', $.symbol)),
 
     strings: $ => seq(token(/STRINGS/i), $.svars),
 
@@ -71,14 +94,14 @@ module.exports = grammar({
 
     read: $ => token(/READ/i),
 
-    execute: $ => seq(token(/EXECUTE/i), '{', $.func, '}'),
+    execute: $ => seq(token(/EXECUTE/i), '{', field('func', $.symbol), '}'),
 
-    func: $ => choice($.name, $.builtin),
+    symbol: $ => choice($.builtin, $.id),
 
-    iterate: $ => seq(token(/ITERATE/i), '{', $.func, '}'),
+    iterate: $ => seq(token(/ITERATE/i), '{', field('func', $.symbol), '}'),
 
     sort: $ => token(/SORT/i),
 
-    reverse: $ => seq(token(/REVERSE/i), '{', $.func, '}'),
+    reverse: $ => seq(token(/REVERSE/i), '{', field('func', $.symbol), '}'),
   }
 });
