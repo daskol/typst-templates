@@ -1,5 +1,5 @@
 #import "/neurips.typ": botrule, midrule, neurips2025, paragraph, toprule, url
-#import "/logo.typ": LaTeX, LaTeXe, TeX
+#import "./logo.typ": LaTeX, LaTeXe, TeX
 
 #let affls = (
   airi: ("AIRI", "Moscow", "Russia"),
