@@ -508,3 +508,20 @@
 #let url(uri) = {
   return link(uri, raw(uri))
 }
+
+/**
+ * appendix - Show rule that switches the document into appendix mode.
+ *
+ * Resets the heading counter to zero and changes heading numbering to "A.1"
+ * style. Place it after the main body (and after the bibliography) so that
+ * everything that follows is numbered as an appendix:
+ *
+ *   #show: appendix
+ *   = First Appendix Section   // rendered as "A  First Appendix Section"
+ *   == Subsection               // rendered as "A.1  Subsection"
+ */
+#let appendix(body) = {
+  set heading(numbering: "A.1")
+  counter(heading).update(0)
+  body
+}

@@ -7,7 +7,7 @@
  * [1]: https://neurips.cc/Conferences/2024
  */
 
-#import "/neurips2023.typ": font, neurips2023, paragraph, url
+#import "/neurips2023.typ": appendix, font, neurips2023, paragraph, url
 
 // Tickness values are taken from booktabs.
 #let botrule = table.hline(stroke: (thickness: 0.08em))
@@ -82,8 +82,7 @@
   }
 
   if appendix != none {
-    set heading(numbering: "A.1")
-    counter(heading).update(0)
+    show: appendix
     appendix
   }
 }

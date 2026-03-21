@@ -1,3 +1,5 @@
+.DS_Store
+
 # Ignore LaTeX output files.
 *.aux
 *.bbl
