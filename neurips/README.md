@@ -13,36 +13,42 @@ typst init @preview/bloated-neurips
 
 Typst will create a new directory with all the files needed to get you started.
 
+The file `main.typ` contains a usage example to adjust for your needs.
+
 ## Configuration
 
-This template exports the `neurips2023`, `neurips2024`, `neurips2025` function
-with the following named arguments.
+This template exports the `neurips2023`, `neurips2024`, `neurips2025`,
+`neurips2026` functions with the following named arguments.
 
 - `title`: The paper's title as content.
 - `authors`: An array of author dictionaries. Each of the author dictionaries
-  must have a name key and can have the keys department, organization,
-  location, and email.
+  must have a `name` key and can have the keys `department`, `organization`,
+  `location`, and `email`.
 - `abstract`: The content of a brief summary of the paper or none. Appears at
   the top under the title.
 - `bibliography`: The result of a call to the bibliography function or none.
   The function also accepts a single, positional argument for the body of the
   paper.
-- `appendix`: A content which is placed after bibliography.
 - `accepted`: If this is set to `false` then anonymized ready for submission
-  document is produced; `accepted: true` produces camera-redy version. If
+  document is produced; `accepted: true` produces camera-ready version. If
   the argument is set to `none` then preprint version is produced (can be
   uploaded to arXiv).
+- `track` (`neurips2026` only): The submission track for camera-ready copies.
+  Valid values are `"main"` (default), `"position"`, `"eandd"`, `"creativeai"`,
+  and `"workshop"`. Only used when `accepted` is `true`.
+- `workshop-title` (`neurips2026` only): Title of the workshop. Only used when
+  `track` is `"workshop"`.
 
 The template will initialize your package with a sample call to the
-`neurips2025` function in a show rule. If you want to change an existing
+`neurips2026` function in a show rule. If you want to change an existing
 project to use this template, you can add a show rule at the top of your file
 as follows.
 
 ```typst
-#import "@preview/bloated-neurips:0.7.0": neurips2025
+#import "@preview/bloated-neurips:0.7.1": appendix, neurips2026
 
-#show: neurips2025.with(
-  title: [Formatting Instructions For NeurIPS 2025],
+#show: neurips2026.with(
+  title: [Formatting Instructions For NeurIPS 2026],
   authors: (authors, affls),
   keywords: ("Machine Learning", "NeurIPS"),
   abstract: [
@@ -53,38 +59,44 @@ as follows.
     limited to one paragraph.
   ],
   bibliography: bibliography("main.bib"),
-  appendix: [
-    #include "appendix.typ"
-    #include "checklist.typ"
-  ],
   accepted: false,
 )
 
 #lorem(42)
+
+#show: appendix
+
+= Technical Details
+
+#lorem(42)
 ```
 
+The `appendix` show rule switches heading numbering to "A.1" style and resets
+the heading counter. It can be used instead of (or in addition to) passing
+content via the `appendix:` parameter.
+
 With template of version v0.5.1 or newer, one can override some parts.
-Specifically, `get-notice` entry of `aux` directory parameter of show rule
-allows to adjust the NeurIPS 2025 template to Science4DL workshop as follows.
+Specifically, `get-notice` entry of `aux` dictionary parameter of show rule
+allows to adjust the NeurIPS 2026 template to a custom workshop as follows.
 
 ```typst
-#import "@preview/bloated-neurips:0.7.0": neurips
+#import "@preview/bloated-neurips:0.7.1": neurips
 
 #let get-notice(accepted) = if accepted == none {
-  return [Preprint. Under review.]
+  return [Preprint.]
 } else if accepted {
   return [
     Workshop on Scientific Methods for Understanding Deep Learning, NeurIPS
-    2024.
+    2026.
   ]
 } else {
   return [
     Submitted to Workshop on Scientific Methods for Understanding Deep
-    Learning, NeurIPS 2024.
+    Learning, NeurIPS 2026.
   ]
 }
 
-#let science4dl2024(
+#let science4dl2026(
   title: [], authors: (), keywords: (), date: auto, abstract: none,
   bibliography: none, appendix: none, accepted: false, body,
 ) = {

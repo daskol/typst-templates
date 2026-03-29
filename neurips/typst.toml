@@ -1,6 +1,6 @@
 [package]
 name = "bloated-neurips"
-version = "0.7.0"
+version = "0.7.1"
 compiler = "0.13.0"
 entrypoint = "neurips.typ"
 repository = "https://github.com/daskol/typst-templates"
