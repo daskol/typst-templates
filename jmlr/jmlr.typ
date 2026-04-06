@@ -371,7 +371,7 @@
   show figure.caption: it => {
     set text(size: font-size.small)
     set par(leading: 6.67pt, first-line-indent: 0pt)
-    let numb = locate(loc => numbering(it.numbering, ..it.counter.at(loc)))
+    let numb = context numbering(it.numbering, ..it.counter.at(here()))
     let index = it.supplement + [~] + numb + it.separator
     grid(columns: 2, column-gutter: 5pt, align: left, index, it.body)
   }
