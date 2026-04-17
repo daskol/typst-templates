@@ -7,12 +7,19 @@
  * [1]: https://neurips.cc/Conferences/2026
  */
 
-#import "/neurips2023.typ": appendix, font, neurips2023, paragraph, url
+#import "/neurips2023.typ": font, neurips2023, paragraph, url
+#import "/neurips2023.typ": appendix as _base-appendix
 
 // Tickness values are taken from booktabs.
 #let botrule = table.hline(stroke: (thickness: 0.08em))
 #let midrule = table.hline(stroke: (thickness: 0.05em))
 #let toprule = botrule
+
+// State for deferred bibliography rendering. The bibliography is stored here
+// by neurips2026 and flushed by appendix so that references appear before the
+// appendix, matching the NeurIPS submission order.
+#let _neurips-bib = state("neurips2026-bib", none)
+#let _neurips-bib-rendered = state("neurips2026-bib-rendered", false)
 
 #let anonymous-notice = [
   Submitted to 40th Conference on Neural Information Processing Systems
@@ -45,6 +52,26 @@
   } else {
     anonymous-notice
   }
+}
+
+/**
+ * appendix - Show rule that renders the bibliography (if any) and then
+ * switches to appendix numbering.
+ *
+ * When used together with `neurips2026`, the bibliography passed to the
+ * template is automatically rendered before the appendix content, matching the
+ * NeurIPS submission order (references then appendix).  Falls back to the
+ * base appendix behaviour when no bibliography has been registered.
+ */
+#let appendix(body) = {
+  context {
+    let bib = _neurips-bib.get()
+    if bib != none {
+      _neurips-bib-rendered.update(true)
+      bib
+    }
+  }
+  _base-appendix(body)
 }
 
 /**
@@ -104,9 +131,8 @@
     accepted: accepted,
     aux: aux,
   )
-  body
 
-  // Display the bibliography, if any is given.
+  // Set up bibliography styling and defer rendering to the appendix show rule.
   if bibliography != none {
     if "title" not in bibliography-opts {
       bibliography-opts.title = "References"
@@ -118,7 +144,19 @@
     // small font of size 9pt in original sty.
     show std.bibliography: set text(size: font.small)
     set std.bibliography(..bibliography-opts)
-    bibliography
+    _neurips-bib.update(bibliography)
+    body
+    // Fallback: render at end if appendix was never used.
+    context {
+      if not _neurips-bib-rendered.get() {
+        let bib = _neurips-bib.get()
+        if bib != none {
+          bib
+        }
+      }
+    }
+  } else {
+    body
   }
 
 }
