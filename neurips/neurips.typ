@@ -13,10 +13,10 @@
 // Re-export `neurips2023` rule as a general one.
 #import "/neurips2023.typ": neurips2023 as neurips
 
-#import "/neurips2023.typ": appendix, font, neurips2023, paragraph, url
+#import "/neurips2023.typ": font, neurips2023, paragraph, url
 #import "/neurips2024.typ": neurips2024
 #import "/neurips2025.typ": neurips2025
-#import "/neurips2026.typ": neurips2026
+#import "/neurips2026.typ": appendix, neurips2026
 
 // Horizontal lines in table taken from booktabs.
 #import "/neurips2024.typ": botrule, midrule, toprule
