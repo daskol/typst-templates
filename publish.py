@@ -14,6 +14,8 @@ from pathlib import Path
 from subprocess import PIPE, run
 from typing import IO
 
+package_cache_dir = Path.home() / '.cache/typst/packages'
+
 parser = ArgumentParser(description=__doc__)
 parser.add_argument('--index-dir', type=Path, default=Path('index'),
                     help='root of typst/packages repo')
@@ -96,8 +98,9 @@ def filter_template_files(paths: list[Path], entrypoint: Path):
             template_files.append(path)
         elif path.name == 'logo.typ':  # Make a util package.
             template_files.append(path)
-        elif path.name in ('appendix.typ', 'checklist.typ',
-                           'supplementary.typ'):
+        elif path.name in ('appendix.typ', 'supplementary.typ'):
+            template_files.append(path)
+        elif path.stem.startswith('checklist') and path.suffix == '.typ':
             template_files.append(path)
         elif path.is_relative_to(package_cache_dir):
             pass

@@ -33,6 +33,27 @@ def test_filter_template_files():
     assert paths[4] in pack
 
 
+def test_filter_template_files_checklist2026():
+    files = [
+        'neurips/logo.typ', 'neurips/main.typ', 'neurips/main.bib',
+        'neurips/natbib.csl', 'neurips/neurips2026.typ',
+        'neurips/checklist2026.typ',
+    ]
+    entrypoint = Path(files[1])
+    paths = [Path(x) for x in files]
+    pack, temp = filter_template_files(paths, entrypoint)
+
+    assert len(temp) == 4
+    assert Path('neurips/logo.typ') in temp
+    assert Path('neurips/main.typ') in temp
+    assert Path('neurips/main.bib') in temp
+    assert Path('neurips/checklist2026.typ') in temp
+
+    assert len(pack) == 2
+    assert Path('neurips/natbib.csl') in pack
+    assert Path('neurips/neurips2026.typ') in pack
+
+
 def test_fix_template_import():
     buf = StringIO()
     buf.write(INPUT)
