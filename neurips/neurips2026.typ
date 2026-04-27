@@ -28,19 +28,22 @@
 
 #let arxiv-notice = [Preprint.]
 
+#let main-track-notice = [
+  40th Conference on Neural Information Processing Systems (NeurIPS 2026).
+]
+
 // Track-specific notice strings for camera-ready copies.
 #let get-track-notice(track, workshop-title: none) = {
   if track == "position" {
-    [40th Conference on Neural Information Processing Systems (NeurIPS 2026). Position Paper Track.]
+    main-track-notice + [ Position Paper Track.]
   } else if track == "eandd" {
-    [40th Conference on Neural Information Processing Systems (NeurIPS 2026). Track on Evaluations and Datasets.]
-  } else if track == "creativeai" {
-    [40th Conference on Neural Information Processing Systems (NeurIPS 2026). Creative AI Track.]
+    main-track-notice + [ Track on Evaluations and Datasets.]
+  } else if track == "creative-ai" {
+    main-track-notice + [ Creative AI Track.]
   } else if track == "workshop" {
-    [40th Conference on Neural Information Processing Systems (NeurIPS 2026). Workshop: #workshop-title.]
+    main-track-notice + [ Workshop: #workshop-title.]
   } else {
-    // Default: main track.
-    [40th Conference on Neural Information Processing Systems (NeurIPS 2026).]
+    main-track-notice
   }
 }
 
@@ -98,7 +101,7 @@
  *     - `"main"` (default) — Main Track.
  *     - `"position"` — Position Paper Track.
  *     - `"eandd"` — Track on Evaluations and Datasets.
- *     - `"creativeai"` — Creative AI Track.
+ *     - `"creative-ai"` — Creative AI Track.
  *     - `"workshop"` — Workshop; set `workshop-title` as well.
  *   workshop-title: Workshop name as content. Required when `track` is
  *     `"workshop"`.
@@ -113,14 +116,18 @@
   abstract: none,
   bibliography: none,
   bibliography-opts: (:),
+  appendix: none,
   accepted: false,
   track: "main",
   workshop-title: none,
   aux: (:),
   body,
 ) = {
-  // Update auxiliary parameters with notice getter.
-  aux.insert("get-notice", make-get-notice(track, workshop-title))
+  // Update auxiliary parameters with notice getter (only if not overridden by
+  // the caller via aux).
+  if "get-notice" not in aux {
+    aux.insert("get-notice", make-get-notice(track, workshop-title))
+  }
 
   show: neurips2023.with(
     title: title,
@@ -159,4 +166,8 @@
     body
   }
 
+  if appendix != none {
+    show: _base-appendix
+    appendix
+  }
 }

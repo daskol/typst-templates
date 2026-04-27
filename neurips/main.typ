@@ -47,19 +47,19 @@ Please read the instructions below carefully and follow them faithfully.
 
 Papers to be submitted to NeurIPS 2026 must be prepared according to the
 instructions presented here. Papers may only be up to *nine* pages long,
-including figures. Additional pages _containing only acknowledgments and
-references_ are allowed. Papers that exceed the page limit will not be
-reviewed, or in any other way considered for presentation at the conference.
+including figures. *Papers that exceed the page limit will not be reviewed (or
+in any other way considered) for presentation at the conference.* Additional
+pages _containing acknowledgments, references, checklist, and optional
+technical appendices_ do not count as content pages.
 
-The margins in 2025 are the same as those in previous years.
+The margins in 2026 are the same as those in previous years.
 
 Authors are required to use the NeurIPS #LaTeX style files obtainable at the
 NeurIPS website as indicated below. Please make sure you use the current files
-and not previous versions. Tweaking the style files may be grounds for
+and not previous versions. Tweaking the style files may be grounds for desk
 rejection.
 
 == Retrieval of style files
-
 
 The style files for NeurIPS and other conference information are available on
 the website at
@@ -68,17 +68,15 @@ the website at
   url("http://www.neurips.cc/")
 }))
 
-The file `neurips_2026.pdf` contains these instructions and illustrates the
-various formatting requirements your NeurIPS paper must satisfy.
-
 The only supported style file for NeurIPS 2026 is `neurips_2026.sty`, rewritten
-for #LaTeXe. *Previous style files for #LaTeX 2.09, Microsoft Word, and RTF
-are no longer supported!*
+for #LaTeXe. *Previous style files for LATEX 2.09, Microsoft Word, and RTF are
+no longer supported.*
 
-The #LaTeX style file contains three optional arguments: `final`, which creates
-a camera-ready copy, `preprint`, which creates a preprint for submission to,
-e.g., arXiv, and `nonatbib`, which will not load the `natbib` package for you
-in case of package clash.
+The #LaTeX style file contains three optional arguments:
+
+- `final`, which creates a camera-ready copy,
+- `preprint`, which creates a preprint for submission to, e.g., arXiv,
+- `nonatbib`, which will not load the natbib package for you in case of package clash.
 
 #paragraph[Preprint option] If you wish to post a preprint of your work online,
 e.g., on arXiv, using the NeurIPS style, please use the `preprint` option. This
@@ -206,13 +204,14 @@ footnote with a horizontal rule of 2~inches (12~picas).
 Note that footnotes are properly typeset _after_ punctuation marks.#footnote[As
 in this example.]
 
-#v(7pt)  // In order to match original template.
-
 == Figures
 
 #figure(
   rect(width: 4.25cm, height: 4.25cm, stroke: 0.4pt),
-  caption: [Sample figure caption.],
+  caption: [
+    Sample figure caption. Explain what the figure shows and add a key
+    take-away message to the caption.
+  ],
   placement: top,
 )
 
@@ -225,10 +224,6 @@ proper nouns); figures are numbered consecutively.
 You may use color figures.  However, it is best for the figure captions and the
 paper body to be legible if the paper is printed in either black/white or in
 color.
-
-// In order to match original template.
-#pagebreak()
-#v(-9pt)
 
 == Tables <tables>
 
@@ -251,7 +246,10 @@ typesetting high-quality, professional tables:
 This package was used to typeset @sample-table.
 
 #figure(
-  caption: [Sample table title.],
+  caption: [
+    Sample table caption. Explain what the table shows and add a key take-away
+    message to the caption.
+  ],
   placement: top,
   table(
     columns: 3,
@@ -286,6 +284,8 @@ Do not change any aspects of the formatting parameters in the style files.  In
 particular, do not modify the width or length of the rectangle the text should
 fit into, and do not change font sizes (except perhaps in the *References*
 section; see below). Please note that pages should be numbered.
+
+#v(-8pt)
 
 = Preparing PDF files
 
@@ -374,10 +374,18 @@ section does not count towards the page limit.
 
 #show: appendix
 
-= Appendix / supplemental material
+#v(-8pt)
 
-Optionally include supplemental material (complete proofs, additional
-experiments and plots) in appendix. All such materials *SHOULD be included in
-the main submission*.
+= Technical appendices and supplementary material
 
-#include "checklist2026.typ"
+Technical appendices with additional results, figures, graphs, and proofs may
+be submitted with the paper submission before the full submission deadline (see
+above). You can upload a ZIP file for videos or code, but do not upload a
+separate PDF file for the appendix. There is no page limit for the technical
+appendices.
+
+Note: Think of the appendix as "optional reading" for reviewers. The paper must
+be able to stand alone without the appendix; for example, adding critical
+experiments that support the main claims to an appendix is inappropriate.
+
+#include "checklist.typ"

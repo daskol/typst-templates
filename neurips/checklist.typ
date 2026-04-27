@@ -1,9 +1,9 @@
-#import "/neurips.typ": url
+#let url(uri) = link(uri, raw(uri))
 
 #let TODO = text(fill: red, [*[TODO]*])
 #let answerNA = text(fill: gray, "[NA]")
-#let answerNo = text(fill: red, "[NO]")
-#let answerYes = text(fill: blue, "[YES]")
+#let answerNo = text(fill: rgb("ff8c00"), "[No]")
+#let answerYes = text(fill: blue, "[Yes]")
 
 #pagebreak(weak: true)
 
@@ -17,8 +17,8 @@ The checklist is designed to encourage best practices for responsible machine
 learning research, addressing issues of reproducibility, transparency, research
 ethics, and societal impact. Do not remove the checklist: *The papers not
 including the checklist will be desk rejected.* The checklist should follow the
-references and precede the (optional) supplemental material.  The checklist
-does NOT count towards the page limit.
+references and follow the (optional) supplemental material. The checklist does
+NOT count towards the page limit.
 
 Please read the checklist guidelines carefully for information on how to answer
 these questions. For each question in the checklist:
@@ -31,7 +31,7 @@ these questions. For each question in the checklist:
 
 *The checklist answers are an integral part of your paper submission.* They are
 visible to the reviewers, area chairs, senior area chairs, and ethics
-reviewers. You will be asked to also include it (after eventual revisions) with
+reviewers. You will also be asked to include it (after eventual revisions) with
 the final version of your paper, and its final version will be published with
 the paper.
 
@@ -54,9 +54,9 @@ IMPORTANT, please:
 #block({
   set list(indent: 1em)
   [
-  - *Delete this instruction block, but keep the section heading "NeurIPS paper
-    checklist",*
-  -  *Keep the checklist subsection headings, questions/answers and guidelines
+  - *Delete this instruction block, but keep the section heading "NeurIPS Paper
+    Checklist".*
+  - *Keep the checklist subsection headings, questions/answers and guidelines
     below.*
   - *Do not modify the questions and only use the provided macros for your
     answers.*
@@ -244,7 +244,7 @@ IMPORTANT, please:
   ])
 
 + #claim(
-  name: [Open access to data and code],
+  name: [Open Access to Data and Code],
   question: [
     Does the paper provide open access to the data and code, with sufficient
     instructions to faithfully reproduce the main experimental results, as
@@ -257,7 +257,7 @@ IMPORTANT, please:
       code.
 
     - Please see the NeurIPS code and data submission guidelines
-      (#url("https://nips.cc/public/guides/CodeSubmissionPolicy")) for more
+      (#url("https://neurips.cc/public/guides/CodeSubmissionPolicy")) for more
       details.
 
     - While we encourage the release of code and data, we understand that this
@@ -267,7 +267,7 @@ IMPORTANT, please:
 
     - The instructions should contain the exact command and environment needed
       to run to reproduce the results. See the NeurIPS code and data submission
-      guidelines (#url("https://nips.cc/public/guides/CodeSubmissionPolicy"))
+      guidelines (#url("https://neurips.cc/public/guides/CodeSubmissionPolicy"))
       for more details.
 
     - The authors should provide instructions on data access and preparation,
@@ -287,12 +287,11 @@ IMPORTANT, please:
       code is permitted.
   ])
 
-
 + #claim(
   name: [Experimental Setting/Details],
   question: [
     Does the paper specify all the training and test details (e.g., data
-    splits, hyperparameters, how they were chosen, type of optimizer, etc.)
+    splits, hyperparameters, how they were chosen, type of optimizer)
     necessary to understand the results?
   ],
   answer: TODO,  // Replace by answerYes, answerNo, or answerNA.
@@ -345,7 +344,7 @@ IMPORTANT, please:
       in tables or figures symmetric error bars that would yield results that
       are out of range (e.g. negative error rates).
 
-    - If error bars are reported in tables or plots, The authors should explain
+    - If error bars are reported in tables or plots, the authors should explain
       in the text how they were calculated and reference the corresponding
       figures or tables in the text.
   ])
@@ -363,7 +362,8 @@ IMPORTANT, please:
     - The answer NA means that the paper does not include experiments.
 
     - The paper should indicate the type of compute workers CPU or GPU,
-      internal cluster, or cloud provider, including relevant memory and storage.
+      internal cluster, or cloud provider, including relevant memory and
+      storage.
 
     - The paper should provide the amount of compute required for each of the
       individual experimental runs as well as estimate the total compute.
@@ -374,11 +374,11 @@ IMPORTANT, please:
   ])
 
 + #claim(
-  name: [Code Of Ethics],
+  name: [Code of Ethics],
   question: [
     Does the research conducted in the paper conform, in every respect, with
     the NeurIPS Code of Ethics
-    #url("https://neurips.cc/public/EthicsGuidelines")
+    #url("https://neurips.cc/public/EthicsGuidelines")?
   ],
   answer: TODO,  // Replace by answerYes, answerNo, or answerNA.
   justification: TODO,
@@ -441,7 +441,7 @@ IMPORTANT, please:
   question: [
     Does the paper describe safeguards that have been put in place for
     responsible release of data or models that have a high risk for misuse
-    (e.g., pretrained language models, image generators, or scraped datasets)?
+    (e.g., pre-trained language models, image generators, or scraped datasets)?
   ],
   answer: TODO,  // Replace by answerYes, answerNo, or answerNA.
   justification: TODO,
@@ -463,7 +463,7 @@ IMPORTANT, please:
   ])
 
 + #claim(
-  name: [Licenses for existing assets],
+  name: [Licenses for Existing Assets],
   question: [
     Are the creators or original owners of assets (e.g., code, data, models),
     used in the paper, properly credited and are the license and terms of use
@@ -555,7 +555,7 @@ IMPORTANT, please:
     approval/review based on the requirements of your country or institution)
     were obtained?
   ],
-  answer: TODO, // Replace by answerYes, answerNo, or answerNA.
+  answer: TODO,  // Replace by answerYes, answerNo, or answerNA.
   justification: TODO,
   guidelines: [
     - The answer NA means that the paper does not involve crowdsourcing nor
@@ -571,4 +571,25 @@ IMPORTANT, please:
 
     - For initial submissions, do not include any information that would break
       anonymity (if applicable), such as the institution conducting the review.
+  ])
+
+// New in NeurIPS 2026.
++ #claim(
+  name: [Declaration of LLM Usage],
+  question: [
+    Does the paper describe the usage of LLMs if it is an important, original,
+    or non-standard component of the core methods in this research? Note that
+    if the LLM is used only for writing, editing, or formatting purposes and
+    does _not_ impact the core methodology, scientific rigor, or originality of
+    the research, declaration is not required.
+  ],
+  answer: TODO,  // Replace by answerYes, answerNo, or answerNA.
+  justification: TODO,
+  guidelines: [
+    - The answer NA means that the core method development in this research
+      does not involve LLMs as any important, original, or non-standard
+      components.
+
+    - Please refer to our LLM policy in the NeurIPS handbook for what should
+      or should not be described.
   ])
