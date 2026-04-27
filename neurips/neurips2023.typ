@@ -439,6 +439,8 @@
     make-authors(authors, affls)
     v(0.3in - 0.1in)
   })
+  // Reset footnote counter
+  counter(footnote).update(0)
 
   // Vertical spacing between authors and abstract.
   v(6.5pt)  // Original 0.075in.
