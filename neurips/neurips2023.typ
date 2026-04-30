@@ -30,6 +30,8 @@
   script: font-defaults.scriptsize,
 )
 
+#let equal_footnote_created = state("equal_footnote_created", false)
+
 #let make_figure_caption(it) = {
   set align(center)
   block(context {
@@ -121,6 +123,16 @@
   }
   let indices = affl.map(it => str(affl2idx.at(it))).join(" ")
   let result = strong(author.name)
+  if author.at("equal", default: false) {
+    result += context [
+      #if equal_footnote_created.get() [
+        #footnote(numbering: "*", <equal-contribution>)
+      ] else [
+        #equal_footnote_created.update(_ => true)
+        #footnote(numbering: "*")[Equal contribution.]<equal-contribution>
+      ]
+    ]
+  }
   if affilated {
     result += super(typographic: false, indices)
   }
@@ -427,6 +439,8 @@
     make-authors(authors, affls)
     v(0.3in - 0.1in)
   })
+  // Reset footnote counter
+  counter(footnote).update(0)
 
   // Vertical spacing between authors and abstract.
   v(6.5pt)  // Original 0.075in.
