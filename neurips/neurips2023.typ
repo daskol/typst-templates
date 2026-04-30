@@ -19,7 +19,7 @@
 )
 
 // We prefer to use Times New Roman when ever it is possible.
-#let font-family = ("Times New Roman", "Nimbus Roman", "TeX Gyre Termes")
+#let font-family = ("Times New Roman", "Liberation Serif", "Nimbus Roman", "TeX Gyre Termes")
 
 #let font = (
   Large: font-defaults.Large,
