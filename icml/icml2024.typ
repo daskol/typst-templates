@@ -162,7 +162,7 @@
 
     // Validate affilation representation.
     assert(type(affl) == array,
-           message: "wrong affilation type: " + type(affl))
+           message: "wrong affilation type: " + str(type(affl)))
     assert(affl.len() > 0,
            message: "empty affilation: " + it + " :" + repr(affl))
 
