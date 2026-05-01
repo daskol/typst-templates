@@ -7,7 +7,8 @@
  * [1]: https://neurips.cc/Conferences/2026
  */
 
-#import "/neurips2023.typ": font, neurips2023, paragraph, url
+#import "/font-config.typ": font-config-merge
+#import "/neurips2023.typ": neurips2023, paragraph, url
 #import "/neurips2023.typ": appendix as _base-appendix
 
 // Tickness values are taken from booktabs.
@@ -105,6 +106,7 @@
  *     - `"workshop"` — Workshop; set `workshop-title` as well.
  *   workshop-title: Workshop name as content. Required when `track` is
  *     `"workshop"`.
+ *   font-config: Preferred font family and size overrides.
  *   aux: Dictionary of advanced overrides. The `get-notice` key accepts a
  *     function `accepted => content` to fully customize the footer notice.
  */
@@ -120,9 +122,12 @@
   accepted: false,
   track: "main",
   workshop-title: none,
+  font-config: (:),
   aux: (:),
   body,
 ) = {
+  let fc = font-config-merge(font-config, aux: aux)
+
   // Update auxiliary parameters with notice getter (only if not overridden by
   // the caller via aux).
   if "get-notice" not in aux {
@@ -136,6 +141,7 @@
     date: date,
     abstract: abstract,
     accepted: accepted,
+    font-config: font-config,
     aux: aux,
   )
 
@@ -149,7 +155,7 @@
     }
     // NOTE It is allowed to reduce font to 9pt (small) but there is not
     // small font of size 9pt in original sty.
-    show std.bibliography: set text(size: font.small)
+    show std.bibliography: set text(size: fc.size.small)
     set std.bibliography(..bibliography-opts)
     _neurips-bib.update(bibliography)
     body

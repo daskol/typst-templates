@@ -10,10 +10,14 @@
  * [4]: https://neurips.cc/Conferences/2026
  */
 
+// Re-export for backward compatibility (deprecated).
+#import "/font-config.typ": font-size as font
+
 // Re-export `neurips2023` rule as a general one.
 #import "/neurips2023.typ": neurips2023 as neurips
 
-#import "/neurips2023.typ": font, neurips2023, paragraph, url
+// #import "/font-config.typ": font-sizes
+#import "/neurips2023.typ": neurips2023, paragraph, url
 #import "/neurips2024.typ": neurips2024
 #import "/neurips2025.typ": neurips2025
 #import "/neurips2026.typ": appendix, neurips2026

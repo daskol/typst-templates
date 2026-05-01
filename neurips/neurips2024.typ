@@ -7,7 +7,8 @@
  * [1]: https://neurips.cc/Conferences/2024
  */
 
-#import "/neurips2023.typ": appendix, font, neurips2023, paragraph, url
+#import "/font-config.typ": font-config-merge
+#import "/neurips2023.typ": appendix, neurips2023, paragraph, url
 
 // Tickness values are taken from booktabs.
 #let botrule = table.hline(stroke: (thickness: 0.08em))
@@ -39,6 +40,7 @@
  * Args:
  *   accepted: Valid values are `none`, `false`, and `true`. Missing value
  *   (`none`) is designed to prepare arxiv publication. Default is `false`.
+ *   font-config: Preferred font family and size overrides.
  */
 #let neurips2024(
   title: [],
@@ -50,9 +52,12 @@
   bibliography-opts: (:),
   appendix: none,
   accepted: false,
+  font-config: (:),
   aux: (:),
   body,
 ) = {
+  let fc = font-config-merge(font-config, aux: aux)
+
   // Update auxiliarry parametetrs with notice getter.
   aux.insert("get-notice", get-notice)
 
@@ -63,6 +68,7 @@
     date: date,
     abstract: abstract,
     accepted: accepted,
+    font-config: font-config,
     aux: aux,
   )
   body
@@ -76,7 +82,7 @@
     }
     // NOTE It is allowed to reduce font to 9pt (small) but there is not
     // small font of size 9pt in original sty.
-    show std.bibliography: set text(size: font.small)
+    show std.bibliography: set text(size: fc.size.small)
     set std.bibliography(..bibliography-opts)
     bibliography
   }
