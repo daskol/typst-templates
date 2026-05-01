@@ -1,40 +1,16 @@
+#import "/font-config.typ": font-config-merge
+
 // Metrical size of page body.
 #let viewport = (
   width: 5.5in,
   height: 9in,
 )
 
-// Default font sizes from original LaTeX style file.
-#let font-defaults = (
-  tiny:	        7pt,
-  scriptsize:   7pt,
-  footnotesize: 9pt,
-  small:        9pt,
-  normalsize:   10pt,
-  large:        14pt,
-  Large:        16pt,
-  LARGE:        20pt,
-  huge:         23pt,
-  Huge:         28pt,
-)
-
-// We prefer to use Times New Roman when ever it is possible.
-#let font-family = ("Times New Roman", "Liberation Serif", "Nimbus Roman", "TeX Gyre Termes")
-
-#let font = (
-  Large: font-defaults.Large,
-  footnote: font-defaults.footnotesize,
-  large: font-defaults.large,
-  small: font-defaults.small,
-  normal: font-defaults.normalsize,
-  script: font-defaults.scriptsize,
-)
-
-#let make_figure_caption(it) = {
+#let make_figure_caption(fc, it) = {
   set align(center)
   block(context {
     set align(left)
-    set text(size: font.normal)
+    set text(size: fc.size.normal)
     it.supplement
     if it.numbering != none {
       [ ]
@@ -46,10 +22,10 @@
   })
 }
 
-#let make_figure(caption_above: false, it) = {
+#let make_figure(caption_above: false, fc, it) = {
   let body = block(width: 100%, {
     set align(center)
-    set text(size: font.normal)
+    set text(size: fc.size.normal)
     if caption_above {
       v(1em, weak: true)  // Does not work at the block beginning.
       it.caption
@@ -248,6 +224,10 @@
  * Args:
  *   accepted: Valid values are `none`, `false`, and `true`. Missing value
  *   (`none`) is designed to prepare arxiv publication. Default is `false`.
+ *   font-config: Preferred font family and size overrides. Use
+ *   `family.serif` for the document font and `size` entries such as `normal`,
+ *   `small`, `title`, `section`, `abstract-title`, `notice`, and
+ *   `line-number` for size adjustments.
  */
 #let neurips2023(
   title: [],
@@ -258,9 +238,12 @@
   bibliography: none,
   bibliography-opts: (:),
   accepted: false,
+  font-config: (:),
   aux: (:),
   body,
 ) = {
+  let fc = font-config-merge(font-config, aux: aux)
+
   // Sanitize authors and affilations arguments.
   if accepted != none and not accepted {
     authors = ((anonymous-author,), (anonymous-affl: anonymous-affl))
@@ -279,7 +262,7 @@
     paper: "us-letter",
     margin: (left: 1.5in, right: 1.5in,
              top: 1.0in, bottom: 1in),
-    footer-descent: 25pt - font.normal,
+    footer-descent: 25pt - fc.size.normal,
     footer: context {
       let i = counter(page).at(here()).first()
       if i == 1 {
@@ -289,18 +272,17 @@
           get-notice
         }
         let notice = get-notice(accepted)
-        return align(center, text(size: 9pt, [#notice]))
+        return align(center, text(size: fc.size.notice, [#notice]))
       } else {
-        return align(center, text(size: font.normal, [#i]))
+        return align(center, text(size: fc.size.normal, [#i]))
       }
     },
   )
 
   // In the original style, main body font is Times (Type-1) font but we use
   // OpenType analogue.
-  let font_ = aux.at("font", default: (family: font-family))
   set par(justify: true, leading: 0.55em)
-  set text(font: font_.family, size: font.normal)
+  set text(font: fc.family.serif, size: fc.size.normal)
 
   // Configure quotation (similar to LaTeX's `quoting` package).
   show quote: set align(left)
@@ -333,22 +315,21 @@
     set align(left)
     let gap = h(1em, weak: true)
     if it.level == 1 {
-      // TODO: font.large?
-      text(size: 12pt, weight: "bold", {
+      text(size: fc.size.section, weight: "bold", {
         let ex = 7.95pt
         v(2.7 * ex, weak: true)
         [#number #gap *#it.body*]
         v(2 * ex, weak: true)
       })
     } else if it.level == 2 {
-      text(size: font.normal, weight: "bold", {
+      text(size: fc.size.normal, weight: "bold", {
         let ex = 6.62pt
         v(2.70 * ex, weak: true)
         [#number #gap *#it.body*]
         v(2.03 * ex, weak: true)  // Original 1ex.
       })
     } else if it.level == 3 {
-      text(size: font.normal, weight: "bold", {
+      text(size: fc.size.normal, weight: "bold", {
         let ex = 6.62pt
         v(2.6 * ex, weak: true)
         [#number #gap *#it.body*]
@@ -360,10 +341,10 @@
   // Configure images and tables appearence.
   set figure.caption(separator: [:])
   show figure: set block(breakable: false)
-  show figure.caption.where(kind: table): it => make_figure_caption(it)
-  show figure.caption.where(kind: image): it => make_figure_caption(it)
-  show figure.where(kind: image): it => make_figure(it)
-  show figure.where(kind: table): it => make_figure(it, caption_above: true)
+  show figure.caption.where(kind: table): it => make_figure_caption(fc, it)
+  show figure.caption.where(kind: image): it => make_figure_caption(fc, it)
+  show figure.where(kind: image): it => make_figure(fc, it)
+  show figure.where(kind: table): it => make_figure(fc, it, caption_above: true)
 
   // Math equation numbering and referencing.
   set math.equation(numbering: "(1)")
@@ -412,7 +393,7 @@
     // Add some space based on line width.
     v(0.1in + top-rule-width / 2)
     line(length: 100%, stroke: top-rule-width + black)
-    align(center, text(size: 17pt, weight: "bold", [#title]))
+    align(center, text(size: fc.size.title, weight: "bold", [#title]))
     v(-bot-rule-width)
     line(length: 100%, stroke: bot-rule-width + black)
   })
@@ -421,7 +402,7 @@
 
   // Render authors.
   block(width: 100%, {
-    set text(size: font.normal)
+    set text(size: fc.size.normal)
     set par(leading: 4.5pt)
     set block(spacing: 1.0em)  // Original 11pt.
     make-authors(authors, affls)
@@ -442,7 +423,7 @@
       body
     } else {
       set par.line(
-        numbering: n => text(size: 7pt)[#n],
+        numbering: n => text(size: fc.size.line-number)[#n],
         number-clearance: 11pt)
       body
     }
@@ -450,13 +431,12 @@
 
   // Render abstract.
   block(width: 100%, {
-    set text(size: 10pt)
-    set text(size: font.normal)
+    set text(size: fc.size.normal)
     set par(leading: 0.43em)  // Original 0.55em (or 0.45em?).
 
     // NeurIPS instruction tels that font size of `Abstract` must equal to 12pt
     // but there is not predefined font size.
-    align(center, text(size: 12pt)[*Abstract*])
+    align(center, text(size: fc.size.abstract-title)[*Abstract*])
     v(0.215em)  // Original 0.5ex.
     show: lineno.with(accepted, aux)
     pad(left: 0.5in, right: 0.5in, abstract)
@@ -470,7 +450,7 @@
     show: lineno.with(accepted, aux)
 
     // Display body.
-    set text(size: font.normal)
+    set text(size: fc.size.normal)
     set par(leading: 0.55em)
     set par(leading: 0.43em)
     set block(spacing: 1.0em)  // Original 11pt.
@@ -486,7 +466,7 @@
       }
       // NOTE It is allowed to reduce font to 9pt (small) but there is not
       // small font of size 9pt in original sty.
-      show std.bibliography: set text(size: font.small)
+      show std.bibliography: set text(size: fc.size.small)
       set std.bibliography(..bibliography-opts)
       bibliography
     }

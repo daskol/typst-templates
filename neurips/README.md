@@ -31,6 +31,13 @@ This template exports the `neurips2023`, `neurips2024`, `neurips2025`,
   `"creative-ai"`, and `"workshop"`. Only used when `accepted` is `true`.
 - `workshop-title` (introduced in `neurips2026`): Title of the workshop. Only
   used when `track` is `"workshop"`.
+- `font-config`: A dictionary for font preferences. Use `family.serif` to
+  override the body font fallback list and `size` to override template size
+  roles such as `normal`, `small`, `title`, `section`, `abstract-title`,
+  `notice`, and `line-number`.
+- `aux`: Advanced overrides. The `get-notice` key accepts a function
+  `accepted => content` for custom footer notices. Older `aux: (font: ...)`
+  font overrides are still accepted for compatibility; prefer `font-config`.
 
 The template will initialize your package with a sample call to the
 `neurips2026` function in a show rule. If you want to change an existing
@@ -53,6 +60,10 @@ as follows.
   ],
   bibliography: bibliography("main.bib"),
   accepted: false,
+  font-config: (
+    family: (serif: ("Times New Roman", "Liberation Serif")),
+    size: (normal: 10pt),
+  ),
 )
 
 #lorem(42)
@@ -68,9 +79,9 @@ The `appendix` show rule switches heading numbering to "A.1" style and resets
 the heading counter. It can be used instead of (or in addition to) passing
 content via the `appendix:` parameter.
 
-With template of version v0.5.1 or newer, one can override some parts.
-Specifically, `get-notice` entry of `aux` dictionary parameter of show rule
-allows to adjust the NeurIPS 2026 template to a custom workshop as follows.
+With template of version v0.5.1 or newer, one can override some advanced parts.
+Specifically, the `get-notice` entry of the `aux` dictionary parameter allows
+adjusting the NeurIPS 2026 template to a custom workshop as follows.
 
 ```typst
 #import "@preview/bloated-neurips:0.8.0": neurips
