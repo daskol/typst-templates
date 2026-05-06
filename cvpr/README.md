@@ -29,7 +29,10 @@ arguments.
 - `bibliography`: The result of a call to the bibliography function or none.
   The function also accepts a single, positional argument for the body of the
   paper.
-- `appendix`: Content to append after bibliography section.
+- `supplementary`: Content to append after bibliography as a
+  supplementary material section, with cross-column "Supplementary
+  Material" header and `A.1` heading numbering shift (per cvpr.sty's
+  `\maketitlesupplementary`).
 - `accepted`: If this is set to `false` then anonymized ready for submission
   document is produced; `accepted: true` produces camera-redy version. If
   the argument is set to `none` then preprint version is produced (can be

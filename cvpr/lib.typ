@@ -283,7 +283,10 @@
  *   abstract: Paper abstract.
  *   bibliography: Bibliography content. If it is not specified then there is
  *   not reference section.
- *   appendix: Content to append after bibliography section.
+ *   supplementary: Content rendered after the bibliography as a
+ *     supplementary material section (per cvpr.sty's \maketitlesupplementary:
+ *     pagebreak + cross-column "Supplementary Material" title + heading
+ *     numbering shift to A.1.).
  *   accepted: Valid values are `none`, `false`, and `true`. Missing value
  *   (`none`) is designed to prepare arxiv publication. Default is `false`.
  *   id: Submission identifier.
@@ -296,7 +299,7 @@
   date: auto,
   abstract: [],
   bibliography: none,
-  appendix: none,
+  supplementary: none,
   accepted: false,
   id: none,
   conf-year: [2025],
@@ -479,9 +482,19 @@
     }
   })
 
-  if appendix != none {
-    set heading(numbering: "A.1")
-    counter(heading).update(0)
-    appendix
+  if supplementary != none {
+    pagebreak(weak: true)
+    place(top, scope: "parent", float: true, {
+      v(0.375in)
+      align(center, text(size: font-size.Large, weight: "bold", title))
+      v(0.5em)
+      align(center, text(size: font-size.Large, weight: "bold", [Supplementary Material]))
+      v(1em)
+    })
+    columns(2, gutter: 0.3125in, {
+      set heading(numbering: "A.1")
+      counter(heading).update(0)
+      supplementary
+    })
   }
 }
