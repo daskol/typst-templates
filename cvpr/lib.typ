@@ -13,9 +13,19 @@
 
 #let notice = [CONFIDENTIAL REVIEW COPY. DO NOT DISTRIBUTE.]
 
-#let eg = emph[e.g.]
-
-#let etal = emph[et~al]
+#let eg    = emph[e.g] + "."
+#let Eg    = emph[E.g] + "."
+#let ie    = emph[i.e] + "."
+#let Ie    = emph[I.e] + "."
+#let cf    = emph[cf] + "."
+#let Cf    = emph[Cf] + "."
+#let etc   = emph[etc] + "."
+#let vs    = emph[vs] + "."
+#let etal  = emph[et~al] + "."
+#let wrt   = "w.r.t."
+#let dof   = "d.o.f."
+#let iid   = "i.i.d."
+#let wolog = "w.l.o.g."
 
 // Booktabs-style table rules: cvpr.sty:36 requires booktabs.
 // Each helper expands to hline + zero-content padding cells that
@@ -366,6 +376,9 @@
     first-line-indent: (amount: 0.166666in, all: true),
     leading: 0.532em, spacing: 0.54em, justify: true)
   show raw: set text(font: font-family-mono, size: font-size.normal)
+
+  show regex("\.\.[^.]"): m => "." + m.text.slice(2)
+
 
   let _suppress-indent = state("blind-cvpr-suppress-indent", false)
   show heading: it => { it; _suppress-indent.update(true) }

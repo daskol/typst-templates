@@ -86,7 +86,7 @@ of `cvpr.sty` to switch between different versions.)
 Reviewers: note that the ruler measurements do not align well with lines in the
 paper --- this turns out to be very difficult to do well when the paper
 contains many figures and equations, and, when done, looks ugly. Just use
-fractional references (#eg., this line is $087.5$), although in most cases one
+fractional references (#eg, this line is $087.5$), although in most cases one
 would expect that the approximate location will be adequate.
 
 == Paper ID
