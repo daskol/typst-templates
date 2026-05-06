@@ -332,6 +332,14 @@
 
   set math.equation(numbering: "(1)", supplement: [Eq.])
   show math.equation: set block(spacing: 9pt)
+  show math.equation.where(block: true): it => {
+    if it.numbering == none { it }
+    else if it.has("label") { it }
+    else {
+      counter(math.equation).update(n => if n > 0 { n - 1 } else { 0 })
+      math.equation(block: true, numbering: none, it.body)
+    }
+  }
 
   set quote(quotes: false)
   show quote.where(block: true): it => {
