@@ -329,6 +329,11 @@
   show heading.where(level: 1): h1
   show heading.where(level: 2): h2
   show heading.where(level: 3): h3
+  show heading.where(level: 4): it => {
+    v(7.1pt, weak: false)
+    box(text(size: font-size.normal, weight: "bold", it.body))
+    h(0.6em)
+  }
 
   set math.equation(numbering: "(1)", supplement: [Eq.])
   show math.equation: set block(spacing: 9pt)
