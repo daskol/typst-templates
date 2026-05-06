@@ -13,6 +13,24 @@
 
 #let notice = [CONFIDENTIAL REVIEW COPY. DO NOT DISTRIBUTE.]
 
+#let _FNSYMBOLS = ("*", "†", "‡", "§", "¶", "‖", "**", "††", "‡‡", "§§", "¶¶", "‖‖")
+#let _thanks-numbering(n) = if n <= _FNSYMBOLS.len() {
+  _FNSYMBOLS.at(n - 1)
+} else { str(n) }
+#let thanks(body) = footnote(numbering: _thanks-numbering, body)
+
+#let _to-string(c) = {
+  if type(c) == str { c }
+  else if type(c) == content {
+    if c.func() == footnote { "" }
+    else if c.has("text") { c.text }
+    else if c.has("children") { c.children.map(_to-string).join() }
+    else if c.has("body") { _to-string(c.body) }
+    else { "" }
+  }
+  else { "" }
+}
+
 #let eg    = emph[e.g] + "."
 #let Eg    = emph[E.g] + "."
 #let ie    = emph[i.e] + "."
@@ -341,7 +359,7 @@
 
   set document(
     title: title,
-    author: authors.map(it => it.name).join(", ", last: " and "),
+    author: authors.map(it => _to-string(it.name)).join(", ", last: " and "),
     keywords: keywords,
     date: date)
 
@@ -489,6 +507,7 @@
     }
   }
   make-title(title, authors, affls, id, mode)
+  counter(footnote).update(0)
 
   // NOTE It seems that there is a typo in formatting instructions and actual
   // gutter is 3/8 in not 5/16 in.
