@@ -26,6 +26,37 @@
 
 #let etal = emph[et~al]
 
+// Booktabs-style table rules: cvpr.sty:36 requires booktabs.
+// Each helper expands to hline + zero-content padding cells that
+// reproduce \abovetopsep / \belowrulesep / \aboverulesep gaps.
+//
+// Usage:
+//   #table(
+//     columns: N,
+//     stroke: none,
+//     ..toprule(N),
+//     ...header...,
+//     ..midrule(N),
+//     ...rows...,
+//     ..bottomrule(N),
+//   )
+
+#let toprule(n) = (
+  table.hline(stroke: 1.5pt),
+  table.cell(colspan: n, inset: (top: 2pt, bottom: 0pt), []),
+)
+
+#let midrule(n) = (
+  table.cell(colspan: n, inset: (top: 0pt, bottom: 1.5pt), []),
+  table.hline(stroke: 0.5pt),
+  table.cell(colspan: n, inset: (top: 1pt, bottom: 0pt), []),
+)
+
+#let bottomrule(n) = (
+  table.cell(colspan: n, inset: (top: 1.5pt, bottom: 0pt), []),
+  table.hline(stroke: 1.5pt),
+)
+
 #let font-family = ("Times New Roman", "CMU Serif", "Latin Modern Roman",
                     "New Computer Modern", "Libertinus Serif")
 
