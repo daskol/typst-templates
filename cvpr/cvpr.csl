@@ -1,51 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <style xmlns="http://purl.org/net/xbiblio/csl" class="in-text" version="1.0" demote-non-dropping-particle="sort-only">
-  <!-- This style was edited with the Visual CSL Editor (https://editor.citationstyles.org/visualEditor/) -->
   <info>
-    <title>IEEE</title>
-    <id>http://www.zotero.org/styles/ieee</id>
-    <link href="http://www.zotero.org/styles/ieee" rel="self"/>
-    <link href="http://journals.ieeeauthorcenter.ieee.org/wp-content/uploads/sites/7/IEEE_Reference_Guide.pdf" rel="documentation"/>
-    <link href="https://journals.ieeeauthorcenter.ieee.org/your-role-in-article-production/ieee-editorial-style-manual/" rel="documentation"/>
-    <author>
-      <name>Michael Berkowitz</name>
-      <email>mberkowi@gmu.edu</email>
-    </author>
-    <contributor>
-      <name>Julian Onions</name>
-      <email>julian.onions@gmail.com</email>
-    </contributor>
-    <contributor>
-      <name>Rintze Zelle</name>
-      <uri>http://twitter.com/rintzezelle</uri>
-    </contributor>
-    <contributor>
-      <name>Stephen Frank</name>
-      <uri>http://www.zotero.org/sfrank</uri>
-    </contributor>
-    <contributor>
-      <name>Sebastian Karcher</name>
-    </contributor>
-    <contributor>
-      <name>Giuseppe Silano</name>
-      <email>g.silano89@gmail.com</email>
-      <uri>http://giuseppesilano.net</uri>
-    </contributor>
-    <contributor>
-      <name>Patrick O'Brien</name>
-    </contributor>
-    <contributor>
-      <name>Brenton M. Wiernik</name>
-    </contributor>
-    <contributor>
-      <name>Oliver Couch</name>
-      <email>oliver.couch@gmail.com</email>
-    </contributor>
+    <title>CVPR (ieeenat_fullname.bst port)</title>
+    <id>https://github.com/daskol/typst-templates/blob/main/cvpr/cvpr.csl</id>
+    <link href="https://github.com/daskol/typst-templates/blob/main/cvpr/cvpr.csl" rel="self"/>
+    <link href="https://github.com/cvpr-org/author-kit" rel="documentation"/>
+    <link href="https://github.com/MCG-NKU/CVPR_Template/blob/master/ieee_fullname.bst" rel="documentation"/>
     <category citation-format="numeric"/>
     <category field="engineering"/>
     <category field="generic-base"/>
-    <summary>IEEE style as per the 2023 guidelines, V 11.29.2023.</summary>
-    <updated>2024-08-25T11:13:36+00:00</updated>
+    <summary>CVPR bibliography style — CSL port of `ieeenat_fullname.bst` invoked by cvpr.sty: numeric/sort&amp;compress citations, full author names, sentence-case titles, compact `vol(issue):pages, year` form. Forked from the IEEE CSL (Berkowitz et al.).</summary>
+    <updated>2026-05-08T00:00:00+00:00</updated>
     <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
   <locale xml:lang="en">
@@ -56,11 +21,11 @@
     </date>
     <terms>
       <term name="chapter" form="short">ch.</term>
-      <term name="chapter-number" form="short">ch.</term>
       <term name="presented at">presented at the</term>
       <term name="available at">available</term>
     </terms>
   </locale>
+  <!-- Macros -->
   <macro name="status">
     <choose>
       <if variable="page issue volume" match="none">
@@ -114,13 +79,12 @@
   </macro>
   <macro name="author">
     <names variable="author">
-      <name and="text" et-al-min="7" et-al-use-first="1"/>
+      <name and="text" et-al-min="11" et-al-use-first="10" delimiter=", "/>
       <label form="short" prefix=", " text-case="capitalize-first"/>
       <et-al font-style="italic"/>
       <substitute>
         <names variable="editor"/>
         <names variable="translator"/>
-        <text macro="director"/>
       </substitute>
     </names>
   </macro>
@@ -128,12 +92,6 @@
     <names variable="editor">
       <name initialize-with=". " delimiter=", " and="text"/>
       <label form="short" prefix=", " text-case="capitalize-first"/>
-    </names>
-  </macro>
-  <macro name="director">
-    <names variable="director">
-      <name and="text" et-al-min="7" et-al-use-first="1" initialize-with=". "/>
-      <et-al font-style="italic"/>
     </names>
   </macro>
   <macro name="locators">
@@ -155,11 +113,11 @@
   </macro>
   <macro name="title">
     <choose>
-      <if type="bill book graphic legal_case legislation motion_picture song standard software" match="any">
+      <if type="bill book graphic legal_case legislation motion_picture song" match="any">
         <text variable="title" font-style="italic"/>
       </if>
       <else>
-        <text variable="title" quotes="false"/>
+        <text variable="title" text-case="sentence"/>
       </else>
     </choose>
   </macro>
@@ -181,14 +139,16 @@
   </macro>
   <macro name="event">
     <choose>
+      <!-- Published Conference Paper -->
       <if type="paper-conference speech" match="any">
         <choose>
           <if variable="container-title" match="any">
             <group delimiter=" ">
-              <text term="in"/>
+              <text term="in" text-case="capitalize-first"/>
               <text variable="container-title" font-style="italic"/>
             </group>
           </if>
+          <!-- Unpublished Conference Paper -->
           <else>
             <group delimiter=" ">
               <text term="presented at"/>
@@ -199,34 +159,66 @@
       </if>
     </choose>
   </macro>
+  <macro name="vol-pages-compact">
+    <choose>
+      <if variable="volume page" match="all">
+        <group delimiter=":">
+          <group>
+            <number variable="volume" form="numeric"/>
+            <text variable="issue" prefix="(" suffix=")"/>
+          </group>
+          <text variable="page"/>
+        </group>
+      </if>
+      <else-if variable="volume">
+        <group>
+          <number variable="volume" form="numeric"/>
+          <text variable="issue" prefix="(" suffix=")"/>
+        </group>
+      </else-if>
+      <else-if variable="page">
+        <group delimiter=" ">
+          <label variable="page" form="long"/>
+          <text variable="page"/>
+        </group>
+      </else-if>
+    </choose>
+  </macro>
+  <macro name="page-long">
+    <group delimiter=" ">
+      <label variable="page" form="long"/>
+      <text variable="page"/>
+    </group>
+  </macro>
   <macro name="access">
     <choose>
       <if type="webpage post post-weblog" match="any">
+        <!-- https://url.com/ (accessed Mon. DD, YYYY). -->
         <choose>
           <if variable="URL">
-            <group delimiter=". " prefix=" ">
-              <group delimiter=": ">
-                <text term="accessed" text-case="capitalize-first"/>
+            <group prefix=" " delimiter=" ">
+              <text variable="URL"/>
+              <group delimiter=" " prefix="(" suffix=").">
+                <text term="accessed"/>
                 <date variable="accessed" form="text"/>
-              </group>
-              <text term="online" prefix="[" suffix="]" text-case="capitalize-first"/>
-              <group delimiter=": ">
-                <text term="available at" text-case="capitalize-first"/>
-                <text variable="URL"/>
               </group>
             </group>
           </if>
         </choose>
       </if>
       <else-if match="any" variable="DOI">
+        <!-- doi: 10.1000/xyz123. -->
         <text variable="DOI" prefix=" doi: " suffix="."/>
       </else-if>
       <else-if variable="URL">
+        <!-- Accessed: Mon. DD, YYYY. [Medium]. Available: https://URL.com/ -->
         <group delimiter=". " prefix=" " suffix=". ">
+          <!-- Accessed: Mon. DD, YYYY. -->
           <group delimiter=": ">
             <text term="accessed" text-case="capitalize-first"/>
             <date variable="accessed" form="text"/>
           </group>
+          <!-- [Online Video]. -->
           <group prefix="[" suffix="]" delimiter=" ">
             <choose>
               <if variable="medium" match="any">
@@ -243,6 +235,7 @@
             </choose>
           </group>
         </group>
+        <!-- Available: https://URL.com/ -->
         <group delimiter=": " prefix=" ">
           <text term="available at" text-case="capitalize-first"/>
           <text variable="URL"/>
@@ -261,7 +254,7 @@
       </if>
       <else>
         <group delimiter=" ">
-          <label variable="page"/>
+          <label variable="page" form="short"/>
           <text variable="page"/>
         </group>
       </else>
@@ -292,6 +285,7 @@
       </choose>
     </group>
   </macro>
+  <!-- Series -->
   <macro name="collection">
     <choose>
       <if variable="collection-title" match="any">
@@ -304,28 +298,37 @@
       </if>
     </choose>
   </macro>
-  <citation>
+  <!-- Citation -->
+  <citation collapse="citation-number">
     <sort>
       <key variable="citation-number"/>
     </sort>
-    <layout delimiter=", ">
-      <group prefix="[" suffix="]" delimiter=", ">
+    <layout prefix="[" suffix="]" delimiter=", ">
+      <group delimiter=", ">
         <text variable="citation-number"/>
         <text macro="citation-locator"/>
       </group>
     </layout>
   </citation>
+  <!-- Bibliography -->
   <bibliography entry-spacing="0" second-field-align="flush">
+    <sort>
+      <key macro="author"/>
+      <key variable="issued"/>
+    </sort>
     <layout>
+      <!-- Citation Number -->
       <text variable="citation-number" prefix="[" suffix="]"/>
-      <text macro="author" suffix=", "/>
+      <!-- Author(s) -->
+      <text macro="author" suffix=". "/>
+      <!-- Rest of Citation -->
       <choose>
+        <!-- Specific Formats -->
         <if type="article-journal">
+          <text macro="title" suffix=". "/>
           <group delimiter=", ">
-            <text macro="title"/>
             <text variable="container-title" font-style="italic" form="short"/>
-            <text macro="locators"/>
-            <text macro="page"/>
+            <text macro="vol-pages-compact"/>
             <text macro="issued"/>
             <text macro="status"/>
           </group>
@@ -340,37 +343,45 @@
           <text macro="access"/>
         </if>
         <else-if type="paper-conference speech" match="any">
-          <group delimiter=", " suffix=", ">
-            <text macro="title"/>
-            <text macro="event"/>
-            <text macro="editor"/>
-          </group>
-          <text macro="collection"/>
-          <group delimiter=", " suffix=".">
-            <text macro="publisher"/>
-            <text macro="issued"/>
-            <text macro="page"/>
-            <text macro="status"/>
-          </group>
+          <text macro="title" suffix=". "/>
+          <choose>
+            <if variable="publisher">
+              <group delimiter=", " suffix=". ">
+                <text macro="event"/>
+                <text macro="editor"/>
+                <text macro="page-long"/>
+              </group>
+              <group delimiter=", " suffix=".">
+                <text macro="publisher"/>
+                <text macro="issued"/>
+                <text macro="status"/>
+              </group>
+            </if>
+            <else>
+              <group delimiter=", " suffix=".">
+                <text macro="event"/>
+                <text macro="editor"/>
+                <text macro="page-long"/>
+                <text macro="issued"/>
+                <text macro="status"/>
+              </group>
+            </else>
+          </choose>
           <text macro="access"/>
         </else-if>
         <else-if type="chapter">
+          <text macro="title" suffix=". "/>
+          <group delimiter=" " suffix=", ">
+            <text term="in" text-case="capitalize-first"/>
+            <text variable="container-title" font-style="italic"/>
+          </group>
+          <text macro="editor" suffix=", "/>
+          <text macro="edition"/>
+          <text macro="collection"/>
           <group delimiter=", " suffix=".">
-            <text macro="title"/>
-            <group delimiter=" ">
-              <text term="in" suffix=" "/>
-              <text variable="container-title" font-style="italic"/>
-            </group>
-            <text macro="locators"/>
-            <text macro="editor"/>
-            <text macro="collection"/>
             <text macro="publisher"/>
+            <text macro="page-long"/>
             <text macro="issued"/>
-            <group delimiter=" ">
-              <label variable="chapter-number" form="short"/>
-              <text variable="chapter-number"/>
-            </group>
-            <text macro="page"/>
           </group>
           <text macro="access"/>
         </else-if>
@@ -395,30 +406,11 @@
           </group>
           <text macro="access"/>
         </else-if>
-        <else-if type="software">
-          <group delimiter=". " suffix=".">
-            <text macro="title"/>
-            <text macro="issued" prefix="(" suffix=")"/>
-            <text variable="genre"/>
-            <text macro="publisher"/>
-          </group>
-          <text macro="access"/>
-        </else-if>
-        <else-if type="article">
-          <group delimiter=", " suffix=".">
-            <text macro="title"/>
-            <text macro="issued"/>
-            <group delimiter=": ">
-              <text macro="publisher" font-style="italic"/>
-              <text variable="number"/>
-            </group>
-          </group>
-          <text macro="access"/>
-        </else-if>
         <else-if type="webpage post-weblog post" match="any">
           <group delimiter=", " suffix=".">
             <text macro="title"/>
-            <text variable="container-title"/>
+            <text variable="container-title" font-style="italic"/>
+            <text macro="issued"/>
           </group>
           <text macro="access"/>
         </else-if>
@@ -430,6 +422,7 @@
           </group>
           <text macro="access"/>
         </else-if>
+        <!-- Online Video -->
         <else-if type="motion_picture">
           <text macro="geographic-location" suffix=". "/>
           <group delimiter=", " suffix=".">
@@ -438,18 +431,7 @@
           </group>
           <text macro="access"/>
         </else-if>
-        <else-if type="standard">
-          <group delimiter=", " suffix=".">
-            <text macro="title"/>
-            <group delimiter=" ">
-              <text variable="genre"/>
-              <text variable="number"/>
-            </group>
-            <text macro="geographic-location"/>
-            <text macro="issued"/>
-          </group>
-          <text macro="access"/>
-        </else-if>
+        <!-- Generic/Fallback Formats -->
         <else-if type="bill book graphic legal_case legislation report song" match="any">
           <group delimiter=", " suffix=". ">
             <text macro="title"/>

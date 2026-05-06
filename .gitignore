@@ -9,3 +9,4 @@
 
 # Ignore build directory (prefix for `typst-*` compilers).
 /build
+plant-counting/

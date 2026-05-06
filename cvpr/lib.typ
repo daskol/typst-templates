@@ -526,7 +526,7 @@
     body  // Render paper body.
 
     if bibliography != none {
-      set std-bibliography(title: [References], style: "ieee.csl")
+      set std-bibliography(title: [References], style: "cvpr.csl")
       show std-bibliography: set text(size: font-size.small)
       bibliography
     }
