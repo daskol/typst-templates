@@ -33,10 +33,12 @@ arguments.
   supplementary material section, with cross-column "Supplementary
   Material" header and `A.1` heading numbering shift (per cvpr.sty's
   `\maketitlesupplementary`).
-- `accepted`: If this is set to `false` then anonymized ready for submission
-  document is produced; `accepted: true` produces camera-redy version. If
-  the argument is set to `none` then preprint version is produced (can be
-  uploaded to arXiv).
+- `mode`: One of `"review"`, `"final"`, or `"rebuttal"`. Mirrors
+  cvpr.sty's `[review]`, `[final]` (default), and `[rebuttal]`
+  package options. Default `"final"`.
+- `page-numbers`: `auto` (default — follows mode), `true`, or
+  `false`. Independent of `mode`, mirroring cvpr.sty's separate
+  `[pagenumbers]` toggle.
 - `id`: Identifier of a submission.
 
 The template will initialize your package with a sample call to the `cvpr`
@@ -62,7 +64,7 @@ your file.
     style and length.
   ],
   bibliography: bibliography("main.bib"),
-  accepted: false,
+  mode: "final",
   id: none,
 )
 ```

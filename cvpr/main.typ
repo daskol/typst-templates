@@ -35,7 +35,6 @@
     style and length.
   ],
   bibliography: bibliography("main.bib"),
-  accepted: false,
   id: none,
   conf-year: conf-year,
 )

@@ -244,31 +244,37 @@
   }
 })
 
-#let make-title(title, authors, affls, id, accepted) = {
+#let make-title(title, authors, affls, id, mode) = {
+  let title-size = if mode == "rebuttal" { font-size.large } else { font-size.Large }
+  let top-skip = if mode == "rebuttal" { -0.3in } else { 0.5in - 0.6pt }
+  let post-title-skip = if mode == "rebuttal" { -22pt } else { 30pt }
+
   // 1. Title.
   block(width: 100%, spacing: 0pt, {
     set align(center)
-    set text(size: font-size.Large, weight: "bold")
-    v(0.5in - 0.6pt)  // Visually perfect.
+    set text(size: title-size, weight: "bold")
+    v(top-skip)
     title
   })
-  v(30pt, weak: true)
+  v(post-title-skip, weak: true)
 
   // 2. Authors and affilations.
-  block(width: 100%, spacing: 0pt, {
-    set align(center + top)
-    set text(size: font-size.large)
-    if accepted != none and not accepted{
-      [Anonymous CVPR submission\ ]
-      [\ ]
-      [Paper ID #id]
-    } else {
-      pad(left: 10pt, right: 12pt, {
-        authors.map(it => format-author(it, affls)).join(h(0.5in))
-      })
-    }
-  })
-  v(34.5pt, weak: true)
+  if mode != "rebuttal" {
+    block(width: 100%, spacing: 0pt, {
+      set align(center + top)
+      set text(size: font-size.large)
+      if mode == "review" {
+        [Anonymous CVPR submission\ ]
+        [\ ]
+        [Paper ID #id]
+      } else {
+        pad(left: 10pt, right: 12pt, {
+          authors.map(it => format-author(it, affls)).join(h(0.5in))
+        })
+      }
+    })
+    v(34.5pt, weak: true)
+  }
 }
 
 /**
@@ -287,10 +293,15 @@
  *     supplementary material section (per cvpr.sty's \maketitlesupplementary:
  *     pagebreak + cross-column "Supplementary Material" title + heading
  *     numbering shift to A.1.).
- *   accepted: Valid values are `none`, `false`, and `true`. Missing value
- *   (`none`) is designed to prepare arxiv publication. Default is `false`.
+ *   mode: One of `"review"`, `"final"`, or `"rebuttal"`. Maps to
+ *     cvpr.sty's `[review]`, `[final]` (default), and `[rebuttal]`
+ *     options respectively. Default `"final"` matches cvpr.sty:55-58
+ *     where `\toggletrue{cvprfinal}` is set unconditionally.
  *   id: Submission identifier.
  *   conf-year: Conference year shown in the review banner. Default `2025`.
+ *   page-numbers: `auto`, `true`, or `false`. `auto` follows cvpr.sty
+ *     default — page numbers in review mode only. Pass `true` for
+ *     camera-ready + page numbers (cvpr.sty `[pagenumbers]`).
  */
 #let cvpr(
   title: [],
@@ -300,18 +311,25 @@
   abstract: [],
   bibliography: none,
   supplementary: none,
-  accepted: false,
+  mode: sys.inputs.at("mode", default: "final"),
   id: none,
   conf-year: [2025],
+  page-numbers: {
+    let v = sys.inputs.at("pagenumbers", default: "auto")
+    if v == "true" { true } else if v == "false" { false } else { auto }
+  },
   body,
 ) = {
+  let show-page-numbers = if page-numbers == auto {
+    mode == "review"
+  } else { page-numbers }
   // Deconstruct authors for convenience.
   let (authors, affls) = if authors.len() == 2 {
     authors
   } else {
     ((), ())
   }
-  if accepted != none and not accepted {
+  if mode == "review" {
     authors = ((name: "Anonymous Author"), )
   }
 
@@ -329,7 +347,7 @@
   set page(
     paper: "us-letter",
     margin: (left: 0.696in, right: 0.929in, top: 1in, bottom: 1.125in),
-    background: if accepted != none and not accepted {
+    background: if mode == "review" {
       // Rullers on sides.
       ruler
       // Decorate top corners.
@@ -337,7 +355,7 @@
       place(top + right, dx: 5pt, dy: 15.5pt, corner-text(id, width: 1in))
     },
     header-ascent: 27.9pt,
-    header: if accepted != none and not accepted {
+    header: if mode == "review" {
       set align(center)
       set text(
         font: font-family-sans,
@@ -346,7 +364,7 @@
       strong[CVPR #conf-year Submission \##id. #notice]
     },
     footer-descent: 23.4pt, // Visually perfect.
-    footer: if accepted != none and not accepted {
+    footer: if show-page-numbers {
       let ix = context counter(page).get().first()
       align(center, text(size: font-size.normal, [#ix]))
     },
@@ -457,7 +475,7 @@
       it
     }
   }
-  make-title(title, authors, affls, id, accepted)
+  make-title(title, authors, affls, id, mode)
 
   // NOTE It seems that there is a typo in formatting instructions and actual
   // gutter is 3/8 in not 5/16 in.
