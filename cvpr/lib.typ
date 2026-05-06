@@ -353,9 +353,12 @@
   set figure(gap: 12pt)
   set figure.caption(separator: [.])
   show figure.caption: set text(size: font-size.small)
-  show figure.caption: set align(center)
-  show figure.caption: it => block({
-    align(left, it)
+  show figure.caption: it => layout(container => context {
+    let single-line = measure(it).width <= container.width
+    block(width: 100%, {
+      set align(if single-line { center } else { left })
+      it
+    })
   })
 
   // Links and references.
