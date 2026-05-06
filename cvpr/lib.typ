@@ -1,8 +1,8 @@
 /**
- * cvpr2022.typ
+ * lib.typ — blind-cvpr template.
  *
- * This template continues work done by [@dasayan05][1] (see [issue][3]). It is
- * adopted from [dasayan05/typst-ai-conf-templates][2].
+ * Originally based on work by [@dasayan05][1] (see [issue][3]), adopted
+ * from [dasayan05/typst-ai-conf-templates][2].
  *
  * [1]: https://github.com/dasayan05
  * [2]: https://github.com/dasayan05/typst-ai-conf-templates.
@@ -11,8 +11,6 @@
 
 #let std-bibliography = bibliography  // Due to argument shadowing.
 
-#let conf-name = [CVPR]
-#let conf-year = [2022]
 #let notice = [CONFIDENTIAL REVIEW COPY. DO NOT DISTRIBUTE.]
 
 /**
@@ -243,8 +241,8 @@
 }
 
 /**
- * cvpr2022 - Template for Computer Vision and Pattern Recognition Conference
- * (CVPR) 2022.
+ * cvpr - Template for Computer Vision and Pattern Recognition Conference
+ * (CVPR) papers.
  *
  * Args:
  *   title: Paper title.
@@ -258,8 +256,9 @@
  *   accepted: Valid values are `none`, `false`, and `true`. Missing value
  *   (`none`) is designed to prepare arxiv publication. Default is `false`.
  *   id: Submission identifier.
+ *   conf-year: Conference year shown in the review banner. Default `2025`.
  */
-#let cvpr2022(
+#let cvpr(
   title: [],
   authors: (),
   keywords: (),
@@ -269,7 +268,7 @@
   appendix: none,
   accepted: false,
   id: none,
-  aux: (:),
+  conf-year: [2025],
   body,
 ) = {
   // Deconstruct authors for convenience.
@@ -310,8 +309,7 @@
         font: font-family-sans,
         size: font-size.footnote,
         fill: ruler-color)
-      let year = aux.at("conf-year", default: conf-year)
-      strong[#conf-name #year Submission \##id. #notice]
+      strong[CVPR #conf-year Submission \##id. #notice]
     },
     footer-descent: 23.4pt, // Visually perfect.
     footer: if accepted != none and not accepted {

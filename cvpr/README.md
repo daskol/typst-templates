@@ -15,8 +15,8 @@ Typst will create a new directory with all the files needed to get you started.
 
 ## Configuration
 
-This template exports the `cvpr2022` and `cvpr2025` styling rule with the
-following named arguments.
+This template exports the `cvpr` styling rule with the following named
+arguments.
 
 - `title`: The paper's title as content.
 - `authors`: An array of author dictionaries. Each of the author dictionaries
@@ -36,14 +36,16 @@ following named arguments.
   uploaded to arXiv).
 - `id`: Identifier of a submission.
 
-The template will initialize your package with a sample call to the `cvpr2025`
-function in a show rule. If you want to change an existing project to use this
-template, you can add a show rule at the top of your file.
+The template will initialize your package with a sample call to the `cvpr`
+function in a show rule. The conference year is passed via the `conf-year`
+parameter (no longer encoded in the function name). If you want to change an
+existing project to use this template, you can add a show rule at the top of
+your file.
 
 ```typst
-#import "@preview/blind-cvpr:0.7.0": cvpr2025
+#import "@preview/blind-cvpr:0.7.0": cvpr
 
-#show: cvpr2025.with(
+#show: cvpr.with(
   title: [LaTeX Author Guidelines for CVPR Proceedings],
   authors: (authors, affls),
   keywords: (),

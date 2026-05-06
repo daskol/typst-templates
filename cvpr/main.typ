@@ -1,5 +1,7 @@
-#import "/cvpr.typ": cvpr2025, conf-name, conf-year, eg, etal, indent
+#import "/lib.typ": cvpr, eg, etal, indent
 #import "/logo.typ": LaTeX, TeX
+
+#let conf-year = [2025]
 
 #let affls = (
   one: (institution: "Institution1", location: "Institution1 address"),
@@ -19,8 +21,8 @@
   (name: "Second Author", affl: ("two", ), email: "secondauthor@i2.org"),
 )
 
-#show: cvpr2025.with(
-  title: [#LaTeX Author Guidelines for #conf-name~Proceedings],
+#show: cvpr.with(
+  title: [#LaTeX Author Guidelines for CVPR~Proceedings],
   authors: (authors, affls),
   keywords: (),
   abstract: [
@@ -35,6 +37,7 @@
   bibliography: bibliography("main.bib"),
   accepted: false,
   id: none,
+  conf-year: conf-year,
 )
 
 = Introduction <sec:intro>
@@ -51,7 +54,7 @@ All manuscripts must be in English.
 
 == Dual submission
 
-Please refer to the author guidelines on the #conf-name #conf-year web page for
+Please refer to the author guidelines on the CVPR #conf-year web page for
 a discussion of the policy on dual submissions.
 
 == Paper length
@@ -60,7 +63,7 @@ Papers, excluding the references section, must be no longer than eight pages in
 length. The references section will not be included in the page count, and
 there is no limit on the length of the references section. For example, a paper
 of eight pages with two pages of references would have a total length of 10
-pages. *There will be no extra page charges for #conf-name #conf-year.*
+pages. *There will be no extra page charges for CVPR #conf-year.*
 
 Overlength papers will simply not be reviewed. This includes papers where the
 margins and formatting are deemed to have been significantly altered from those
@@ -478,7 +481,7 @@ width as in the example below
 
 == Color
 
-Please refer to the author guidelines on the #conf-name #conf-year web page for
+Please refer to the author guidelines on the CVPR #conf-year web page for
 a discussion of the use of color in your document.
 
 If you use color in your plots, please keep in mind that a significant subset
