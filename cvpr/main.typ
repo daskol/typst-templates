@@ -1,4 +1,4 @@
-#import "/lib.typ": cvpr, eg, etal, indent
+#import "/lib.typ": cvpr, eg, etal
 #import "/logo.typ": LaTeX, TeX
 
 #let conf-year = [2025]
@@ -158,7 +158,6 @@ An example of an acceptable paper:
   contribution to human knowledge". Nature 381(12), 1-213.
 ]
 
-#indent
 If you are making a submission to another conference at the same time, which
 covers similar or overlapping material, you may need to refer to that
 submission in order to explain the differences, just as you would if you had
@@ -170,7 +169,6 @@ parallel submission~@Authors14 as supplemental material and cite it as
   Supplied as supplemental material `fg324.pdf`.
 ]
 
-#indent
 Finally, you may feel you need to tell the reader that more details can be
 found elsewhere, and refer them to a technical report. For conference
 submissions, the paper must stand on its own, and not _require_ the reviewer to
@@ -197,11 +195,9 @@ and would immediately identify the authors. Instead write the following:
   handles the following cases: A, B.  Previous systems [Zeus et al. 1968] did
   not  handle case B properly. Ours handles it by including a foo term in the
   bar integral.
-  #linebreak()
-  #indent
+
   ...
-  #linebreak()
-  #indent
+
   The proposed system was integrated with the Apollo lunar lander, and went all
   the way to the moon, don't you know. It displayed the following behaviours,
   which show how well we solved cases A and B: ...
@@ -391,7 +387,6 @@ will automatically insert the appropriate label alongside the cross-reference
 as in this example:
 
 #quote(block: true)[
-  #indent
   To see how our method outperforms previous work, please see @fig:onecol[Fig.]
   and @tab:example[Tab.]. It is also possible to refer to multiple targets as
   once, #eg~to @fig:onecol[Figs.] and @fig:short-a[]. You may also return to
@@ -405,11 +400,9 @@ sentence, you can use the
   \Cref{...}
 ```
 
-#indent
 command. Here is an example:
 
 #quote(block: true)[
-  #indent
   @fig:onecol[Figure] is also quite important.
 ]
 

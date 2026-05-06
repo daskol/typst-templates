@@ -13,15 +13,6 @@
 
 #let notice = [CONFIDENTIAL REVIEW COPY. DO NOT DISTRIBUTE.]
 
-/**
- * indent - Indentation helper.
- *
- * As Typst v0.11.0, the first paragraph is not indented (see [1]).
- *
- * [1]: https://github.com/typst/typst/issues/311
- */
-#let indent = h(12pt)
-
 #let eg = emph[e.g.]
 
 #let etal = emph[et~al]
@@ -372,9 +363,18 @@
 
   set text(font: font-family, size: font-size.normal)
   set par(
-    first-line-indent: 0.166666in, leading: 0.532em, spacing:  0.54em,
-    justify: true)
+    first-line-indent: (amount: 0.166666in, all: true),
+    leading: 0.532em, spacing: 0.54em, justify: true)
   show raw: set text(font: font-family-mono, size: font-size.normal)
+
+  let _suppress-indent = state("blind-cvpr-suppress-indent", false)
+  show heading: it => { it; _suppress-indent.update(true) }
+  show par: it => context {
+    if _suppress-indent.get() {
+      _suppress-indent.update(false)
+      block({ set par(first-line-indent: 0pt); it.body })
+    } else { it }
+  }
 
   // Configure heading appearence and numbering.
   set heading(numbering: "1.1.")
@@ -402,7 +402,7 @@
   show quote.where(block: true): it => {
     set block(spacing: 14pt)
     set pad(left: 20pt, right: 20pt)
-    set par(first-line-indent: 0em, spacing: 9.8pt)
+    set par(spacing: 9.8pt)
     it
   }
 
