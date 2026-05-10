@@ -21,7 +21,7 @@
 
 #let font-size = (
   tiny: 6pt,
-  script: 8pt,  // scriptsize
+  script: 8pt, // scriptsize
   footnote: 9pt, // footnotesize
   small: 10pt,
   normal: 11pt, // normalsize
@@ -31,6 +31,23 @@
   huge: 20pt,
   Huge: 25pt,
 )
+
+#let hild2025-workshop = (
+  proceedings: [HiLD 2025: 3rd Workshop on High-dimensional Learning Dynamics],
+  anonymous-authors: [author names withheld],
+  anonymous-notice: [
+    Under Review for the Workshop on High-dimensional Learning Dynamics, 2025
+  ],
+  heading-numbering: "1.1.",
+  two-sided: false,
+)
+
+/**
+ * JMLR tempalte state variables.
+ */
+
+#let jmlr-bibliography = state("jmlr-bibliography", none)
+#let jmlr-bibliography-rendered = state("jmlr-bibliography-rendered", false)
 
 /**
  * h, h1, h2, h3 - Style rules for headings.
@@ -57,6 +74,83 @@
 #let h3(body) = {
   set text(size: font-size.normal, weight: "regular")
   set block(above: 11.9pt, below: 11.7pt)
+  body
+}
+
+/**
+ * Bibliography rendering utilities.
+ */
+#let render-bibliography(bib) = {
+  show heading: it => {
+    show: h1
+    block(above: 0.32in, it.body)
+  }
+  // TODO(@daskol): Closest bibliography style is "bristol-university-press".
+  set std-bibliography(
+    title: [References],
+    style: "bristol-university-press")
+  bib
+}
+
+/**
+ * appendix-* - Style rules appendicies.
+ */
+
+#let appendix-numbering(trailing-dot) = {
+  if trailing-dot { "A.1." } else { "A.1" }
+}
+
+#let appendix-style(body, trailing-dot: false) = {
+  set heading(
+    numbering: appendix-numbering(trailing-dot),
+    supplement: [Appendix],
+  )
+  show heading: it => {
+    let rules = (h1, h2, h3)
+    let rule = rules.at(it.level - 1, default: h)
+    show: rule
+
+    if it.numbering == none {
+      block(it.body)
+    } else {
+      let numb = context {
+        let values = counter(heading).at(here())
+        if it.level == 1 {
+          numbering("A", values.first())
+        } else {
+          numbering(appendix-numbering(trailing-dot), ..values)
+        }
+      }
+      if it.level == 1 {
+        block([Appendix~#numb. #it.body])
+      } else {
+        block([#numb #it.body])
+      }
+    }
+  }
+
+  counter(heading).update(0)
+  body
+}
+
+/**
+ * appendix - Show rule that switches the document into appendix mode.
+ *
+ * Resets the heading counter to zero and changes heading numbering to JMLR
+ * appendix style. When used with `jmlr.with(bibliography: ...)`, the
+ * registered bibliography is rendered before the appendix content and
+ * suppressed from the end-of-document fallback.
+ */
+#let appendix(trailing-dot: true, body) = {
+  context {
+    let bib = jmlr-bibliography.get()
+    if bib != none {
+      jmlr-bibliography-rendered.update(true)
+      render-bibliography(bib)
+    }
+  }
+
+  show: appendix-style.with(trailing-dot: trailing-dot)
   body
 }
 
@@ -133,7 +227,33 @@
     ..cells)
 }
 
-#let make-title(title, authors, affls, abstract, keywords, editors) = {
+#let make-anonymous-authors(authors, notice) = {
+  block(width: 100%, spacing: 0em, {
+    set align(left)
+    set block(spacing: 0em)
+    set text(size: font-size.normal, weight: "bold")
+    v(1.5pt)
+    authors
+    if notice != none {
+      v(28.5pt, weak: true)
+      set par(first-line-indent: 0em)
+      notice
+    }
+    v(22.5pt)
+  })
+}
+
+#let make-title(
+  title,
+  authors,
+  affls,
+  abstract,
+  keywords,
+  editors,
+  anonymous: false,
+  anonymous-authors: [Anonymous authors],
+  anonymous-notice: none,
+) = {
   // 1. Title.
   v(31pt - (0.25in + 4.5pt))
   block(width: 100%, spacing: 0em, {
@@ -144,9 +264,14 @@
 
   // 2. Authors.
   v(23.6pt, weak: true)
-  make-authors(authors, affls)
+  if anonymous {
+    make-anonymous-authors(anonymous-authors, anonymous-notice)
+  } else {
+    make-authors(authors, affls)
+  }
+
   // 3. Editors if exist.
-  if editors != none and editors.len() > 0 {
+  if not anonymous and editors != none and editors.len() > 0 {
     v(28.6pt, weak: true)
     text(size: font-size.small, [*Editor:* ] + editors.join([, ]))
   }
@@ -163,7 +288,7 @@
   })
 
   // Render keywords if exist.
-  if keywords != none {
+  if keywords != none and keywords.len() > 0 {
     keywords = keywords.join([, ])
     v(6.5pt, weak: true)  // ~1ex
     block(spacing: 0em, width: 100%, {
@@ -175,6 +300,42 @@
 
   // Space before paper content.
   v(23pt, weak: true)
+}
+
+/**
+ * Workshop helpers and styling rules.
+ */
+
+#let workshop-option(workshop, key, default) = {
+  if workshop == none {
+    return default
+  } else if type(workshop) == dictionary {
+    return workshop.at(key, default: default)
+  } else if key == "proceedings" {
+    return workshop
+  } else {
+    return default
+  }
+}
+
+#let workshop-footer(title-page-footer, author-names, is-anonymous) = {
+  if title-page-footer == none {
+    return
+  } else if title-page-footer != auto {
+    title-page-footer
+    return
+  } else if is-anonymous {
+    text("© .")
+    return
+  }
+
+  let owners = if author-names.len() > 0 {
+    join-workshop-authors(author-names)
+  } else {
+    []
+  }
+  [© #owners]
+  return
 }
 
 /**
@@ -190,10 +351,16 @@
  *   keywords: Publication keywords (used in PDF metadata).
  *   bibliography: Bibliography content. If it is not specified then there is
  *   not reference section.
- *   appendix: Content to append after bibliography section.
+ *   appendix: Content to append before the template-rendered bibliography.
  *   pubdata: Dictionary with auxiliary information about publication. It
  *   contains editor name(s), paper id, volume, and
  *   submission/review/publishing dates.
+ *   accepted: Valid values are `none`, `false`, and `true`. Use `none` for a
+ *   non-anonymous preprint, `false` for an anonymous submission, and `true`
+ *   for an accepted publication. By default, the mode is inferred from
+ *   `pubdata` for backwards compatibility.
+ *   workshop: Workshop proceedings configuration. It can be either content used
+ *   as the proceedings header or a dictionary. See `hild2025-workshop`.
  */
 #let jmlr(
   title: [],
@@ -206,12 +373,40 @@
   bibliography: none,
   appendix: none,
   pubdata: (:),
+  accepted: auto,
+  workshop: none,
   body,
 ) = {
   // If there is no short title then use title as a short title.
   if short-title == none {
     short-title = title
   }
+
+  let has_pubdata = pubdata.len() != 0
+  let accepted = if accepted == auto {
+    if has_pubdata { true } else { none }
+  } else {
+    accepted
+  }
+
+  let is-anonymous = accepted != none and not accepted
+  let is-preprint = accepted == none
+  let is-workshop = workshop != none
+
+  let proceedings = workshop-option(workshop, "proceedings", none)
+  let anonymous-authors = workshop-option(
+    workshop,
+    "anonymous-authors",
+    [Anonymous authors],
+  )
+  let anonymous-notice = workshop-option(workshop, "anonymous-notice", none)
+  let heading-numbering = workshop-option(
+    workshop,
+    "heading-numbering",
+    if is-workshop { "1.1." } else { "1.1" },
+  )
+  let two-sided = workshop-option(workshop, "two-sided", not is-workshop)
+  let title-page-footer = workshop-option(workshop, "title-page-footer", auto)
 
   // Authors are actually a tuple of authors and affilations.
   let affls = ()
@@ -227,19 +422,22 @@
 
   // If there is only one editor then create an `editors` field with a single
   // editor.
-  let is_preprint = pubdata.len() == 0
-  let editors = if is_preprint {
+  let editors = if not has_pubdata {
     ()
   } else if pubdata.at("editors", default: none) == none {
-    (pubdata.editor, )
+    (pubdata.editor,)
   } else {
     pubdata.editors
   }
 
   // Set document metadata.
-  let meta-authors = join-authors(authors.map(it => it.name))
-  set document(title: title, author: meta-authors, keywords: keywords,
-               date: date)
+  let author-names = authors.map(it => it.name)
+  let meta-authors = if is-anonymous or author-names.len() == 0 {
+    ()
+  } else {
+    join-authors(author-names)
+  }
+  set document(title: title, author: meta-authors, keywords: keywords, date: date)
 
   set page(
     paper: "us-letter",
@@ -250,8 +448,19 @@
       // on odd ones.
       let pageno = counter(page).at(here()).first()
       if pageno == 1 {
-        // If this is preprint then there is nothing in header on title page.
-        if is_preprint {
+        // If workshop paper IS NOT in preprint mode then render header on the
+        // title page.
+        if is-workshop and not is-preprint {
+          if proceedings != none {
+            set text(size: font-size.script)
+            proceedings
+          }
+          return
+        }
+
+        // If this is preprint or there is no publication metadata then there
+        // is nothing in the non-workshop header on title page.
+        if is-preprint or not has_pubdata {
           return
         }
 
@@ -272,8 +481,13 @@
           columns: (1fr, 1fr),
           align: (left, right),
           [Journal of Machine Learning Research #volume (#year) 1-#nopages],
-          [#submitted\; #revised\; #published])
-      } else if calc.rem(pageno, 2) == 0 {
+          [#submitted\; #revised\; #published],
+        )
+      } else if not two-sided or calc.rem(pageno, 2) != 0 {
+        set align(center)
+        set text(size: font-size.small)
+        smallcaps(short-title)
+      } else if last-names.len() > 0 {
         set align(center)
         set text(size: font-size.small)
         smallcaps[#join-authors(last-names)]
@@ -290,10 +504,26 @@
         set text(size: font-size.script)
         set par(first-line-indent: 0pt, justify: true, spacing: 9pt)
 
+        // If workshop paper IS NOT in preprint mode then render footer on
+        // title page.
+        if is-workshop and not is-preprint {
+          workshop-footer(title-page-footer, author-names, is-anonymous)
+          return
+        }
+
         // NOTE If this is preprint then we use metadata `date` for copyright
         // notice.
-        let owners = join-authors(authors.map(it => it.name))
-        let year = if not is_preprint {
+        if is-anonymous {
+          text("© .")
+          return
+        }
+
+        let owners = if author-names.len() > 0 {
+          join-authors(author-names)
+        } else {
+          []
+        }
+        let year = if not is-preprint and has_pubdata {
           pubdata.published-at.year()
         } else if date == auto {
           datetime.today().year()
@@ -306,7 +536,7 @@
         let href = addr => link(addr, raw(addr))
         let url-license = "https://creativecommons.org/licenses/by/4.0/"
         [License: CC-BY 4.0, see #href(url-license).]
-        if not is_preprint {
+        if not is-preprint and has_pubdata {
           let url-attrib = (
             "http://jmlr.org/papers/v", str(pubdata.volume), "/",
             pubdata.id, ".html",
@@ -327,7 +557,7 @@
     spacing: 0.55em)
 
   // Configure heading appearence and numbering.
-  set heading(numbering: "1.1")
+  set heading(numbering: heading-numbering)
   show heading.where(level: 1): it => {
     show: h1
     // Render section with such names without numbering as level 3 heading.
@@ -376,37 +606,43 @@
     grid(columns: 2, column-gutter: 5pt, align: left, index, it.body)
   }
 
-  make-title(title, authors, affls, abstract, keywords, editors)
+  // Initialize bibliography-appendix rendering state.
+  if bibliography != none {
+    jmlr-bibliography.update(bibliography)
+    jmlr-bibliography-rendered.update(false)
+  } else {
+    jmlr-bibliography.update(none)
+    jmlr-bibliography-rendered.update(true)
+  }
+
+  make-title(
+    title,
+    authors,
+    affls,
+    abstract,
+    keywords,
+    editors,
+    anonymous: is-anonymous,
+    anonymous-authors: anonymous-authors,
+    anonymous-notice: anonymous-notice,
+  )
   parbreak()
   body
 
   if appendix != none {
-    set heading(numbering: "A.1.", supplement: [Appendix])
-    show heading: it => {
-      let rules = (h1, h2, h3)
-      let rule = rules.at(it.level - 1, default: h)
-      show: rule
-      let numb = context {
-        let counter = counter(heading)
-        return numbering(it.numbering, ..counter.at(here()))
-      }
-      block([Appendix~#numb~#it.body])
-    }
-
-    counter(heading).update(0)
-    pagebreak()
+    show: appendix-style.with(trailing-dot: is-workshop)
     appendix
   }
 
   if bibliography != none {
-    show heading: it => {
-      show: h1
-      block(above: 0.32in, it.body)
+    context {
+      if not jmlr-bibliography-rendered.get() {
+        let bib = jmlr-bibliography.get()
+        if bib != none {
+          jmlr-bibliography-rendered.update(true)
+          render-bibliography(bib)
+        }
+      }
     }
-    // TODO(@daskol): Closest bibliography style is "bristol-university-press".
-    set std-bibliography(
-      title: [References],
-      style: "bristol-university-press")
-    bibliography
   }
 }

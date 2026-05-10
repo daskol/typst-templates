@@ -36,10 +36,20 @@ This template exports the `jmlr` function with the following named arguments.
 - `bibliography`: The result of a call to the bibliography function or none.
   The function also accepts a single, positional argument for the body of the
   paper.
-- `appendix`: Content to append after bibliography section.
+- `appendix`: Content to append before the template-rendered bibliography. This
+  is useful for template-managed appendices, for example
+  `appendix: include "appendix.typ"`.
 - `pubdata`: Dictionary with auxiliary information about publication. It
   contains editor name(s), paper id, volume, and submission/review/publishing
   dates.
+- `accepted`: Valid values are `none`, `false`, and `true`. Use `none` for a
+  non-anonymous preprint, `false` for an anonymous submission, and `true` for an
+  accepted publication. If omitted, the mode is inferred from `pubdata` for
+  backwards compatibility.
+- `workshop`: Workshop proceedings customization. It can be content used as the
+  first-page proceedings header or a dictionary with fields such as
+  `proceedings`, `anonymous-authors`, `anonymous-notice`, `heading-numbering`,
+  `two-sided`, and `title-page-footer`.
 
 The template will initialize your package with a sample call to the `jmlr`
 function in a show rule. If you want to change an existing project to use this
@@ -62,6 +72,42 @@ template, you can add a show rule at the top of your file.
     revised-at: datetime(year: 2022, month: 5, day: 1),
     published-at: datetime(year: 2022, month: 9, day: 1),
   ),
+)
+```
+
+Alternatively, import the `appendix` show rule for manual placement. When
+`bibliography` is passed to `jmlr`, this workflow renders the bibliography
+immediately before the appendix and avoids rendering it again at the end.
+
+```typst
+#import "@preview/classic-jmlr:0.7.0": appendix, jmlr
+#show: jmlr.with(
+  title: [Sample JMLR Paper],
+  authors: (authors, affls),
+  abstract: blindtext,
+  bibliography: bibliography("main.bib"),
+)
+
+= Introduction
+
+#show: appendix
+= Additional Results
+== Derivation
+```
+
+For the HiLD 2025 workshop style, import the preset and set `accepted: false`
+for anonymous submission PDFs.
+
+```typst
+#import "@preview/classic-jmlr:0.7.0": jmlr, hild2025-workshop
+#show: jmlr.with(
+  title: [Are DeepBigWideNets provably better than linear predictors?],
+  short-title: [Specify Running Title],
+  authors: (authors, affls),
+  abstract: [Recently, ...],
+  bibliography: bibliography("main.bib"),
+  accepted: false,
+  workshop: hild2025-workshop,
 )
 ```
 
