@@ -10,11 +10,8 @@
  * [4]: https://github.com/jmlrorg/jmlr-style-file
  */
 
-#let std-bibliography = bibliography  // Due to argument shadowing.
-
 #let font-family = ("New Computer Modern", "Times New Roman",
-                    "Latin Modern Roman", "CMU Serif",
-                    "New Computer Modern", "Serif")
+                    "CMU Serif", "New Computer Modern")
 
 #let font-family-mono = ("Latin Modern Mono", "New Computer Modern Mono",
                          "Mono")
@@ -76,7 +73,7 @@
     block(above: 0.32in, it.body)
   }
   // TODO(@daskol): Closest bibliography style is "bristol-university-press".
-  set std-bibliography(
+  set bibliography(
     title: [References],
     style: "bristol-university-press")
   bib
@@ -393,6 +390,7 @@
   pubdata: (:),
   accepted: auto,
   workshop: none,
+  aux: (:),
   body,
 ) = {
   // If there is no short title then use title as a short title.
@@ -569,7 +567,9 @@
   )
 
   // Basic paragraph and text settings.
-  set text(font: font-family, size: font-size.normal)
+  let aux-font-family = aux.at("font-family", default: (:))
+  let aux-font = aux-font-family.at("serif", default: font-family)
+  set text(font: aux-font, size: font-size.normal)
   set par(
     leading: 0.55em, first-line-indent: 17pt, justify: true,
     spacing: 0.55em)
