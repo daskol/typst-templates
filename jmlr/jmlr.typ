@@ -158,6 +158,34 @@
   }
 }
 
+#let abbreviate-author(name) = {
+  let parts = name.trim().split(" ").filter(it => it != "")
+  if parts.len() <= 1 {
+    return name
+  }
+
+  let surname = parts.at(-1)
+  let initials = parts
+    .slice(0, -1)
+    .map(part => part
+      .split("-")
+      .filter(it => it != "")
+      .map(it => it.at(0) + ".")
+      .join("-"))
+    .filter(it => it != "")
+    .join(" ")
+
+  if initials == "" {
+    surname
+  } else {
+    initials + " " + surname
+  }
+}
+
+#let join-workshop-authors(authors) = {
+  authors.map(abbreviate-author).join(" & ")
+}
+
 #let make-author(author, affls) = {
   let author-affls = if type(author.affl) == array {
     author.affl
