@@ -1,10 +1,10 @@
-# Journal of Machine Learning Research(JMLR)
+# Journal of Machine Learning Research (JMLR)
 
 ## Overview
 
-This is a Typst template for Journal of Machine Learning Research (JMLR). It is
-based on official [author guide][1], [formatting instructions][2], and
-[formatting error checklist][3] as well as the official example paper.
+This is a Typst template for the Journal of Machine Learning Research (JMLR).
+It is based on the official [author guide][1], [formatting instructions][2],
+and [formatting error checklist][3], as well as the official example paper.
 
 ## Usage
 
@@ -21,21 +21,22 @@ Typst will create a new directory with all the files needed to get you started.
 
 ## Configuration
 
-This template exports the `jmlr` function with the following named arguments.
+This template exports the `jmlr` function and the `appendix` show rule. The
+`jmlr` function accepts the following named arguments.
 
 - `title`: The paper's title as content.
 - `short-title`: Paper short title (for page header).
-- `authors`: An array of author dictionaries. Each of the author dictionaries
-  must have a name key and can have the keys department, organization,
-  location, and email.
-- `last-names`: List of authors last names (for page header).
+- `authors`: A tuple `(authors, affls)`, where `authors` is an array of author
+  dictionaries and `affls` is a dictionary of affiliations. Each author must
+  have `name`, `affl`, and `email` keys; `affl` can be one affiliation key or
+  an array of keys. Each affiliation can include `department`, `institution`,
+  `location`, and `country`.
+- `last-names`: List of authors' last names (for page header).
 - `keywords`: Publication keywords (used in PDF metadata).
 - `date`: Creation date (used in PDF metadata).
 - `abstract`: The content of a brief summary of the paper or none. Appears at
   the top under the title.
 - `bibliography`: The result of a call to the bibliography function or none.
-  The function also accepts a single, positional argument for the body of the
-  paper.
 - `appendix`: Content to append before the template-rendered bibliography. This
   is useful for template-managed appendices, for example
   `appendix: include "appendix.typ"`.
@@ -53,7 +54,8 @@ This template exports the `jmlr` function with the following named arguments.
 
 The template will initialize your package with a sample call to the `jmlr`
 function in a show rule. If you want to change an existing project to use this
-template, you can add a show rule at the top of your file.
+template, you can add a show rule at the top of your file (it renders
+bibliography _after_ appendix).
 
 ```typst
 #import "@preview/classic-jmlr:0.7.0": jmlr
@@ -77,7 +79,7 @@ template, you can add a show rule at the top of your file.
 
 Alternatively, import the `appendix` show rule for manual placement. When
 `bibliography` is passed to `jmlr`, this workflow renders the bibliography
-immediately before the appendix and avoids rendering it again at the end.
+immediately _before_ the appendix and avoids rendering it again at the end.
 
 ```typst
 #import "@preview/classic-jmlr:0.7.0": appendix, jmlr
@@ -95,34 +97,71 @@ immediately before the appendix and avoids rendering it again at the end.
 == Derivation
 ```
 
-For the HiLD 2025 workshop style, import the preset and set `accepted: false`
-for anonymous submission PDFs.
+### Workshop Styles and Customization
+
+For a workshop style, define a dictionary in your paper and pass it via
+`workshop`. The `accepted` argument controls the publication mode (use `false`
+for anonymous submissions, `true` for accepted workshop papers, and `none` for
+non-anonymous preprints).
 
 ```typst
-#import "@preview/classic-jmlr:0.7.0": jmlr, hild2025-workshop
+#import "@preview/classic-jmlr:0.7.0": jmlr
+
+#let workshop-style = (
+  proceedings: [Workshop Name 2026],
+  anonymous-authors: [author names withheld],
+  anonymous-notice: [Under review for Workshop Name 2026],
+  heading-numbering: "1.1.",
+  two-sided: false,
+  title-page-footer: auto,
+)
+
 #show: jmlr.with(
-  title: [Are DeepBigWideNets provably better than linear predictors?],
+  title: [Sample Workshop Paper],
   short-title: [Specify Running Title],
   authors: (authors, affls),
   abstract: [Recently, ...],
-  bibliography: bibliography("main.bib"),
+  bibliography: bibliography("main.bib", style: "ieee"),
   accepted: false,
-  workshop: hild2025-workshop,
+  workshop: workshop-style,
 )
 ```
 
+All fields are optional. Omitted fields use the template defaults for workshop
+papers. Passing content instead of a dictionary is shorthand for setting only
+`proceedings`.
+
+```typst
+#show: jmlr.with(
+  title: [Workshop Paper],
+  authors: (authors, affls),
+  abstract: [Abstract.],
+  accepted: false,
+  workshop: [Workshop Name 2026],
+)
+```
+
+The `proceedings` field appears in the first-page header for submitted or
+accepted workshop papers. Preprints (`accepted: none`) suppress workshop header
+and footer text. `anonymous-authors` and `anonymous-notice` are used when
+`accepted: false`. The `heading-numbering: "1.1."` enables the trailing-dot
+section numbering used by newer JMLR workshop styles. The `two-sided: false`
+uses the short title in running heads on all pages. The `title-page-footer` can
+be `auto`, `none`, or custom content; `auto` renders `© .` for anonymous
+submissions and compact author names, such as `© A. One & A. Two`, for accepted
+workshop papers.
+
 ## Issues
 
-- JMLR example paper is not representative (too short).
+- The JMLR example paper is not representative (it is too short).
 
-- Leading in author affiliations in in the original template is varying.
+- Leading in author affiliations in the original template varies.
 
-- There is no bibliography CSL-style. The closest one is
+- There is no bibliography CSL style. The closest one is
   `bristol-university-press`.
 
-- Another issue is related to Typst's inability to produce colored annotation.
-  In order to mitigate the issue, we add a script which modifies annotations and
-  make them colored.
+- Typst cannot produce colored annotations. To mitigate this issue, we provide a
+  script that modifies annotations and colors them.
 
   ```shell
   ../colorize-annotations.py \

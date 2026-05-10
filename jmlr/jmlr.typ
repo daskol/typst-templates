@@ -32,16 +32,6 @@
   Huge: 25pt,
 )
 
-#let hild2025-workshop = (
-  proceedings: [HiLD 2025: 3rd Workshop on High-dimensional Learning Dynamics],
-  anonymous-authors: [author names withheld],
-  anonymous-notice: [
-    Under Review for the Workshop on High-dimensional Learning Dynamics, 2025
-  ],
-  heading-numbering: "1.1.",
-  two-sided: false,
-)
-
 /**
  * JMLR tempalte state variables.
  */
@@ -360,7 +350,7 @@
  *   for an accepted publication. By default, the mode is inferred from
  *   `pubdata` for backwards compatibility.
  *   workshop: Workshop proceedings configuration. It can be either content used
- *   as the proceedings header or a dictionary. See `hild2025-workshop`.
+ *   as the proceedings header or a dictionary.
  */
 #let jmlr(
   title: [],
