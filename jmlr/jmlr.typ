@@ -30,13 +30,6 @@
 )
 
 /**
- * JMLR tempalte state variables.
- */
-
-#let jmlr-bibliography = state("jmlr-bibliography", none)
-#let jmlr-bibliography-rendered = state("jmlr-bibliography-rendered", false)
-
-/**
  * h, h1, h2, h3 - Style rules for headings.
  */
 
@@ -129,10 +122,12 @@
  * suppressed from the end-of-document fallback.
  */
 #let appendix(trailing-dot: true, body) = {
+  [#metadata(none) <jmlr-appendix>]
+
   context {
-    let bib = jmlr-bibliography.get()
-    if bib != none {
-      jmlr-bibliography-rendered.update(true)
+    let bibs = query(<jmlr-bibliography>)
+    if bibs.len() > 0 {
+      let bib = bibs.first().value
       render-bibliography(bib)
     }
   }
@@ -619,18 +614,13 @@
   show figure.caption: it => {
     set text(size: font-size.small)
     set par(leading: 6.67pt, first-line-indent: 0pt)
-    let numb = locate(loc => numbering(it.numbering, ..it.counter.at(loc)))
+    let numb = context numbering(it.numbering, ..it.counter.at(here()))
     let index = it.supplement + [~] + numb + it.separator
     grid(columns: 2, column-gutter: 5pt, align: left, index, it.body)
   }
 
-  // Initialize bibliography-appendix rendering state.
   if bibliography != none {
-    jmlr-bibliography.update(bibliography)
-    jmlr-bibliography-rendered.update(false)
-  } else {
-    jmlr-bibliography.update(none)
-    jmlr-bibliography-rendered.update(true)
+    [#metadata(bibliography) <jmlr-bibliography>]
   }
 
   make-title(
@@ -654,12 +644,8 @@
 
   if bibliography != none {
     context {
-      if not jmlr-bibliography-rendered.get() {
-        let bib = jmlr-bibliography.get()
-        if bib != none {
-          jmlr-bibliography-rendered.update(true)
-          render-bibliography(bib)
-        }
+      if query(<jmlr-appendix>).len() == 0 {
+        render-bibliography(bibliography)
       }
     }
   }
