@@ -1,16 +1,16 @@
 /**
- * cvpr2025.typ
+ * cvpr2027.typ
  *
- * CVPR 2025 template.
+ * CVPR 2027 template.
  */
 
 #import "/cvpr2022.typ": cvpr2022
 
-#let conf-year = [2025]
+#let conf-year = [2027]
 
 /**
- * cvpr2025 - Template for Computer Vision and Pattern Recognition Conference
- * (CVPR) 2025.
+ * cvpr2027 - Template for Computer Vision and Pattern Recognition Conference
+ * (CVPR) 2027.
  *
  * Args:
  *   title: Paper title.
@@ -25,7 +25,7 @@
  *   (`none`) is designed to prepare arxiv publication. Default is `false`.
  *   id: Submission identifier.
  */
-#let cvpr2025(
+#let cvpr2027(
   title: [],
   authors: (),
   keywords: (),
@@ -47,7 +47,7 @@
     appendix: appendix,
     accepted: accepted,
     id: id,
-    aux: (conf-year: [2025], lineno: true),
+    aux: (conf-year: [2027], lineno: true),
   )
   body
 }

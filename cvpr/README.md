@@ -15,8 +15,8 @@ Typst will create a new directory with all the files needed to get you started.
 
 ## Configuration
 
-This template exports the `cvpr2022` and `cvpr2025` styling rule with the
-following named arguments.
+This template exports the `cvpr2022`, `cvpr2025`, and `cvpr2027` styling rules
+with the following named arguments.
 
 - `title`: The paper's title as content.
 - `authors`: An array of author dictionaries. Each of the author dictionaries
@@ -35,15 +35,19 @@ following named arguments.
   the argument is set to `none` then preprint version is produced (can be
   uploaded to arXiv).
 - `id`: Identifier of a submission.
+- `aux`: Advanced options accepted by the generic `cvpr` styling rule. Set
+  `lineno` to `true` to use line-aware numbering instead of the fixed CVPR 2022
+  ruler. The `cvpr2025` and `cvpr2027` rules enable this automatically for
+  review copies.
 
-The template will initialize your package with a sample call to the `cvpr2025`
+The template will initialize your package with a sample call to the `cvpr2027`
 function in a show rule. If you want to change an existing project to use this
 template, you can add a show rule at the top of your file.
 
 ```typst
-#import "@preview/blind-cvpr:0.7.0": cvpr2025
+#import "@preview/blind-cvpr:0.7.0": cvpr2027
 
-#show: cvpr2025.with(
+#show: cvpr2027.with(
   title: [LaTeX Author Guidelines for CVPR Proceedings],
   authors: (authors, affls),
   keywords: (),
@@ -73,24 +77,13 @@ template, you can add a show rule at the top of your file.
   CSL-style and then colorize number and put it into square parenthesis in
   typst markup.
 
-- CVPR 2022 requires simple ruler which enumerates lines in regular intervals
-  whilst CVPR2025 already requires a ruler which add line numers per line in
-  paragraph or heading. Thus we need the next major Typst release v0.12.0 for
-  ruler. With the next Typst release, we can do the following.
-
-  ```typst
-  set par.line(numbering: "1")
-  show figure: set par.line(numbering: none)
-  ```
-
-  For implementation details see [typst/typst#4516][6].
-
-- CVPR 2022 and 2025 requires IEEE-like bibliography style but does not follow
+- CVPR requires an IEEE-like bibliography style but does not follow
   its guidelines closely. Since writing CSL-style files is tedious task, we
   adopt close enough bibliography style from Zotero.
 
-- With Typst 0.12.0, multi-column page layout is set in different way. Thus,
-  footnotes use full page width at the moment.
+- The legacy `cvpr2022` style retains its original column container for layout
+  compatibility, so its footnotes use the full page width. The `cvpr2025` and
+  `cvpr2027` styles use page-level columns instead.
 
 ## References
 
@@ -100,4 +93,3 @@ template, you can add a show rule at the top of your file.
 [3]: https://github.com/typst/typst/issues/311
 [4]: https://cvpr2022.thecvf.com/author-guidelines#dates
 [5]: https://cvpr.thecvf.com/Conferences/2025
-[6]: https://github.com/typst/typst/pull/4516

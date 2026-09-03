@@ -258,6 +258,8 @@
  *   accepted: Valid values are `none`, `false`, and `true`. Missing value
  *   (`none`) is designed to prepare arxiv publication. Default is `false`.
  *   id: Submission identifier.
+ *   aux: Dictionary of auxiliary options. The `lineno` boolean key enables
+ *   line-aware numbering instead of the fixed CVPR 2022 ruler.
  */
 #let cvpr2022(
   title: [],
@@ -272,6 +274,12 @@
   aux: (:),
   body,
 ) = {
+  let modern-columns = aux.at("lineno", default: false)
+  let line-numbering = (
+    accepted != none and not accepted
+      and modern-columns
+  )
+
   // Deconstruct authors for convenience.
   let (authors, affls) = if authors.len() == 2 {
     authors
@@ -296,9 +304,12 @@
   set page(
     paper: "us-letter",
     margin: (left: 0.696in, right: 0.929in, top: 1in, bottom: 1.125in),
+    columns: if modern-columns { 2 } else { 1 },
     background: if accepted != none and not accepted {
-      // Rullers on sides.
-      ruler
+      // CVPR 2022 uses a fixed ruler. Later editions use line-aware numbering.
+      if not line-numbering {
+        ruler
+      }
       // Decorate top corners.
       place(top + left, dx: -14.6pt, dy: 15.5pt, corner-text(id, width: 1in))
       place(top + right, dx: 5pt, dy: 15.5pt, corner-text(id, width: 1in))
@@ -319,11 +330,31 @@
       align(center, text(size: font-size.normal, [#ix]))
     },
   )
+  set columns(gutter: 0.3125in)
 
   set text(font: font-family, size: font-size.normal)
   set par(
     first-line-indent: 0.166666in, leading: 0.532em, spacing:  0.54em,
     justify: true)
+
+  let lineno(body) = {
+    if not line-numbering {
+      body
+    } else {
+      set par.line(
+        numbering: n => text(
+          size: font-size.footnote,
+          font: font-family-sans,
+          weight: "bold",
+          fill: ruler-color,
+        )[#lineno-fmt(n)],
+        number-clearance: 0.75cm,
+      )
+      body
+    }
+  }
+
+  show: lineno
   show raw: set text(font: font-family-mono, size: font-size.normal)
 
   // Configure heading appearence and numbering.
@@ -350,8 +381,13 @@
     clearance: 6.65pt,
     gap: 0.40em,
     indent: 12pt)
+  show footnote.entry: it => {
+    set par.line(numbering: none)
+    it
+  }
 
   // Figures
+  show figure: set par.line(numbering: none)
   set figure(gap: 12pt)
   set figure.caption(separator: [.])
   show figure.caption: set text(size: font-size.small)
@@ -409,14 +445,7 @@
       it
     }
   }
-  make-title(title, authors, affls, id, accepted)
-
-  // NOTE It seems that there is a typo in formatting instructions and actual
-  // gutter is 3/8 in not 5/16 in.
-  //
-  // TODO(@daskol): Set number of columns in page settings. Otherwise,
-  // footnotes use all page width.
-  columns(2, gutter: 0.3125in, {
+  let render-main() = {
     // Render abstract.
     block(width: 100%, {
       set par(first-line-indent: 0pt)
@@ -432,7 +461,25 @@
       show std-bibliography: set text(size: font-size.small)
       bibliography
     }
-  })
+  }
+
+  // NOTE It seems that there is a typo in formatting instructions and actual
+  // gutter is 3/8 in not 5/16 in.
+  if modern-columns {
+    // Page-level columns let line numbers follow both columns. The title spans
+    // them and reserves space at the top of the first page.
+    place(
+      top + center,
+      float: true,
+      scope: "parent",
+      make-title(title, authors, affls, id, accepted),
+    )
+    render-main()
+  } else {
+    // Preserve the CVPR 2022 fixed-ruler layout for compatibility.
+    make-title(title, authors, affls, id, accepted)
+    columns(2, gutter: 0.3125in, render-main())
+  }
 
   if appendix != none {
     set heading(numbering: "A.1")
