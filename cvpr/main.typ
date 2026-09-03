@@ -1,4 +1,4 @@
-#import "/cvpr.typ": cvpr2025, conf-name, conf-year, eg, etal, indent
+#import "/cvpr.typ": cvpr2027, conf-name, conf-year, eg, etal, indent
 #import "/logo.typ": LaTeX, TeX
 
 #let affls = (
@@ -19,7 +19,7 @@
   (name: "Second Author", affl: ("two", ), email: "secondauthor@i2.org"),
 )
 
-#show: cvpr2025.with(
+#show: cvpr2027.with(
   title: [#LaTeX Author Guidelines for #conf-name~Proceedings],
   authors: (authors, affls),
   keywords: (),
@@ -292,17 +292,16 @@ because reference~@Alpher03 has just two authors.
   kind: "subfigure",
   rect(width: 2in, height: 2in, stroke: 0.4pt))
 
-#let fig = block(width: 6.875in, height: 2.59in)[
-  #figure(
-    caption: [Example of a short caption, which should be centered.],
-    placement: top,
-    grid(
-      columns: 2,
-      column-gutter: 0.875in - 2 * 0.4pt,
-      [#fig2a <fig2a>], [#fig2b <fig2b>],
-    )
-  ) <fig:short-a>
-]
+#let fig = figure(
+  caption: [Example of a short caption, which should be centered.],
+  placement: top,
+  scope: "parent",
+  grid(
+    columns: 2,
+    column-gutter: 0.875in - 2 * 0.4pt,
+    [#fig2a <fig2a>], [#fig2b <fig2b>],
+  ),
+)
 
 = Formatting your paper <sec:formatting>
 
@@ -365,7 +364,7 @@ heading (we discourage it), use 10-point Times, boldface, initially
 capitalized, flush left, preceded by one blank line, followed by a period and
 your text on the same line.
 
-#place(top, float: true, fig)
+#fig <fig:short-a>
 
 == Footnotes
 
@@ -410,10 +409,6 @@ command. Here is an example:
   #indent
   @fig:onecol[Figure] is also quite important.
 ]
-
-#place(top, float: true,
-  block(width: 3.25in, height: fig.height)
-)
 
 == References
 
