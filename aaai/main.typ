@@ -1,10 +1,30 @@
-#import "/aaai.typ": aaai2026
+#import "/aaai.typ": aaai, appendix
 #import "/logo.typ": LaTeX, LaTeXe as LaTeX2e, TeX
 
-#show: aaai2026.with(
+#let authors = (
+  (name: "Firstname1 Lastname1",
+   affl: "skoltech",
+   email: "author@example.org",
+   equal: true),
+  (name: "Firstname2 Lastname2", affl: ("airi", "skoltech"), equal: true),
+)
+
+#let affilations = (
+  airi: (institution: "AIRI", location: "Moscow", country: "Russia"),
+  skoltech: (
+    department: "AI Center",
+    institution: "Skoltech",
+    location: "Moscow",
+    country: "Russia",
+  ),
+)
+
+#show: aaai.with(
   title: [
     AAAI Press Anonymous Submission\ Instructions for Authors Using #LaTeX
   ],
+  authors: (authors, affilations),
+  keywords: ("aaai", ),
   abstract: [
     AAAI creates proceedings, working notes, and technical reports directly
     from electronic source furnished by the authors. To ensure that all papers
@@ -12,7 +32,14 @@
     following instructions.
   ],
   bibliography: bibliography("main.bib", full: true),
+  accepted: false,
+  numbering: none,
 )
+
+#show raw.where(block: true): it => block(spacing: 1em, {
+  set text(size: 7pt)
+  it
+})
 
 = Preparing an Anonymous Submission
 
@@ -33,11 +60,11 @@ differences:
   requested, nor any copyright transfer form.
 
 You can achieve all of the above by enabling the `submission` option when
-loading the `aaai24` package:
+loading the `aaai2026` package:
 
 ```tex
   \documentclass[letterpaper]{article}
-  \usepackage[submission]{aaai24}
+  \usepackage[submission]{aaai2026}
 ```
 
 The remainder of this document are the original camera- ready instructions. Any
@@ -65,9 +92,9 @@ conference instructions for details regarding your submission. Please review
 the entire document for specific instructions that might apply to your
 particular situation. All authors must comply with the following:
 
-- You must use the 2024 AAAI Press #LaTeX style file and the `aaai24.bst`
-  bibliography style files, which are located in the 2024 AAAI Author Kit
-  (`aaai24.sty`, `aaai24.bst`).
+- You must use the 2026 AAAI Press #LaTeX style file and the `aaai2026.bst`
+  bibliography style files, which are located in the 2026 AAAI Author Kit
+  (`aaai2026.sty`, `aaai2026.bst`).
 - You must complete, sign, and return by the deadline the AAAI copyright form
   (unless directed by AAAI Press to use the AAAI Distribution License instead).
 - You must read and format your paper source and PDF according to the
@@ -94,7 +121,7 @@ conference for submission details.
 
 We need source and PDF files that can be used in a variety of ways and can be
 output on a variety of devices. The design and appearance of the paper is
-strictly governed by the aaai style file (`aaai24.sty`). *You must not make any
+strictly governed by the aaai style file (`aaai2026.sty`). *You must not make any
 changes to the aaai style file, nor use any commands, packages, style files, or
 macros within your own paper that alter that design, including, but not limited
 to spacing, floats, margins, fonts, font size, and appearance.* AAAI imposes
@@ -166,7 +193,7 @@ You must submit the following items to ensure that your paper is published:
 Your #LaTeX source will be reviewed and recompiled on our system (if it does
 not compile, your paper will be returned to you. *Do not submit your source in
 multiple text files.* Your single #LaTeX source file must include all your
-text, your bibliography (formatted using `aaai24.bst`), and any custom macros.
+text, your bibliography (formatted using `aaai2026.bst`), and any custom macros.
 
 Your files should work without any supporting files (other than the program
 itself) on any computer with a standard #LaTeX distribution.
@@ -212,15 +239,15 @@ properly with numbering of subsubsections, so do not use a number higher than
 2.
 
 === The Following Must Appear in Your Preamble
-
 ```tex
   \documentclass[letterpaper]{article}
   % DO NOT CHANGE THIS
-  \usepackage[submission]{aaai24} % DO NOT CHANGE THIS
+  % DO NOT CHANGE THESE PACKAGES
+  \usepackage[submission]{aaai2026}
   \usepackage{times} % DO NOT CHANGE THIS
   \usepackage{helvet} % DO NOT CHANGE THIS
   \usepackage{courier} % DO NOT CHANGE THIS
-  \usepackage[hyphens]{url} % DO NOT CHANGE THIS
+  \usepackage[hyphens]{url}
   \usepackage{graphicx} % DO NOT CHANGE THIS
   \urlstyle{rm} % DO NOT CHANGE THIS
   \def\UrlFont{\rm} % DO NOT CHANGE THIS
@@ -228,13 +255,14 @@ properly with numbering of subsubsections, so do not use a number higher than
   \usepackage{natbib}  % DO NOT CHANGE THIS
   \usepackage{caption}  % DO NOT CHANGE THIS
   \frenchspacing % DO NOT CHANGE THIS
-  \setlength{\pdfpagewidth}{8.5in} % DO NOT CHANGE THIS
-  \setlength{\pdfpageheight}{11in} % DO NOT CHANGE THIS
+  % DO NOT CHANGE THE PAGE SIZE
+  \setlength{\pdfpagewidth}{8.5in}
+  \setlength{\pdfpageheight}{11in}
   %
-  % Keep the \pdfinfo as shown here. There's no need
-  % for you to add the /Title and /Author tags.
+  % Keep the \pdfinfo as shown here.
+  % Do not add /Title and /Author tags.
   \pdfinfo{
-  /TemplateVersion (2024.1)
+  /TemplateVersion (2026.1)
   }
 ```
 
@@ -255,27 +283,20 @@ with the references, which should be inserted as follows:
 
 ```tex
   % References and End of Paper
-  % These lines must be placed at the end of your paper
+  % Place these lines at the end of the paper.
   \bibliography{Bibliography-File}
   \end{document}
-  \end{verbatim}\end{scriptsize}
-  \end{quote}
-
-  \begin{quote}
-  \begin{scriptsize}\begin{verbatim}
-  \begin{document}\\
-  \maketitle\\
-  ...\\
-  \bibliography{Bibliography-File}\\
-  \end{document}\\
 ```
 
 == Commands and Packages That May Not Be Used
 
 #figure(
   caption: [Commands that must not be used],
+  placement: top,
+  scope: "parent",
   table(
-    columns: 4,
+    columns: (1fr, 1fr, 1fr, 1fr),
+    align: left,
     stroke: none,
     `\abovecaption`, `\abovedisplay`,    `\addevensidemargin`, `\addsidemargin`,
     `\addtolength`,  `\baselinestretch`, `\belowcaption`,      `\belowdisplay`,
@@ -288,8 +309,10 @@ with the references, which should be inserted as follows:
 
 #figure(
   caption: [LaTeX style packages that must not be used.],
+  placement: top,
   table(
-    columns: 4,
+    columns: (1fr, 1fr, 1fr, 1fr),
+    align: left,
     stroke: none,
     `authblk`,   `babel`,      `cjk`,      `dvips`,
     `epsf`,      `epsfig`,     `euler`,    `float`,
@@ -301,7 +324,7 @@ with the references, which should be inserted as follows:
   )) <table2>
 
 There are a number of packages, commands, scripts, and macros that are
-incompatable with `aaai24.sty`. The common ones are listed in tables
+incompatable with `aaai2026.sty`. The common ones are listed in tables
 #ref(<table1>, supplement: none) and #ref(<table2>, supplement: none).
 Generally, if a command, package, script, or macro alters floats, margins,
 fonts, sizing, linespacing, or the presentation of the references and
@@ -335,10 +358,9 @@ not limited to the Geometry package) will result in your final paper being
 returned to you for correction.
 
 === Column Width and Margins
-
 To ensure maximum readability, your paper must include two columns. Each column
 should be 3.3 inches wide (slightly more than 3.25 inches), with a .375 inch
-(.952 cm) gutter of white space between the two columns. The `aaai24.sty` file
+(.952 cm) gutter of white space between the two columns. The `aaai2026.sty` file
 will automatically create these columns for you.
 
 == Overlength Papers
@@ -402,14 +424,12 @@ Indent ten points when beginning a new paragraph, unless the paragraph begins
 directly below a heading or subheading.
 
 === Obtaining Type 1 Computer Modern for #LaTeX.
-
 If you use Computer Modern for the mathematics in your paper (you cannot use it
 for the text) you may need to download type 1 Computer fonts. They are
 available without charge from the American Mathematical Society:
 #link("http://www.ams.org/tex/type1-fonts.html").
 
 === Nonroman Fonts.
-
 If your paper includes symbols in other languages (such as, but not limited to,
 Arabic, Chinese, Hebrew, Japanese, Thai, Russian and other Cyrillic languages),
 you must restrict their use to bit-mapped figures.
@@ -434,7 +454,6 @@ nine-point roman type (the twelve point leading). You should begin the
 two-column format when you come to the abstract.
 
 === Formatting Author Information.
-
 Author information has to be set according to the following specification
 depending if you have one or more than one affiliation. You may not use a table
 nor may you employ the `authorblk` package. For one or several authors from the
@@ -459,8 +478,10 @@ the author name (or comma following it) and the superscript.
 
 ```tex
 \author{
-    AuthorOne,\equalcontrib\textsuperscript{\rm 1,\rm 2}
-    AuthorTwo,\equalcontrib\textsuperscript{\rm 2}
+    AuthorOne,\equalcontrib
+    \textsuperscript{\rm 1,\rm 2}
+    AuthorTwo,\equalcontrib
+    \textsuperscript{\rm 2}
     AuthorThree,\textsuperscript{\rm 3}\\
     AuthorFour,\textsuperscript{\rm 4}
     AuthorFive \textsuperscript{\rm 5}}
@@ -487,19 +508,20 @@ can achieve this using a simple line break (`\\`).
 
 == #LaTeX Copyright Notice
 
-The copyright notice automatically appears if you use `aaai24.sty`. It has been
+The copyright notice automatically appears if you use `aaai2026.sty`. It has been
 hardcoded and may not be disabled.
 
 == Credits
 
 Any credits to a sponsoring agency should appear in the acknowledgments
 section, unless the agency requires different placement. If it is necessary to
-include this information on the front page, use \textbackslash thanks in either
-the \textbackslash author or \textbackslash title commands. For example:
+include this information on the front page, use `\thanks` in either
+the `\author` or `\title` commands. For example:
 
 ```tex
-  \title{Very Important Results in AI\textbackslash thanks{This work is
-    supported by everybody.}}
+  \title{Very Important Results in AI
+    \thanks{This work is supported
+      by everybody.}}
 ```
 
 Multiple `\thanks` commands can be given. Each will result in a separate
@@ -541,11 +563,11 @@ authors, list only the first author, followed by et al. (Ford et al. 1997).
 Long quotations and extracts should be indented ten points from the left and
 right margins.
 
-```
+#quote(block: true)[
 This is an example of an extract or quotation. Note the indent on both sides.
 Quotation marks are not necessary if you offset the text in a block like this,
 and properly identify and cite the quotation in the text.
-```
+]
 
 == Footnotes
 
@@ -560,18 +582,16 @@ rule.
 When necessary, headings should be used to separate major sections of your
 paper. Remember, you are writing a short paper, not a lengthy book! An
 overabundance of headings will tend to make your paper look more like an
-outline than a paper. The aaai24.sty package will create headings for you. Do
+outline than a paper. The aaai2026.sty package will create headings for you. Do
 not alter their size nor their spacing above or below.
 
 === Section Numbers.
-
 The use of section numbers in AAAI Press papers is optional. To use section
 numbers in #LaTeX, uncomment the setcounter line in your document preamble and
 change the 0 to a 1. Section numbers should not be used in short poster papers
 and/or extended abstracts.
 
 === Section Headings.
-
 Sections should be arranged and headed as follows:
 
 + Main content sections
@@ -581,21 +601,18 @@ Sections should be arranged and headed as follows:
 + References (unnumbered)
 
 === Appendices.
-
 Any appendices must appear after the main content. If your main sections are
 numbered, appendix sections must use letters instead of arabic numerals. In
 #LaTeX you can use the `\appendix` command to achieve this effect and then use
 `\section{Heading}` normally for your appendix sections.
 
 === Ethical Statement.
-
 You can write a statement about the potential ethical impact of your work,
 including its broad societal implications, both positive and negative. If
 included, such statement must be written in an unnumbered section titled
 _Ethical Statement_.
 
 === Acknowledgments.
-
 The acknowledgments section, if included, appears right before the references
 and is headed "Acknowledgments". It must not be numbered even if other sections
 are (use `\section*{Acknowledgements}` in #LaTeX). This section includes
@@ -608,7 +625,6 @@ statement, and put the remaining acknowledgments at the back. Please try to
 limit acknowledgments to no more than three sentences.
 
 === References.
-
 The references section should be labeled "References" and must appear at the
 very end of the paper (don't end the paper with references, and then put a
 figure by itself on the last page). A sample list of references is given later
@@ -626,7 +642,7 @@ your research. Please prepare complete and accurate citations.
     your figures properly in a graphics program -- not in #LaTeX.
   ],
   placement: top,
-  image("figure1.svgz")) <fig1>
+  image("figure1.svgz", width: 100%)) <fig1>
 
 #figure(
   caption: [
@@ -666,8 +682,8 @@ When you include your figures, you must crop them *outside* of #LaTeX. The
 command `\includegraphics*[clip=true, viewport 0 0 10 10]{...}` might result in
 a PDF that looks great, but the image is *not really cropped*. The full image
 can reappear (and obscure whatever it is overlapping) when page numbers are
-applied or color space is standardized. Figures @fig1, and @fig2 display some
-unwanted results that often occur.
+applied or color space is standardized. @fig1 and @fig2 display some unwanted
+results that often occur.
 
 If your paper includes illustrations that are not compatible with PDF#TeX (such
 as .eps or .ps documents), you will need to convert them. The epstopdf package
@@ -675,7 +691,6 @@ will usually work for eps files. You will need to convert your ps files to PDF
 in either case.
 
 === Figure Captions.
-
 The illustration number and caption must appear _under_ the illustration.
 Labels and other text with the actual illustration must be at least nine-point
 type. However, the font and size of figure captions must be 10 point roman. Do
@@ -692,7 +707,6 @@ when spanning both columns, you must split it. Do not use minipage to group
 tables.
 
 === Table Captions.
-
 The number and caption for your table must appear _under_ (not above) the
 table. Additionally, the font and size of table captions must be 10 point roman
 and must be placed beneath the figure. Do not make them smaller, bold, or
@@ -700,7 +714,6 @@ italic. (Individual words may be italicized if the context requires
 differentiation.)
 
 === Low-Resolution Bitmaps.
-
 You may not use low-resolution (such as 72 dpi) screen-dumps and GIF files ---
 these files contain so few pixels that they are always blurry, and illegible
 when printed. If they are color, they will become an indecipherable mess when
@@ -711,7 +724,6 @@ pixels. You can also enlarge files by manipulating them in software such as
 PhotoShop. Your figures should be 300 dpi when incorporated into your document.
 
 === #LaTeX Overflow.
-
 #LaTeX users please beware: #LaTeX will sometimes put portions of the figure or
 table or an equation in the margin. If this happens, you need to make the
 figure or table span both columns. If absolutely necessary, you may reduce the
@@ -720,7 +732,6 @@ file!* You must fix any overflow into the margin (that means no overfull boxes
 in #LaTeX). *Nothing is permitted to intrude into the margin or gutter.*
 
 === Using Color.
-
 Use of color is restricted to figures only. It must be WACG 2.0 compliant.
 (That is, the contrast ratio must be greater than 4.5:1 no matter the font
 size.) It must be CMYK, NOT RGB. It may never be used for any portion of the
@@ -734,7 +745,6 @@ be mindful of readers who may happen to have trouble distinguishing colors.
 Your paper must be decipherable without using color for distinction.
 
 === Drawings.
-
 We suggest you use computer drawing software (such as Adobe Illustrator or, (if
 unavoidable), the drawing tools in Microsoft Word) to create your
 illustrations. Do not use Microsoft Publisher. These illustrations will look
@@ -746,29 +756,25 @@ least .5 pt. Zero point lines will print on a laser printer, but will
 completely disappear on the high-resolution devices used by our printers.
 
 === Photographs and Images.
-
 Photographs and other images should be in grayscale (color photographs will not
 reproduce well; for example, red tones will reproduce as black, yellow may turn
 to white, and so forth) and set to a minimum of 300 dpi. Do not prescreen
 images.
 
 === Resizing Graphics.
-
 Resize your graphics *before* you include them with #LaTeX. You may *not* use
 trim or clip options as part of your `\includegraphics` command. Resize the
 media box of your PDF using a graphics program instead.
 
 === Fonts in Your Illustrations.
-
 You must embed all fonts in your graphics before including them in your LaTeX
 document.
 
 === Algorithms.
-
 Algorithms and/or programs are a special kind of figures. Like all
 illustrations, they should appear floated to the top (preferably) or bottom of
 the page. However, their caption should appear in the header, left-justified
-and enclosed between horizontal lines, as shown in Algorithm~@algorithm. The
+and enclosed between horizontal lines, as shown in @algorithm. The
 algorithm body should be terminated with another horizontal line. It is up to
 the authors to decide whether to show line numbers or not, how to format
 comments, etc.
@@ -778,11 +784,14 @@ packages, but you can also use one of the many other packages for the task.
 
 #figure(
   caption: [Example algorithm],
+  kind: "algorithm",
+  supplement: [Algorithm],
   ```tex
     \textbf{Input}: Your algorithm's input\\
-    \textbf{Parameter}: Optional list of parameters\\
+    \textbf{Parameter}: Optional parameters\\
     \textbf{Output}: Your algorithm's output
-    \begin{algorithmic}[1] %[1] enables line numbers
+    % [1] enables line numbers.
+    \begin{algorithmic}[1]
     \STATE Let $t=0$.
     \WHILE{condition}
     \STATE Do some action.
@@ -796,7 +805,6 @@ packages, but you can also use one of the many other packages for the task.
   ```) <algorithm>
 
 === Listings.
-
 Listings are much like algorithms and programs. They should also appear floated
 to the top (preferably) or bottom of the page. Listing captions should appear
 in the header, left-justified and enclosed between horizontal lines as shown in
@@ -809,7 +817,9 @@ column.
   ```haskell
   quicksort :: Ord a => [a] -> [a]
   quicksort []     = []
-  quicksort (p:xs) = (quicksort lesser) ++ [p] ++ (quicksort greater)
+  quicksort (p:xs) = quicksort lesser
+                 ++ [p]
+                 ++ quicksort greater
           where
                   lesser  = filter (< p) xs
                   greater = filter (>= p) xs
@@ -820,7 +830,7 @@ column.
 The AAAI style includes a set of definitions for use in formatting references
 with BibTeX. These definitions make the bibliography style fairly close to the
 ones  specified in the Reference Examples appendix below. To use these
-definitions, you also need the BibTeX style file `aaai24.bst`, available in the
+definitions, you also need the BibTeX style file `aaai2026.bst`, available in the
 AAAI Author Kit on the AAAI web site. Then, at the end of your paper but before
 `\end{document}`, you need to put the following lines:
 
@@ -828,9 +838,9 @@ AAAI Author Kit on the AAAI web site. Then, at the end of your paper but before
   \bibliography{bibfile1,bibfile2,...}
 ```
 
-Please note that the `aaai24.sty` class already sets the bibliographystyle for
+Please note that the `aaai2026.sty` class already sets the bibliographystyle for
 you, so you do not have to place any `\bibliographystyle` command in the
-document yourselves. The `aaai24.sty` file is incompatible with the `hyperref`
+document yourselves. The `aaai2026.sty` file is incompatible with the `hyperref`
 and `navigator` packages. If you use either, your references will be garbled
 and your paper will be returned to you.
 
@@ -853,12 +863,13 @@ Bib#TeX source files (that is, the .bib files referenced in your paper).
 
 The following commands are available for your use in citing references:
 
-\begin{quote}
-{\em \textbackslash cite:} Cites the given reference(s) with a full citation. This appears as ``(Author Year)'' for one reference, or ``(Author Year; Author Year)'' for multiple references.\smallskip\\
-{\em \textbackslash shortcite:} Cites the given reference(s) with just the year. This appears as ``(Year)'' for one reference, or ``(Year; Year)'' for multiple references.\smallskip\\
-{\em \textbackslash citeauthor:} Cites the given reference(s) with just the author name(s) and no parentheses.\smallskip\\
-{\em \textbackslash citeyear:} Cites the given reference(s) with just the date(s) and no parentheses.
-\end{quote}
+- `\cite`: Cites the given reference(s) with a full citation, for example
+  @c:83 or @hcr:83.
+- `\shortcite`: Cites just the year in parentheses, for example
+  (#cite(<c:83>, form: "year")).
+- `\citeauthor`: Cites just the author name(s), for example
+  #cite(<hcr:83>, form: "author").
+- `\citeyear`: Cites just the date, for example #cite(<c:83>, form: "year").
 
 You may also use any of the `natbib` citation commands.
 
@@ -905,7 +916,8 @@ files.
   1900 Embarcadero Road, Suite 101\\
   Palo Alto, California 94303-3310 USA\\
   \textit{Telephone:} (650) 328-3123\\
-  \textit{E-mail:} See the submission instructions for your particular conference or event.
+  \textit{E-mail:} See the submission
+  instructions for your conference or event.
 ```
 
 = Additional Resources
@@ -915,39 +927,44 @@ document didn't help or some items were not explained clearly, we recommend you
 read Michael Shell's excellent document (testflow doc.txt V1.0a 2002/08/13)
 about obtaining correct PS/PDF output on #LaTeX systems. (It was written for
 another purpose, but it has general application as well). It is available at
-#link("www.ctan.org") in the tex-archive.
+#link("https://www.ctan.org") in the tex-archive.
 
-\appendix
+#show: appendix
 = Reference Examples <reference_examples>
 
-// \nobibliography*  // TODO
 Formatted bibliographies should look like the following examples. You should
 use Bib#TeX to generate the references. Missing fields are unacceptable when
 compiling references, and usually indicate that you are using the wrong type of
 entry (Bib#TeX class).
 
-\paragraph{Book with multiple authors~\nocite{em:86}} Use the `@book` class.\\[.2em]
-\bibentry{em:86}.
+*Book with multiple authors.* Use the `@book` class.
 
-\paragraph{Journal and magazine articles~\nocite{r:80, hcr:83}} Use the `@article` class.\\[.2em]
-\bibentry{r:80}.\\[.2em]
-\bibentry{hcr:83}.
+#cite(<em:86>, form: "full")
 
-\paragraph{Proceedings paper published by a society, press or
-publisher~\nocite{c:83, c:84}} Use the `@inproceedings` class. You may
+*Journal and magazine articles.* Use the `@article` class.
+
+#cite(<r:80>, form: "full")
+
+#cite(<hcr:83>, form: "full")
+
+*Proceedings paper published by a society, press or publisher.* Use the
+`@inproceedings` class. You may
 abbreviate the _booktitle_ field, but make sure that the conference edition is
-clear.\\[.2em]
-\bibentry{c:84}.\\[.2em]
-\bibentry{c:83}.
+clear.
 
-\paragraph{University technical report~\nocite{r:86}} Use the `@techreport`
-class.\\[.2em]
-\bibentry{r:86}.
+#cite(<c:84>, form: "full")
 
-\paragraph{Dissertation or thesis~\nocite{c:79}} Use the `@phdthesis` class.\\[.2em]
-\bibentry{c:79}.
+#cite(<c:83>, form: "full")
 
-\paragraph{Forthcoming publication~\nocite{c:21}} Use the `@misc` class with a
+*University technical report.* Use the `@techreport` class.
+
+#cite(<r:86>, form: "full")
+
+*Dissertation or thesis.* Use the `@phdthesis` class.
+
+#cite(<c:79>, form: "full")
+
+*Forthcoming publication.* Use the `@misc` class with a
 `note="Forthcoming"` annotation.
 ```tex
   @misc(key,
@@ -955,9 +972,9 @@ class.\\[.2em]
     note="Forthcoming",
   )
 ```
-\bibentry{c:21}.
+#cite(<c:21>, form: "full")
 
-\paragraph{ArXiv paper~\nocite{c:22}} Fetch the BibTeX entry from the "Export
+*ArXiv paper.* Fetch the BibTeX entry from the "Export
 Bibtex Citation" link in the arXiv website. Notice it uses the `@misc` class
 instead of the `@article` one, and that it includes the `eprint` and
 `archivePrefix` keys.
@@ -968,10 +985,11 @@ instead of the `@article` one, and that it includes the `eprint` and
     eprint="xxxx.yyyy",
     archivePrefix="arXiv",
   )
-  \bibentry{c:22}.
 ```
 
-\paragraph{Website or online resource~\nocite{c:23}} Use the `@misc` class. Add
+#cite(<c:22>, form: "full")
+
+*Website or online resource.* Use the `@misc` class. Add
 the url in the `howpublished` field and the date of access in the `note` field:
 
 ```tex
@@ -980,10 +998,10 @@ the url in the `howpublished` field and the date of access in the `note` field:
     howpublished="\url{http://...}",
     note="Accessed: YYYY-mm-dd",
   )
-  \bibentry{c:23}.
 ```
 
-\vspace{.2em}
+#cite(<c:23>, form: "full")
+
 For the most up to date version of the AAAI reference style, please consult the
 _AI Magazine_ Author Guidelines at
 #link("https://aaai.org/ojs/index.php/aimagazine/about/submissions#authorGuidelines").
@@ -1005,7 +1023,7 @@ instructions was supported by Schlumberger Palo Alto Research, AT&T Bell
 Laboratories, Morgan Kaufmann Publishers, The Live Oak Press, LLC, and AAAI
 Press. Bibliography style changes were added by Sunil Issar. `\pubnote` was
 added by J. Scott Penberthy. George Ferguson added support for printing the
-AAAI copyright slug. Additional changes to `aaai24.sty` and `aaai24.bst` have
+AAAI copyright slug. Additional changes to `aaai2026.sty` and `aaai2026.bst` have
 been made by Francisco Cruz and Marc Pujol-Gonzalez.
 
 Thank you for reading these instructions carefully. We look forward to

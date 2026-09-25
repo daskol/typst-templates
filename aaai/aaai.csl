@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <style xmlns="http://purl.org/net/xbiblio/csl" class="in-text" version="1.0" demote-non-dropping-particle="never" default-locale="en-US">
   <info>
-    <title>Association for Computational Linguistics - Conference Proceedings</title>
-    <title-short>ACL</title-short>
-    <id>http://www.zotero.org/styles/association-for-computational-linguistics</id>
-    <link href="http://www.zotero.org/styles/association-for-computational-linguistics" rel="self"/>
-    <link href="http://www.aclweb.org/" rel="documentation"/>
-    <!-- No stable link for style documentation; cf. acl.bst, a bibtex style file distributed in each conference. -->
-    <!-- According to acl.bst, the ACL Conference Proceedings Style was based on the `aaai-named` format by Oren Patashnik in 1985, and later modified for the Proceedings of the ACL by Peter F. Patel-Schneider in 1988, Stuart Shieber in 1991, and Fernando Pereira in 1992. -->
+    <title>Association for the Advancement of Artificial Intelligence</title>
+    <title-short>AAAI</title-short>
+    <id>https://github.com/daskol/typst-templates/blob/main/aaai/aaai.csl</id>
+    <link href="https://github.com/daskol/typst-templates/blob/main/aaai/aaai.csl" rel="self"/>
+    <link href="http://www.zotero.org/styles/association-for-computational-linguistics" rel="template"/>
+    <!-- Adapted from the ACL style to the AAAI 2026 author kit and aaai2026.bst. -->
     <author>
       <name>Hajime Senuma</name>
       <email>hajime.senuma@gmail.com</email>
@@ -15,15 +14,14 @@
     </author>
     <category citation-format="author-date"/>
     <category field="engineering"/>
-    <category field="linguistics"/>
-    <summary>CSL for papers in ACL-related conference proceedings, e.g., ACL-HLT, EACL, NAACL-HTL, and EMNLP. (But NOT for the journal "Computational Linguistics")</summary>
+    <summary>AAAI author-year citations and bibliography, adapted for Typst.</summary>
     <published>2013-11-20T21:00:00Z</published>
-    <updated>2023-05-18T02:56:54+00:00</updated>
+    <updated>2026-09-25T00:00:00+00:00</updated>
     <rights license="http://creativecommons.org/licenses/by-sa/3.0/">This work is licensed under a Creative Commons Attribution-ShareAlike 3.0 License</rights>
   </info>
   <macro name="author">
     <names variable="author">
-      <name form="long" and="text" delimiter=", "/>
+      <name name-as-sort-order="all" initialize-with=". " and="text" delimiter="; " delimiter-precedes-last="always"/>
       <substitute>
         <text value=""/>
       </substitute>
@@ -36,19 +34,19 @@
         <names variable="editor">
           <name form="short" and="text" delimiter=", "/>
         </names>
-        <text value="mis"/>
+        <text variable="title" form="short"/>
       </substitute>
     </names>
   </macro>
   <macro name="editor">
     <names variable="editor">
-      <name form="long" and="text" delimiter=", "/>
-      <label prefix=", " form="long"/>
+      <name name-as-sort-order="all" initialize-with=". " and="text" delimiter="; " delimiter-precedes-last="always"/>
+      <label prefix=", " form="short"/>
     </names>
   </macro>
   <macro name="author-or-editor">
     <names variable="author">
-      <name form="long" and="text" delimiter=", "/>
+      <name name-as-sort-order="all" initialize-with=". " and="text" delimiter="; " delimiter-precedes-last="always"/>
       <substitute>
         <text macro="editor"/>
         <text value=""/>
@@ -166,16 +164,16 @@
       </else>
     </choose>
   </macro>
-  <citation et-al-min="3" et-al-use-first="1" disambiguate-add-year-suffix="true">
+  <citation et-al-min="4" et-al-use-first="1" disambiguate-add-year-suffix="true">
     <!-- no sorting for citation -->
     <layout prefix="(" suffix=")" delimiter="; ">
-      <group delimiter=", ">
+      <group delimiter=" ">
         <text macro="author-short"/>
         <text macro="year-date"/>
       </group>
     </layout>
   </citation>
-  <bibliography et-al-min="20" et-al-use-first="19">
+  <bibliography>
     <sort>
       <key macro="author-or-editor"/>
       <key macro="year-date"/>
@@ -204,7 +202,7 @@
             <text variable="container-title" font-style="italic"/>
             <text variable="volume" prefix=", "/>
             <text variable="issue" prefix="(" suffix=")"/>
-            <text variable="page" prefix=":"/>
+            <text variable="page" prefix=": "/>
           </group>
         </if>
         <!-- corresponds to "proceedings", "manual", "book", and "periodical" in bibtex -->
@@ -214,8 +212,10 @@
             <text macro="volume-and-collection-title"/>
           </group>
           <group delimiter=", " prefix=" " suffix=".">
-            <text variable="publisher"/>
-            <text variable="publisher-place"/>
+            <group delimiter=": ">
+              <text variable="publisher-place"/>
+              <text variable="publisher"/>
+            </group>
             <text macro="edition"/>
           </group>
         </else-if>
@@ -231,14 +231,13 @@
               <text term="chapter"/>
               <number variable="chapter-number"/>
             </group>
-            <group delimiter=" ">
-              <label variable="page"/>
-              <text variable="page"/>
-            </group>
+            <text variable="page"/>
           </group>
           <group delimiter=", " prefix=" " suffix=".">
-            <text variable="publisher"/>
-            <text variable="publisher-place"/>
+            <group delimiter=": ">
+              <text variable="publisher-place"/>
+              <text variable="publisher"/>
+            </group>
             <text macro="edition"/>
           </group>
         </else-if>
@@ -257,17 +256,12 @@
             <text macro="editor"/>
             <text variable="container-title" font-style="italic"/>
             <text macro="volume-or-number"/>
-            <group delimiter=" ">
-              <label variable="page"/>
-              <text variable="page"/>
-            </group>
-            <choose>
-              <if variable="event-place publisher-place" match="any">
-                <text macro="event-or-publisher-place"/>
-              </if>
-            </choose>
+            <text variable="page"/>
           </group>
-          <text variable="publisher" prefix=" " suffix="."/>
+          <group delimiter=": " prefix=" " suffix=".">
+            <text macro="event-or-publisher-place"/>
+            <text variable="publisher"/>
+          </group>
         </else-if>
         <!-- corresponds to "techreport" in bibtex -->
         <else-if type="report">
@@ -291,6 +285,7 @@
         <!-- misc. -->
         <else>
           <text variable="title" prefix=" " suffix="."/>
+          <text variable="URL" prefix=" " suffix="."/>
         </else>
       </choose>
       <!-- note -->
