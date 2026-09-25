@@ -8,7 +8,7 @@ compatibility. Import `aaai` and the `appendix` show rule. Provide authors as a
 tuple of author records and an affiliation dictionary:
 
 ```typst
-#import "aaai.typ": aaai, appendix
+#import "@preview/triple-aaai.typ:0.8.0": aaai, appendix
 
 #show: aaai.with(
   title: [An Example Paper],
