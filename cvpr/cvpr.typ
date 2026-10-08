@@ -6,7 +6,8 @@
  */
 
 #import "/cvpr2022.typ": cvpr2022, conf-name, eg, etal, indent
-#import "/cvpr2025.typ": cvpr2025, conf-year
+#import "/cvpr2025.typ": cvpr2025
+#import "/cvpr2027.typ": cvpr2027, conf-year
 
 /**
  * cvpr - Template for Computer Vision and Pattern Recognition Conference
