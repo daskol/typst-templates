@@ -57,6 +57,33 @@ The template will initialize your package with a sample call to the `iclr`
 function in a show rule. If you want to change an existing project to use this
 template, you can add a show rule at the top of your file.
 
+## Font Configuration
+
+All styling rules in this package accept `aux.font-family` and `aux.font-size`
+dictionaries.
+
+```typst
+#show: iclr.with(
+  aux: (
+    font-family: (serif: ("Times New Roman", "Liberation Serif")),
+    font-size: (normal: 11pt, large: 13pt),
+  ),
+)
+```
+
+Each family accepts a nonempty font name or an ordered, nonempty array of font
+names. An override replaces the complete fallback list. Defaults contain one
+preferred font per category.
+
+| Family  | Default Font        | Applies to                         |
+| ------- | ------------------- | ---------------------------------- |
+| `serif` | Times New Roman     | Body and headings.                 |
+| `sans`  | Nimbus Sans         | Review ruler.                      |
+| `mono`  | CMU Typewriter Text | Raw text, including author emails. |
+
+Missing dictionaries or entries retain their defaults. Sizes must be Typst
+lengths (changing `normal` does not rescale the other entries).
+
 ## Issues
 
 - Common issue is related to Typst's inablity to produce colored annotation. In
