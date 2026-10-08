@@ -8,6 +8,7 @@
 #let ensure-font-family(value) = {
   assert(type(value) == dictionary,
     message: "aux.font-family must be a dictionary")
+
   let family = (:)
   for (kind, fonts) in value {
     let fonts = if type(fonts) == str { (fonts,) } else { fonts }
