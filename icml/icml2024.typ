@@ -4,6 +4,8 @@
  * International Conference on Machine Learning (ICML) 2024.
  */
 
+#import "/font-config.typ": font-config-merge
+
 // Metrical size of page body.
 #let body = (
   width: 6.75in,
@@ -25,7 +27,7 @@
 )
 
 // We prefer to use Times New Roman when ever it is possible.
-#let font-family = ("Times New Roman", "Nimbus Roman", "TeX Gyre Termes")
+#let font-family = ("Times New Roman",)
 
 #let font = (
   Large: font-defaults.Large + 0.4pt,  // Actual font size.
@@ -35,6 +37,8 @@
   normal: font-defaults.normalsize,
   script: font-defaults.scriptsize,
 )
+
+#let default-font-config = (family: (serif: font-family), size: font)
 
 #let format_author_names(authors) = {
   // Formats the author's names in a list with commas and a
@@ -48,11 +52,11 @@
   return author_names
 }
 
-#let make_figure_caption(it) = {
+#let make_figure_caption(it, fc: default-font-config) = {
   set align(center)
   block(width: 100%, {
     set align(left)
-    set text(size: font.small)
+    set text(size: fc.size.small)
     emph({
       it.supplement
       if it.numbering != none {
@@ -107,7 +111,7 @@
   Learning_, Vienna, Austria. PMLR 235, 2024. Copyright 2024 by the author(s).
 ]
 
-#let make-author(author, affl2idx) = {
+#let make-author(author, affl2idx, fc: default-font-config) = {
   // Sanitize author affilations.
   let affl = author.at("affl")
   if type(affl) == str {
@@ -122,7 +126,7 @@
   }
 
   // Render author and affilation references to content.
-  set text(size: font.normal, weight: "regular")
+  set text(size: fc.size.normal, weight: "regular")
   return strong(author.name) + super(typographic: false, [
     #indices.join(" ")
   ])
@@ -209,6 +213,15 @@
   aux: (:),
   body,
 ) = {
+  // A bare family name or fallback array is the legacy serif override.
+  let family = aux.at("font-family", default: (:))
+  if type(family) != dictionary {
+    family = (serif: family)
+  }
+  let fc = font-config-merge(default-font-config,
+    family: family,
+    size: aux.at("font-size", default: (:)))
+
   if header == none {
     header = title
   }
@@ -237,7 +250,7 @@
   // Prepare affilation and notice footnote.
   let contrib-info = make-affilations-and-notice(authors, affls)
   let make-contribs() = {
-    set text(size: font.small)
+    set text(size: fc.size.small)
     set par(leading: 0.5em, justify: true)
     line(length: 0.8in, stroke: (thickness: 0.05em))
     block(spacing: 0.45em, width: 100%, {  // Footnote line.
@@ -264,7 +277,7 @@
     acc.insert(affl, ix)
     return acc
   })
-  let make-authors() = authors.map(it => make-author(it, affl2idx))
+  let make-authors() = authors.map(it => make-author(it, affl2idx, fc: fc))
 
   set page(
     paper: "us-letter",
@@ -284,30 +297,25 @@
 
       // Render running title since the second page.
       set align(center)
-      set text(size: font.footnote, weight: "bold")
+      set text(size: fc.size.footnote, weight: "bold")
       block(spacing: 0pt, fill: none, {
         set block(spacing: 0em)
-        text(size: font.small, header)
+        text(size: fc.size.small, header)
         v(3.5pt) // By default, fancyhdr spaces 4pt.
         line(length: 100%, stroke: (thickness: 1pt))
       })
     },
-    footer-descent: 25pt - font.normal,
+    footer-descent: 25pt - fc.size.normal,
     footer: context {
       let i = counter(page).get().first()
-      align(center, text(size: font.normal, [#i]))
+      align(center, text(size: fc.size.normal, [#i]))
     }
   )
   set columns(gutter: 0.25in)
 
   // Main body font is Times (Type-1) font.
-  let font-family = if "font-family" in aux {
-    aux.font-family
-  } else {
-    font-family
-  }
   set par(justify: true, leading: 0.58em)
-  set text(font: font-family, size: font.normal)
+  set text(font: fc.family.serif, size: fc.size.normal)
 
   set heading(numbering: "1.")
   show heading: it => {
@@ -319,21 +327,21 @@
 
     set align(left)
     if it.level == 1 {
-      text(size: font.large, weight: "bold")[
+      text(size: fc.size.large, weight: "bold")[
         #v(0.25in, weak: true)
         #number
         *#it.body*
         #v(0.15in, weak: true)
       ]
     } else if it.level == 2 {
-      text(size: font.normal, weight: "bold")[
+      text(size: fc.size.normal, weight: "bold")[
         #v(0.2in, weak: true)
         #number
         *#it.body*
         #v(0.13in, weak: true)
       ]
     } else if it.level == 3 {
-      text(size: font.normal, weight: "regular")[
+      text(size: fc.size.normal, weight: "regular")[
         #v(0.18in, weak: true)
         #number
         #smallcaps(it.body)
@@ -344,8 +352,8 @@
 
   set figure.caption(separator: [.])
   show figure: set block(breakable: false)
-  show figure.caption.where(kind: table): it => make_figure_caption(it)
-  show figure.caption.where(kind: image): it => make_figure_caption(it)
+  show figure.caption.where(kind: table): make_figure_caption.with(fc: fc)
+  show figure.caption.where(kind: image): make_figure_caption.with(fc: fc)
   show figure.where(kind: image): it => make_figure(it)
   show figure.where(kind: table): it => make_figure(it, caption_above: true)
 
@@ -427,7 +435,7 @@
     {
       set align(center)
       set par(spacing: 18pt)
-      set text(size: font.Large, weight: "bold")
+      set text(size: fc.size.Large, weight: "bold")
       v(0.5pt)
       line(length: 100%)
       v(1pt)
@@ -450,12 +458,12 @@
   v(0.2in)
 
   {
-    set text(size: font.normal)
+    set text(size: fc.size.normal)
     set par(spacing: 11pt)
     // Render abstract.
     // ICML instruction tels that font size of `Abstract` must equal to 11 but
     // it does not like so.
-    align(center, text(size: font.large, [*Abstract*]))
+    align(center, text(size: fc.size.large, [*Abstract*]))
     pad(left: 2em, right: 2em, abstract)
     v(0.12in)
 
@@ -466,12 +474,12 @@
     })
 
     // Display body.
-    set text(size: font.normal)
+    set text(size: fc.size.normal)
     body
 
     // Display the bibliography, if any is given.
     if bibliography != none {
-      show std.bibliography: set text(size: font.normal)
+      show std.bibliography: set text(size: fc.size.normal)
       set std.bibliography(title: "References", style: "icml.csl")
       bibliography
     }
