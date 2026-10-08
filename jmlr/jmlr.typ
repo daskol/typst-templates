@@ -10,14 +10,13 @@
  * [4]: https://github.com/jmlrorg/jmlr-style-file
  */
 
+#import "/font-config.typ": font-config-merge
+
 #let std-bibliography = bibliography  // Due to argument shadowing.
 
-#let font-family = ("New Computer Modern", "Times New Roman",
-                    "Latin Modern Roman", "CMU Serif",
-                    "New Computer Modern", "Serif")
+#let font-family = ("New Computer Modern",)
 
-#let font-family-mono = ("Latin Modern Mono", "New Computer Modern Mono",
-                         "Mono")
+#let font-family-mono = ("Latin Modern Mono",)
 
 #let font-size = (
   tiny: 6pt,
@@ -32,30 +31,32 @@
   Huge: 25pt,
 )
 
+#let default-font-config = (family: (serif: font-family), size: font-size)
+
 /**
  * h, h1, h2, h3 - Style rules for headings.
  */
 
-#let h(body) = {
-  set text(size: font-size.normal, weight: "regular")
+#let h(body, fc: default-font-config) = {
+  set text(size: fc.size.normal, weight: "regular")
   set block(above: 11.9pt, below: 11.7pt)
   body
 }
 
-#let h1(body) = {
-  set text(size: font-size.large, weight: "bold")
+#let h1(body, fc: default-font-config) = {
+  set text(size: fc.size.large, weight: "bold")
   set block(above: 13pt, below: 13pt)
   body
 }
 
-#let h2(body) = {
-  set text(size: font-size.normal, weight: "bold")
+#let h2(body, fc: default-font-config) = {
+  set text(size: fc.size.normal, weight: "bold")
   set block(above: 11.9pt, below: 11.8pt)
   body
 }
 
-#let h3(body) = {
-  set text(size: font-size.normal, weight: "regular")
+#let h3(body, fc: default-font-config) = {
+  set text(size: fc.size.normal, weight: "regular")
   set block(above: 11.9pt, below: 11.7pt)
   body
 }
@@ -74,7 +75,7 @@
   }
 }
 
-#let make-author(author, affls) = {
+#let make-author(author, affls, fc: default-font-config) = {
   let author-affls = if type(author.affl) == array {
     author.affl
   } else {
@@ -107,14 +108,14 @@
 
   return block(spacing: 0em, {
     set par(spacing: 5.5pt)
-    text(size: font-size.normal)[*#author.name*]
+    text(size: fc.size.normal)[*#author.name*]
     set par(justify: true, leading: 5pt, first-line-indent: 0pt)
-    text(size: font-size.small)[#lines.join([\ ])]
+    text(size: fc.size.small)[#lines.join([\ ])]
   })
 }
 
-#let make-email(author) = {
-  let label = text(size: font-size.small, smallcaps(author.email))
+#let make-email(author, fc: default-font-config) = {
+  let label = text(size: fc.size.small, smallcaps(author.email))
   return block(spacing: 0em, {
     // Compensate difference between name and email font sizes (10pt vs 9pt).
     v(1pt)
@@ -122,9 +123,9 @@
   })
 }
 
-#let make-authors(authors, affls) = {
+#let make-authors(authors, affls, fc: default-font-config) = {
   let cells = authors
-    .map(it => (make-author(it, affls), make-email(it)))
+    .map(it => (make-author(it, affls, fc: fc), make-email(it, fc: fc)))
     .join()
   return grid(
     columns: (6fr, 4fr),
@@ -133,31 +134,32 @@
     ..cells)
 }
 
-#let make-title(title, authors, affls, abstract, keywords, editors) = {
+#let make-title(title, authors, affls, abstract, keywords, editors,
+                fc: default-font-config) = {
   // 1. Title.
   v(31pt - (0.25in + 4.5pt))
   block(width: 100%, spacing: 0em, {
     set align(center)
     set block(spacing: 0em)
-    text(size: 14pt, weight: "bold", title)
+    text(size: fc.size.Large, weight: "bold", title)
   })
 
   // 2. Authors.
   v(23.6pt, weak: true)
-  make-authors(authors, affls)
+  make-authors(authors, affls, fc: fc)
   // 3. Editors if exist.
   if editors != none and editors.len() > 0 {
     v(28.6pt, weak: true)
-    text(size: font-size.small, [*Editor:* ] + editors.join([, ]))
+    text(size: fc.size.small, [*Editor:* ] + editors.join([, ]))
   }
 
   // Render abstract.
   v(28.8pt, weak: true)
   block(spacing: 0em, width: 100%, {
-    set text(size: font-size.small)
+    set text(size: fc.size.small)
     set par(leading: 0.51em)  // Original 0.55em (or 0.45em?).
     align(center,
-      text(size: font-size.large, weight: "bold", [*Abstract*]))
+      text(size: fc.size.large, weight: "bold", [*Abstract*]))
     v(8.2pt, weak: true)
     pad(left: 20pt, right: 20pt, abstract)
   })
@@ -167,7 +169,7 @@
     keywords = keywords.join([, ])
     v(6.5pt, weak: true)  // ~1ex
     block(spacing: 0em, width: 100%, {
-      set text(size: 10pt)
+      set text(size: fc.size.small)
       set par(leading: 0.51em)  // Original 0.55em (or 0.45em?).
       pad(left: 20pt, right: 20pt)[*Keywords:* #keywords]
     })
@@ -194,6 +196,7 @@
  *   pubdata: Dictionary with auxiliary information about publication. It
  *   contains editor name(s), paper id, volume, and
  *   submission/review/publishing dates.
+ *   aux: Font overrides via font-family and font-size dictionaries.
  */
 #let jmlr(
   title: [],
@@ -206,8 +209,13 @@
   bibliography: none,
   appendix: none,
   pubdata: (:),
+  aux: (:),
   body,
 ) = {
+  let fc = font-config-merge(default-font-config,
+    family: aux.at("font-family", default: (:)),
+    size: aux.at("font-size", default: (:)))
+
   // If there is no short title then use title as a short title.
   if short-title == none {
     short-title = title
@@ -267,7 +275,7 @@
         let revised = format-date(pubdata.revised-at, "Revised")
         let published = format-date(pubdata.published-at, "Published")
 
-        set text(size: font-size.script)
+        set text(size: fc.size.script)
         grid(
           columns: (1fr, 1fr),
           align: (left, right),
@@ -275,11 +283,11 @@
           [#submitted\; #revised\; #published])
       } else if calc.rem(pageno, 2) == 0 {
         set align(center)
-        set text(size: font-size.small)
+        set text(size: fc.size.small)
         smallcaps[#join-authors(last-names)]
       } else {
         set align(center)
-        set text(size: font-size.small)
+        set text(size: fc.size.small)
         smallcaps(short-title)
       }
     },
@@ -287,7 +295,7 @@
     footer: context {
       let pageno = counter(page).at(here()).first()
       if pageno == 1 {
-        set text(size: font-size.script)
+        set text(size: fc.size.script)
         set par(first-line-indent: 0pt, justify: true, spacing: 9pt)
 
         // NOTE If this is preprint then we use metadata `date` for copyright
@@ -315,13 +323,13 @@
         }
       } else {
         v(-1pt)  // Compensatation for what?
-        align(center, text(size: font-size.small, [#pageno]))
+        align(center, text(size: fc.size.small, [#pageno]))
       }
     },
   )
 
   // Basic paragraph and text settings.
-  set text(font: font-family, size: font-size.normal)
+  set text(font: fc.family.serif, size: fc.size.normal)
   set par(
     leading: 0.55em, first-line-indent: 17pt, justify: true,
     spacing: 0.55em)
@@ -329,7 +337,7 @@
   // Configure heading appearence and numbering.
   set heading(numbering: "1.1")
   show heading.where(level: 1): it => {
-    show: h1
+    show: h1.with(fc: fc)
     // Render section with such names without numbering as level 3 heading.
     let unnumbered = (
       [Acknowledgments],
@@ -337,7 +345,7 @@
     )
     if unnumbered.any(name => name == it.body) {
       set align(left)
-      set text(size: font-size.large, weight: "bold")
+      set text(size: fc.size.large, weight: "bold")
       set par(first-line-indent: 0pt)
       v(0.3in, weak: true)
       block(spacing: 0pt, it.body)
@@ -346,8 +354,8 @@
       it
     }
   }
-  show heading.where(level: 2): h2
-  show heading.where(level: 3): h3
+  show heading.where(level: 2): h2.with(fc: fc)
+  show heading.where(level: 3): h3.with(fc: fc)
 
   set enum(indent: 14pt, spacing: 15pt)
   show enum: set block(spacing: 18pt)
@@ -369,14 +377,14 @@
 
   set figure(gap: 14pt)
   show figure.caption: it => {
-    set text(size: font-size.small)
+    set text(size: fc.size.small)
     set par(leading: 6.67pt, first-line-indent: 0pt)
-    let numb = locate(loc => numbering(it.numbering, ..it.counter.at(loc)))
+    let numb = context it.counter.display(it.numbering)
     let index = it.supplement + [~] + numb + it.separator
     grid(columns: 2, column-gutter: 5pt, align: left, index, it.body)
   }
 
-  make-title(title, authors, affls, abstract, keywords, editors)
+  make-title(title, authors, affls, abstract, keywords, editors, fc: fc)
   parbreak()
   body
 
@@ -385,7 +393,7 @@
     show heading: it => {
       let rules = (h1, h2, h3)
       let rule = rules.at(it.level - 1, default: h)
-      show: rule
+      show: rule.with(fc: fc)
       let numb = context {
         let counter = counter(heading)
         return numbering(it.numbering, ..counter.at(here()))
@@ -400,7 +408,7 @@
 
   if bibliography != none {
     show heading: it => {
-      show: h1
+      show: h1.with(fc: fc)
       block(above: 0.32in, it.body)
     }
     // TODO(@daskol): Closest bibliography style is "bristol-university-press".

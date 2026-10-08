@@ -37,6 +37,7 @@ This template exports the `jmlr` function with the following named arguments.
   The function also accepts a single, positional argument for the body of the
   paper.
 - `appendix`: Content to append after bibliography section.
+- `aux`: Font family and size overrides (see Font configuration below).
 - `pubdata`: Dictionary with auxiliary information about publication. It
   contains editor name(s), paper id, volume, and submission/review/publishing
   dates.
@@ -64,6 +65,31 @@ template, you can add a show rule at the top of your file.
   ),
 )
 ```
+
+## Font Configuration
+
+All styling rules in this package accept `aux.font-family` and `aux.font-size`
+dictionaries.
+
+```typst
+#show: jmlr.with(
+  aux: (
+    font-family: (serif: ("Times New Roman", "Liberation Serif")),
+    font-size: (normal: 11pt, large: 13pt),
+  ),
+)
+```
+
+Each family accepts a nonempty font name or an ordered, nonempty array of font
+names. An override replaces the complete fallback list. Defaults contain one
+preferred font per category.
+
+| Family  | Default Font        | Applies to               |
+| ------- | ------------------- | ------------------------ |
+| `serif` | New Computer Modern | Body and inherited text. |
+
+Missing dictionaries or entries retain their defaults. Sizes must be Typst
+lengths (changing `normal` does not rescale the other entries).
 
 ## Issues
 
