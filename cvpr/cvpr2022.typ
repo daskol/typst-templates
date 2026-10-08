@@ -9,6 +9,8 @@
  * [3]: https://github.com/daskol/typst-templates/issues/8
  */
 
+#import "/font-config.typ": font-config-merge
+
 #let std-bibliography = bibliography  // Due to argument shadowing.
 
 #let conf-name = [CVPR]
@@ -28,16 +30,13 @@
 
 #let etal = emph[et~al]
 
-#let font-family = ("Times New Roman", "CMU Serif", "Latin Modern Roman",
-                    "New Computer Modern", "Libertinus Serif")
+#let font-family = ("Times New Roman",)
 
-#let font-family-sans = ("Arial", "TeX Gyre Heros", "New Computer Modern Sans",
-                         "CMU Sans Serif", "DejaVu Sans")
+#let font-family-sans = ("Arial",)
 
-#let font-family-mono = ("CMU Typewriter Text", "Latin Modern Mono",
-                         "New Computer Modern Mono", "DejaVu Sans Mono")
+#let font-family-mono = ("CMU Typewriter Text",)
 
-#let font-family-link = ("Courier New", "Nimbus Mono PS") + font-family-mono
+#let font-family-link = ("Courier New",)
 
 #let font-size = (
   normal: 10pt,
@@ -52,6 +51,12 @@
   Huge: 25pt,
 )
 
+#let default-font-config = (
+  family: (serif: font-family, sans: font-family-sans,
+           mono: font-family-mono, link: font-family-link),
+  size: font-size + (subsection: 11pt),
+)
+
 #let color = (
   ref: rgb(100%, 0%, 0%),  // Red.
   link: rgb(100%, 0%, 100%),  // Magenta.
@@ -64,12 +69,12 @@
 
 #let review-color = rgb(50%, 50%, 100%)
 
-#let lineno(accepted, aux, body) = {
+#let lineno(accepted, aux, body, fc: default-font-config) = {
   set par.line(
     numbering: if aux.at("lineno", default: accepted == false) {
       n => text(
-        size: font-size.footnote,
-        font: font-family-sans,
+        size: fc.size.footnote,
+        font: fc.family.sans,
         weight: "bold",
         fill: review-color,
       )[#lineno-fmt(n)]
@@ -79,12 +84,13 @@
   body
 }
 
-#let corner-text(id, width: auto, fill: review-color) = {
+#let corner-text(id, width: auto, fill: review-color,
+                 fc: default-font-config) = {
   block(width: width, align(center + horizon, {
     set par(leading: 4.9pt)
-    set text(font: font-family-sans, fill: fill)
-    text(size: font-size.small, [CVPR\ ])
-    text(size: font-size.normal, [\##id])
+    set text(font: fc.family.sans, fill: fill)
+    text(size: fc.size.small, [CVPR\ ])
+    text(size: fc.size.normal, [\##id])
   }))
 }
 
@@ -92,28 +98,26 @@
  * h_, h1, h2, h3 - Style rules for headings.
  */
 
-#let h_(body) = {
-  set text(size: font-size.normal, weight: "regular")
+#let h_(body, fc: default-font-config) = {
+  set text(size: fc.size.normal, weight: "regular")
   set block(above: 11.9pt, below: 11.7pt)
   body
 }
 
-#let h1(body) = {
-  set text(size: font-size.large, weight: "bold")
+#let h1(body, fc: default-font-config) = {
+  set text(size: fc.size.large, weight: "bold")
   set block(above: 17pt, below: 12.8pt)
   body
 }
 
-#let h2(body) = {
-  set text(size: font-size.normal, weight: "bold")
-  set text(size: 11pt, weight: "bold")
+#let h2(body, fc: default-font-config) = {
+  set text(size: fc.size.subsection, weight: "bold")
   set block(above: 11.4pt, below: 11.5pt)
   body
 }
 
-#let h3(body) = {
-  set text(size: font-size.normal, weight: "bold")
-  set text(size: 10pt, weight: "bold")
+#let h3(body, fc: default-font-config) = {
+  set text(size: fc.size.normal, weight: "bold")
   set block(above: 21.7pt, below: 12.8pt)
   body
 }
@@ -143,7 +147,7 @@
   lines.join([\ ])
 }
 
-#let format-author(author, affls) = box(baseline: 100%, {
+#let format-author(author, affls, fc: default-font-config) = box(baseline: 100%, {
   author.name
   if "affl" in author {
     [\ ]
@@ -153,21 +157,21 @@
   }
   if "email" in author {
     show raw: set text(
-      font: font-family-link,
-      size: font-size.small,
+      font: fc.family.link,
+      size: fc.size.small,
       fill: black)
     v(9pt, weak: true)
     link(author.email, raw(author.email))
   }
 })
 
-#let make-title(title, authors, affls, id, accepted) = {
+#let make-title(title, authors, affls, id, accepted, fc: default-font-config) = {
   set par.line(numbering: none)
 
   // 1. Title.
   block(width: 100%, spacing: 0pt, {
     set align(center)
-    set text(size: font-size.Large, weight: "bold")
+    set text(size: fc.size.Large, weight: "bold")
     v(0.5in - 0.6pt)  // Visually perfect.
     title
   })
@@ -176,14 +180,14 @@
   // 2. Authors and affilations.
   block(width: 100%, spacing: 0pt, {
     set align(center + top)
-    set text(size: font-size.large)
+    set text(size: fc.size.large)
     if accepted != none and not accepted{
       [Anonymous CVPR submission\ ]
       [\ ]
       [Paper ID #id]
     } else {
       pad(left: 10pt, right: 12pt, {
-        authors.map(it => format-author(it, affls)).join(h(0.5in))
+        authors.map(it => format-author(it, affls, fc: fc)).join(h(0.5in))
       })
     }
   })
@@ -222,6 +226,10 @@
   aux: (:),
   body,
 ) = {
+  let fc = font-config-merge(default-font-config,
+    family: aux.at("font-family", default: (:)),
+    size: aux.at("font-size", default: (:)))
+
   // Deconstruct authors for convenience.
   let (authors, affls) = if authors.len() == 2 {
     authors
@@ -249,15 +257,17 @@
     columns: 2,
     background: if accepted != none and not accepted {
       // Decorate top corners.
-      place(top + left, dx: -14.6pt, dy: 15.5pt, corner-text(id, width: 1in))
-      place(top + right, dx: 5pt, dy: 15.5pt, corner-text(id, width: 1in))
+      place(top + left, dx: -14.6pt, dy: 15.5pt,
+        corner-text(id, width: 1in, fc: fc))
+      place(top + right, dx: 5pt, dy: 15.5pt,
+        corner-text(id, width: 1in, fc: fc))
     },
     header-ascent: 27.9pt,
     header: if accepted != none and not accepted {
       set align(center)
       set text(
-        font: font-family-sans,
-        size: font-size.footnote,
+        font: fc.family.sans,
+        size: fc.size.footnote,
         fill: review-color)
       let year = aux.at("conf-year", default: conf-year)
       strong[#conf-name #year Submission \##id. #notice]
@@ -265,24 +275,24 @@
     footer-descent: 23.4pt, // Visually perfect.
     footer: if accepted != none and not accepted {
       let ix = context counter(page).get().first()
-      align(center, text(size: font-size.normal, [#ix]))
+      align(center, text(size: fc.size.normal, [#ix]))
     },
   )
   set columns(gutter: 0.3125in)
 
-  set text(font: font-family, size: font-size.normal)
+  set text(font: fc.family.serif, size: fc.size.normal)
   set par(
     first-line-indent: 0.166666in, leading: 0.532em, spacing:  0.54em,
     justify: true)
 
-  show: lineno.with(accepted, aux)
-  show raw: set text(font: font-family-mono, size: font-size.normal)
+  show: lineno.with(accepted, aux, fc: fc)
+  show raw: set text(font: fc.family.mono, size: fc.size.normal)
 
   // Configure heading appearence and numbering.
   set heading(numbering: "1.1.")
-  show heading.where(level: 1): h1
-  show heading.where(level: 2): h2
-  show heading.where(level: 3): h3
+  show heading.where(level: 1): h1.with(fc: fc)
+  show heading.where(level: 2): h2.with(fc: fc)
+  show heading.where(level: 3): h3.with(fc: fc)
 
   set math.equation(numbering: "(1)", supplement: [Eq.])
   show math.equation: set block(spacing: 9pt)
@@ -296,7 +306,7 @@
   }
 
   // Configure footnote (almost default).
-  show footnote.entry: set text(size: font-size.footnote)
+  show footnote.entry: set text(size: fc.size.footnote)
   set footnote.entry(
     separator: line(length: 1.3in, stroke: 0.35pt),
     clearance: 6.65pt,
@@ -311,14 +321,14 @@
   show figure: set par.line(numbering: none)
   set figure(gap: 12pt)
   set figure.caption(separator: [.])
-  show figure.caption: set text(size: font-size.small)
+  show figure.caption: set text(size: fc.size.small)
   show figure.caption: set align(center)
   show figure.caption: it => block({
     align(left, it)
   })
 
   // Links and references.
-  show link: set text(font: font-family-link, fill: color.link)
+  show link: set text(font: fc.family.link, fill: color.link)
   show ref: it => {
     let el = it.element
     if el == none {
@@ -334,13 +344,13 @@
     }
 
     if el.func() == math.equation {
-      show link: set text(font: font-family, fill: color.ref)
+      show link: set text(font: fc.family.serif, fill: color.ref)
       let cnt = counter(math.equation)
       let ix = numbering("1", ..cnt.at(el.location()))
       let href = link(el.location(), ix)
       [#supplement~(#href)]
     } else if el.func() == heading {
-      show link: set text(font: font-family, fill: color.ref)
+      show link: set text(font: fc.family.serif, fill: color.ref)
       let cnt = counter(math.equation)
       let ix = numbering("1.1", ..cnt.at(el.location()))  // TODO: Appendices?
       let href = link(el.location(), ix)
@@ -348,13 +358,13 @@
     } else if el.func() == figure {
       let fig = el
       if fig.kind == image {
-        show link: set text(font: font-family, fill: color.ref)
+        show link: set text(font: fc.family.serif, fill: color.ref)
         let cnt = counter(figure.where(kind: image))
         let ix = numbering(el.numbering, ..cnt.at(el.location()))
         let href = link(el.location(), ix)
         [#supplement~#href]
       } else if fig.kind == table {
-        show link: set text(font: font-family, fill: color.ref)
+        show link: set text(font: fc.family.serif, fill: color.ref)
         let cnt = counter(figure.where(kind: table))
         let ix = numbering(el.numbering, ..cnt.at(el.location()))
         let href = link(el.location(), ix)
@@ -370,7 +380,7 @@
     // Render abstract.
     block(width: 100%, {
       set par(first-line-indent: 0pt)
-      align(center, text(size: font-size.large)[*Abstract*])
+      align(center, text(size: fc.size.large)[*Abstract*])
       v(17.6pt, weak: true)
       emph[#abstract\ \ ]
     })
@@ -379,7 +389,7 @@
 
     if bibliography != none {
       set std-bibliography(title: [References], style: "ieee.csl")
-      show std-bibliography: set text(size: font-size.small)
+      show std-bibliography: set text(size: fc.size.small)
       bibliography
     }
   }
@@ -392,7 +402,7 @@
     top + center,
     float: true,
     scope: "parent",
-    make-title(title, authors, affls, id, accepted),
+    make-title(title, authors, affls, id, accepted, fc: fc),
   )
   render-main()
 

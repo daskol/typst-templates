@@ -24,6 +24,8 @@ jobs:
           cache: 'pip'
           cache-dependency-path: '.github/workflows/on-push.yml'
           python-version: '3.13'
+      - name: Check shared font helpers
+        run: python3 .github/scripts/sync-font-config.py --check
       - uses: pre-commit/action@2c7b3805fd2a0fd8c1884dcaebf91fc102a13ecd  # v3.0.1
 
   render:
