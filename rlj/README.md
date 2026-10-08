@@ -56,6 +56,31 @@ template, you can add a show rule at the top of your file.
 )
 ```
 
+## Font Configuration
+
+All styling rules in this package accept `aux.font-family` and `aux.font-size`
+dictionaries.
+
+```typst
+#show: rlj.with(
+  aux: (
+    font-family: (serif: ("Times New Roman", "Liberation Serif")),
+    font-size: (normal: 11pt, large: 13pt),
+  ),
+)
+```
+
+Each family accepts a nonempty font name or an ordered, nonempty array of font
+names. An override replaces the complete fallback list. Defaults contain one
+preferred font per category.
+
+| Family  | Default Font    | Applies to               |
+| ------- | --------------- | ------------------------ |
+| `serif` | Times New Roman | Body and inherited text. |
+
+Missing dictionaries or entries retain their defaults. Sizes must be Typst
+lengths (changing `normal` does not rescale the other entries).
+
 ## Issues
 
 1. Vertical space between "Abstract" and abstract is `10pt - 1.5ex` but some

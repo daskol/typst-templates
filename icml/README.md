@@ -33,11 +33,38 @@ following named arguments.
   uploaded to arXiv).
 - `aux`: Provide knobs for template adjusting. Specifically, it allows to
   customize public notice with `public-notice` attribute or to override default
-  serif with `font-family`.
+  fonts with `font-family` and `font-size`.
 
 The template will initialize your package with a sample call to the `icml2025`
 function in a show rule. If you want to change an existing project to use this
 template, you can add a show rule at the top of your file.
+
+## Font Configuration
+
+All styling rules in this package accept `aux.font-family` and `aux.font-size`
+dictionaries.
+
+```typst
+#show: icml2025.with(
+  aux: (
+    font-family: (serif: ("Times New Roman", "Liberation Serif")),
+    font-size: (normal: 11pt, large: 13pt),
+  ),
+)
+```
+
+Each family accepts a nonempty font name or an ordered, nonempty array of font
+names. An override replaces the complete fallback list. Defaults contain one
+preferred font per category.
+
+| Family  | Default Font    | Applies to               |
+| ------- | --------------- | ------------------------ |
+| `serif` | Times New Roman | Body and inherited text. |
+
+Missing dictionaries or entries retain their defaults. Sizes must be Typst
+lengths (changing `normal` does not rescale the other entries). For
+compatibility, a bare `aux.font-family` string or fallback array still sets
+the serif family. Prefer the dictionary form shown above.
 
 ## Issues
 

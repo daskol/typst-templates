@@ -2,18 +2,17 @@
  * iclr2025.typ
  */
 
+#import "/font-config.typ": ensure-font-family, font-config-merge
+
 #let std-bibliography = bibliography  // Due to argument shadowing.
 
-#let font-family = ("Times New Roman", "CMU Serif", "Latin Modern Roman",
-                    "New Computer Modern")
+#let font-family = ("Times New Roman",)
 
-#let font-family-sans = ("Nimbus Sans", "CMU Sans Serif", "Latin Modern Sans",
-                         "New Computer Modern Sans")
+#let font-family-sans = ("Nimbus Sans",)
 
-#let font-family-mono = ("CMU Typewriter Text", "Latin Modern Mono",
-                         "New Computer Modern Mono")
+#let font-family-mono = ("CMU Typewriter Text",)
 
-#let font-family-link = ("Courier New", "Nimbus Mono PS") + font-family-mono
+#let font-family-link = ("Courier New",)
 
 #let font-size = (
   normal: 10pt,
@@ -26,6 +25,11 @@
   LARGE: 17pt,
   huge: 20pt,
   Huge: 25pt,
+)
+
+#let default-font-config = (
+  family: (serif: font-family, sans: font-family-sans, mono: font-family-mono),
+  size: font-size + (title: 17.28pt),
 )
 
 /*
@@ -57,13 +61,15 @@
 
 #let ruler-color = rgb(70%, 70%, 70%)
 
-#let ruler-style = body => {
-  set text(size: 8pt, font: font-family-sans, weight: "bold", fill: ruler-color)
+#let ruler-style(body, fc: default-font-config) = {
+  set text(size: fc.size.footnote, font: fc.family.sans,
+    weight: "bold", fill: ruler-color)
   set par(leading: 6.22pt)
   body
 }
 
-#let xruler(side, dx, dy, width, height, offset, num-lines) = {
+#let xruler(side, dx, dy, width, height, offset, num-lines,
+            fc: default-font-config) = {
   let alignment = if side == left {
     right
   } else {
@@ -77,7 +83,7 @@
   })
 
   let ruler = block(width: width, height: height, spacing: 0pt, {
-    show: ruler-style
+    show: ruler-style.with(fc: fc)
     set align(alignment)
     numbs.join([\ ])
   })
@@ -91,6 +97,7 @@
   width: auto,
   height: 8.875in,
   gap: 30pt,
+  fc: default-font-config,
 ) = context {
   let margin = if margin == auto {
     (top: 1in - 0.5pt + 9.5pt, left: 1.75in - 1em, right: 1.75in)  // ICLR 2025 defaults.
@@ -108,16 +115,16 @@
   let dx = 0pt
   let dy = margin.top
   let offset = lineno.get().at(0)
-  xruler(left, dx, dy, width.left, height, offset, num-lines)
+  xruler(left, dx, dy, width.left, height, offset, num-lines, fc: fc)
 }
 
 #let ruler = make-ruler()  // Default CVPR 2022 ruler.
 
-#let make-title(title) = {
+#let make-title(title, fc: default-font-config) = {
   align(left, {
     v(0.5pt)
     v(0.3pt)
-    set text(size: 17.28pt)
+    set text(size: fc.size.title)
     set par(leading: 8.4pt)
     smallcaps(title)
   })
@@ -159,17 +166,17 @@
   v(27.95pt)
 }
 
-#let make-abstract(abstract) = {
+#let make-abstract(abstract, fc: default-font-config) = {
   set block(spacing: 0pt)
   v(0.075in, weak: true)
   block(width: 100%, {
     set align(center)
-    set text(size: font-size.large)
+    set text(size: fc.size.large)
     smallcaps[Abstract]
   })
   v(16.4pt)
   pad(left: 0.5in, right: 0.5in, {
-    set text(size: 10pt)
+    set text(size: fc.size.normal)
     set par(leading: 4.35pt)
     abstract
   })
@@ -228,7 +235,15 @@
 ) = {
   // Override defaults if needed.
   let header-title = aux.at("header-title", default: default-header-title)
-  let font_ = aux.at("font", default: (family: font-family))
+  let fc = font-config-merge(default-font-config,
+    family: aux.at("font-family", default: (:)),
+    size: aux.at("font-size", default: (:)))
+
+  // The legacy override applies only to headings. An explicit new serif wins.
+  let heading-family = fc.family.serif
+  if "font" in aux and "serif" not in family {
+    heading-family = ensure-font-family((serif: aux.font.family)).serif
+  }
 
   let meta-authors = if accepted == none or accepted {
     authors.map(it => it.names.map(content-to-string)).join()
@@ -245,12 +260,12 @@
     paper: "us-letter",
     margin: (left: 1.5in, right: 1.5in, top: 1in + 9.5pt, bottom: 1in - 9.5pt),
     background: if accepted != none and not accepted {
-      ruler  // Rullers on sides.
+      make-ruler(fc: fc)
     },
     header-ascent: 32.9pt + 9.5pt,
     header: {
       set block(spacing: 3.7pt)
-      set text(size: font-size.normal)
+      set text(size: fc.size.normal)
       set align(left)
       let header-text = if accepted == none {
         []
@@ -265,19 +280,19 @@
     footer-descent: 23.5pt, // Visually perfect.
     footer: context {
       let ix = counter(page).at(here()).first()
-      return align(center, text(size: font-size.normal, [#ix]))
+      return align(center, text(size: fc.size.normal, [#ix]))
     },
   )
 
   // Paragraph spacing is \topsep + \parskip + \partopsep.
-  set text(font: font-family, size: font-size.normal)
+  set text(font: fc.family.serif, size: fc.size.normal)
   set par(justify: true, leading: 4.3pt, spacing: 10pt)
 
-  show raw: set text(font: font-family-mono, size: font-size.normal)
+  show raw: set text(font: fc.family.mono, size: fc.size.normal)
 
   // Configure heading appearence and numbering.
   set heading(numbering: "1.1")
-  show heading: set text(font: font_.family, weight: "regular")
+  show heading: set text(font: heading-family, weight: "regular")
   show heading: it => {
     // Create the heading numbering.
     let number = if it.numbering != none {
@@ -301,28 +316,28 @@
     set align(left)
     let gap = h(1em, weak: true)
     if level == 1 {
-      text(size: font-size.large, context {
+      text(size: fc.size.large, context {
         let ex = measure(smallcaps[x]).height
         v(2 * ex + 5pt, weak: true)
         smallcaps[#prefix#gap#it.body]
         v(1.5 * ex + 5pt, weak: true)  // 1.5ex + \topsep + \partopsep
       })
     } else if level == 2 {
-      text(size: font-size.normal, context {
+      text(size: fc.size.normal, context {
         let ex = measure(smallcaps[x]).height
         v(1.8 * ex + 7pt, weak: true)
         smallcaps[#prefix#gap#it.body]
         v(0.8 * ex + 8.5pt, weak: true)
       })
     } else if level == 3 {
-      text(size: font-size.normal, context {
+      text(size: fc.size.normal, context {
         let ex = measure(smallcaps[x]).height
         v(1.5 * ex + 7pt, weak: true)
         smallcaps[#prefix#gap#it.body]
         v(0.5 * ex + 9.5pt, weak: true)
       })
     } else if level == 4 {
-      text(size: font-size.normal, {
+      text(size: fc.size.normal, {
         v(5pt, weak: true)  // Visually perfect.
         smallcaps[#prefix#gap#it.body]
       })
@@ -330,7 +345,7 @@
   }
 
   // Configure footnote (almost default).
-  show footnote.entry: set text(size: font-size.small)
+  show footnote.entry: set text(size: fc.size.small)
   set footnote.entry(
     separator: line(length: 2in, stroke: 0.35pt),
     clearance: 6.65pt,
@@ -407,9 +422,9 @@
     }
   }
 
-  make-title(title)
+  make-title(title, fc: fc)
   make-authors(authors, accepted)
-  make-abstract(abstract)
+  make-abstract(abstract, fc: fc)
 
   body
 
