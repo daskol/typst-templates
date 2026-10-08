@@ -24,6 +24,8 @@
  *   accepted: Valid values are `none`, `false`, and `true`. Missing value
  *   (`none`) is designed to prepare arxiv publication. Default is `false`.
  *   id: Submission identifier.
+ *   aux: Auxiliary options. The `lineno` boolean key overrides line numbering
+ *   independently of `accepted`.
  */
 #let cvpr2025(
   title: [],
@@ -35,6 +37,7 @@
   appendix: none,
   accepted: false,
   id: none,
+  aux: (:),
   body,
 ) = {
   show: cvpr2022.with(
@@ -47,7 +50,7 @@
     appendix: appendix,
     accepted: accepted,
     id: id,
-    aux: (conf-year: [2025], lineno: true),
+    aux: aux + (conf-year: [2025]),
   )
   body
 }

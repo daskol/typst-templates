@@ -35,10 +35,10 @@ with the following named arguments.
   the argument is set to `none` then preprint version is produced (can be
   uploaded to arXiv).
 - `id`: Identifier of a submission.
-- `aux`: Advanced options accepted by the generic `cvpr` styling rule. Set
-  `lineno` to `true` to use line-aware numbering instead of the fixed CVPR 2022
-  ruler. The `cvpr2025` and `cvpr2027` rules enable this automatically for
-  review copies.
+- `aux`: Advanced options accepted by all styling rules. The `lineno` boolean
+  key overrides line numbering independently of `accepted`. The `conf-year`
+  key customizes the conference year for the generic `cvpr` and `cvpr2022`
+  styling rules.
 
 The template will initialize your package with a sample call to the `cvpr2027`
 function in a show rule. If you want to change an existing project to use this
@@ -80,10 +80,6 @@ template, you can add a show rule at the top of your file.
 - CVPR requires an IEEE-like bibliography style but does not follow
   its guidelines closely. Since writing CSL-style files is tedious task, we
   adopt close enough bibliography style from Zotero.
-
-- The legacy `cvpr2022` style retains its original column container for layout
-  compatibility, so its footnotes use the full page width. The `cvpr2025` and
-  `cvpr2027` styles use page-level columns instead.
 
 ## References
 

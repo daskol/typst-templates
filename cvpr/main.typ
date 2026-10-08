@@ -70,22 +70,17 @@ reviewed is that there is no provision for supervised revisions of manuscripts.
 The reviewing process cannot determine the suitability of the paper for
 presentation in eight pages if it is reviewed in eleven.
 
-== The ruler
+== Line numbering
 
-The #LaTeX style defines a printed ruler which should be present in the version
-submitted for review. The ruler is provided in order that reviewers may comment
-on particular lines in the paper without circumlocution. If you are preparing a
-document using a non-#LaTeX document preparation system, please arrange for an
-equivalent ruler to appear on the final output pages. The presence or absence
-of the ruler should not change the appearance of any other content on the page.
-The camera-ready copy should not contain a ruler. (#LaTeX users may use options
-of `cvpr.sty` to switch between different versions.)
+The version submitted for review must include line numbers so that reviewers
+can refer to particular lines in the paper. This template uses Typst's built-in
+`par.line` numbering, which follows the text in both columns. Figures and
+footnotes are not numbered.
 
-Reviewers: note that the ruler measurements do not align well with lines in the
-paper --- this turns out to be very difficult to do well when the paper
-contains many figures and equations, and, when done, looks ugly. Just use
-fractional references (#eg., this line is $087.5$), although in most cases one
-would expect that the approximate location will be adequate.
+By default, line numbers are enabled with `accepted: false` and omitted from
+camera-ready copies (`accepted: true`) and preprints (`accepted: none`). Use
+`aux: (lineno: true)` to enable numbering in any mode, or `aux: (lineno: false)`
+to disable it.
 
 == Paper ID
 
@@ -109,7 +104,7 @@ It is important for readers to be able to refer to any particular equation.
 Just because you did not refer to it in the text does not mean some future
 reader might not need to refer to it. It is cumbersome to have to use
 circumlocutions like "the equation second from the top of page 3 column 1".
-(Note that the ruler will not be present in the final copy, so is not an
+(Note that line numbers will not be present in the final copy, so are not an
 alternative to equation numbers). All authors will benefit from reading
 Mermin's description of how to write mathematics:
 #link("http://www.pamitc.org/documents/mermin.pdf").

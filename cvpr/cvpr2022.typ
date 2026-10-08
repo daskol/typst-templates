@@ -57,83 +57,29 @@
   link: rgb(100%, 0%, 100%),  // Magenta.
 )
 
-#let lineno = counter("lineno")
-
 #let lineno-fmt(numb, width: 3) = {
-    let value = str(numb)
-    let prefix-len = width - value.len()
-    let prefix = ""
-    for _ in range(prefix-len) {
-      prefix = prefix + "0"
-    }
-    return prefix + value
+  let value = str(numb)
+  return "0" * calc.max(0, width - value.len()) + value
 }
 
-#let ruler-color = rgb(50%, 50%, 100%)
+#let review-color = rgb(50%, 50%, 100%)
 
-#let ruler-style = body => {
-  set text(size: 8pt, font: font-family-sans, weight: "bold", fill: ruler-color)
-  set par(leading: 6.22pt)
+#let lineno(accepted, aux, body) = {
+  set par.line(
+    numbering: if aux.at("lineno", default: accepted == false) {
+      n => text(
+        size: font-size.footnote,
+        font: font-family-sans,
+        weight: "bold",
+        fill: review-color,
+      )[#lineno-fmt(n)]
+    } else { none },
+    number-clearance: 0.75cm,
+  )
   body
 }
 
-#let xruler(side, dx, dy, width, height, offset, num-lines) = {
-  let alignment = if side == left {
-    right
-  } else {
-    left
-  }
-
-  let numbs = range(0, num-lines).map(ix => {
-    let anchor = lineno.step()
-    let index = lineno-fmt(offset + ix)
-    return [#anchor#index]
-  })
-
-  let ruler = block(width: width, height: height, spacing: 0pt, {
-    show: ruler-style
-    set align(alignment)
-    numbs.join([\ ])
-
-  })
-
-  return place(left + top, dx: dx, dy: dy, ruler)
-}
-
-#let make-ruler(
-  num-lines: 54,
-  margin: auto,
-  width: auto,
-  height: 8.875in,
-  gap: 30pt,
-) = context {
-  let margin = if margin == auto {
-    (top: 1in - 0.5pt, left: 0.8125in, right: 0.929in)  // CVPR 2022 defaults.
-  } else {
-    margin
-  }
-
-  let width = if width == auto {
-    (left: margin.left - gap, right: margin.right - gap)
-  } else {
-    width
-  }
-
-  // Left ruler.
-  let dx = 0pt
-  let dy = margin.top
-  let offset = lineno.get().at(0)
-  xruler(left, dx, dy, width.left, height, offset, num-lines)
-
-  // Right ruler.
-  dx = 7.571in + gap
-  offset += num-lines
-  xruler(right, dx, dy, width.right, height, offset, num-lines)
-}
-
-#let ruler = make-ruler()  // Default CVPR 2022 ruler.
-
-#let corner-text(id, width: auto, fill: ruler-color) = {
+#let corner-text(id, width: auto, fill: review-color) = {
   block(width: width, align(center + horizon, {
     set par(leading: 4.9pt)
     set text(font: font-family-sans, fill: fill)
@@ -216,6 +162,8 @@
 })
 
 #let make-title(title, authors, affls, id, accepted) = {
+  set par.line(numbering: none)
+
   // 1. Title.
   block(width: 100%, spacing: 0pt, {
     set align(center)
@@ -258,8 +206,8 @@
  *   accepted: Valid values are `none`, `false`, and `true`. Missing value
  *   (`none`) is designed to prepare arxiv publication. Default is `false`.
  *   id: Submission identifier.
- *   aux: Dictionary of auxiliary options. The `lineno` boolean key enables
- *   line-aware numbering instead of the fixed CVPR 2022 ruler.
+ *   aux: Dictionary of auxiliary options, such as `conf-year`. The `lineno`
+ *   boolean key overrides line numbering independently of `accepted`.
  */
 #let cvpr2022(
   title: [],
@@ -274,12 +222,6 @@
   aux: (:),
   body,
 ) = {
-  let modern-columns = aux.at("lineno", default: false)
-  let line-numbering = (
-    accepted != none and not accepted
-      and modern-columns
-  )
-
   // Deconstruct authors for convenience.
   let (authors, affls) = if authors.len() == 2 {
     authors
@@ -304,12 +246,8 @@
   set page(
     paper: "us-letter",
     margin: (left: 0.696in, right: 0.929in, top: 1in, bottom: 1.125in),
-    columns: if modern-columns { 2 } else { 1 },
+    columns: 2,
     background: if accepted != none and not accepted {
-      // CVPR 2022 uses a fixed ruler. Later editions use line-aware numbering.
-      if not line-numbering {
-        ruler
-      }
       // Decorate top corners.
       place(top + left, dx: -14.6pt, dy: 15.5pt, corner-text(id, width: 1in))
       place(top + right, dx: 5pt, dy: 15.5pt, corner-text(id, width: 1in))
@@ -320,7 +258,7 @@
       set text(
         font: font-family-sans,
         size: font-size.footnote,
-        fill: ruler-color)
+        fill: review-color)
       let year = aux.at("conf-year", default: conf-year)
       strong[#conf-name #year Submission \##id. #notice]
     },
@@ -337,24 +275,7 @@
     first-line-indent: 0.166666in, leading: 0.532em, spacing:  0.54em,
     justify: true)
 
-  let lineno(body) = {
-    if not line-numbering {
-      body
-    } else {
-      set par.line(
-        numbering: n => text(
-          size: font-size.footnote,
-          font: font-family-sans,
-          weight: "bold",
-          fill: ruler-color,
-        )[#lineno-fmt(n)],
-        number-clearance: 0.75cm,
-      )
-      body
-    }
-  }
-
-  show: lineno
+  show: lineno.with(accepted, aux)
   show raw: set text(font: font-family-mono, size: font-size.normal)
 
   // Configure heading appearence and numbering.
@@ -465,21 +386,15 @@
 
   // NOTE It seems that there is a typo in formatting instructions and actual
   // gutter is 3/8 in not 5/16 in.
-  if modern-columns {
-    // Page-level columns let line numbers follow both columns. The title spans
-    // them and reserves space at the top of the first page.
-    place(
-      top + center,
-      float: true,
-      scope: "parent",
-      make-title(title, authors, affls, id, accepted),
-    )
-    render-main()
-  } else {
-    // Preserve the CVPR 2022 fixed-ruler layout for compatibility.
-    make-title(title, authors, affls, id, accepted)
-    columns(2, gutter: 0.3125in, render-main())
-  }
+  // Page-level columns let line numbers follow both columns. The title spans
+  // them and reserves space at the top of the first page.
+  place(
+    top + center,
+    float: true,
+    scope: "parent",
+    make-title(title, authors, affls, id, accepted),
+  )
+  render-main()
 
   if appendix != none {
     set heading(numbering: "A.1")
