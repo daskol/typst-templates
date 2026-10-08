@@ -4,8 +4,10 @@
  * Reinforcement Learning Journal/Conference (RLJ/RLC) template.
  */
 
+#import "/font-config.typ": font-config-merge
+
 #let font-face = (
-  serif: ("Times New Roman", "Libertinus Serif"),
+  serif: ("Times New Roman",),
 )
 
 #let dark-blue = rgb(0, 0, 70%)
@@ -22,12 +24,14 @@
   HUGE: 24.88pt,
 )
 
-#let h1(body) = {
-  set text(size: font-size.large, weight: "bold")
+#let default-font-config = (family: font-face, size: font-size)
+
+#let h1(body, fc: default-font-config) = {
+  set text(size: fc.size.large, weight: "bold")
   context {
     let shape = measure({
       text(
-        size: font-size.normal,
+        size: fc.size.normal,
         weight: "bold",
         top-edge: "bounds",
         bottom-edge: "baseline",
@@ -45,13 +49,13 @@
   }
 }
 
-#let h2(body) = {
-  set text(size: font-size.normal, weight: "bold")
+#let h2(body, fc: default-font-config) = {
+  set text(size: fc.size.normal, weight: "bold")
   context {
     let shape = measure(text(top-edge: "bounds", bottom-edge: "baseline")[x])
     let shape = measure({
       text(
-        size: font-size.normal,
+        size: fc.size.normal,
         weight: "regular",
         top-edge: "bounds",
         bottom-edge: "baseline",
@@ -69,23 +73,23 @@
   }
 }
 
-#let h3(body) = {
+#let h3(body, fc: default-font-config) = {
   let spacing = 6pt
-  set text(size: font-size.normal, weight: "regular")
+  set text(size: fc.size.normal, weight: "regular")
   context {
     let shape = measure(text(top-edge: "bounds", bottom-edge: "baseline")[x])
     let ex = shape.height // ex = 4.47pt
     let above = 1.8 * ex + spacing
     let below = 0.5 * ex + spacing + 1pt
     block(above: above, below: below, {
-      set text(size: font-size.normal, weight: "bold")
+      set text(size: fc.size.normal, weight: "bold")
       body
     })
   }
 }
 
-#let h4(body) = {
-  set text(size: font-size.normal, weight: "regular")
+#let h4(body, fc: default-font-config) = {
+  set text(size: fc.size.normal, weight: "regular")
   let spacing = 7pt
   let above = spacing + 5pt
   let below = spacing
@@ -100,12 +104,12 @@
 
 #let appendix-rule = appendix
 
-#let summary-box(title: [Summary], body) = {
+#let summary-box(title: [Summary], fc: default-font-config, body) = {
   set par(first-line-indent: 1em)
   let inset = (x: 12pt, top: 9.3pt, bottom: 12pt)
   block(width: 100%, above: 0pt, below: 0pt, inset: inset, radius: 2mm, fill: rgb("#f1f4f7"), {
     align(center, {
-      set text(size: font-size.Large, weight: "bold")
+      set text(size: fc.size.Large, weight: "bold")
       title
     })
     v(0.025in + 4pt)
@@ -113,8 +117,8 @@
   })
 }
 
-#let contrib-box(contribs) = {
-  show: summary-box.with(title: [Contribution(s)])
+#let contrib-box(contribs, fc: default-font-config) = {
+  show: summary-box.with(title: [Contribution(s)], fc: fc)
   let items = contribs.map(it => {
     it.contribution
     let caveat = it.at("caveat", default: [None])
@@ -126,22 +130,23 @@
 
 #let make-cover(
   title, authors, keywords, summary, contribs, accepted: false,
+  fc: default-font-config,
 ) = {
   v(2pt)
   block(width: 100%, below: 0pt, {
     set align(center)
-    set text(size: font-size.LARGE, top-edge: 11pt)
+    set text(size: fc.size.LARGE, top-edge: 11pt)
     strong(title)
   })
   v(12.7pt)
   block(width: 100%, below: 0pt, {
     set align(center)
     if accepted != none and not accepted {
-      set text(size: font-size.large, top-edge: 11pt)
+      set text(size: fc.size.large, top-edge: 11pt)
       [*Anonymous authors*\ Paper under double-blind review]
     } else {
       v(-2pt)  // Unclear why.
-      set text(size: font-size.large, top-edge: 11pt)
+      set text(size: fc.size.large, top-edge: 11pt)
       authors.map(it => [*#it.name*]).join([, ])
     }
   })
@@ -152,14 +157,14 @@
   })
   v(22pt)
 
-  summary-box(summary)
+  summary-box(summary, fc: fc)
   v(20pt)
-  contrib-box(contribs)
+  contrib-box(contribs, fc: fc)
   pagebreak()
 }
 
-#let make-abstract(abstract) = context {
-  set text(size: font-size.normal, weight: "regular")
+#let make-abstract(abstract, fc: default-font-config) = context {
+  set text(size: fc.size.normal, weight: "regular")
   let shape = measure(text(top-edge: "bounds", bottom-edge: "baseline")[x])
   let ex = shape.height  // ex = 4.47pt
 
@@ -167,7 +172,7 @@
   // block(above: 0.05in, below: ex + 18pt, {
   block(above: 0.05in, below: 0pt, {
     align(center, {
-      set text(size: font-size.large, weight: "bold")
+      set text(size: fc.size.large, weight: "bold")
       [Abstract]
     })
     // Default spacing before and after `quote` in LaTeX is 10pt.
@@ -273,7 +278,7 @@
   }).join([, ])
 }
 
-#let make-authors(authors, affls) = {
+#let make-authors(authors, affls, fc: default-font-config) = {
   // Normalize `affl` field of author dictionary.
   let authors = authors.map(it => if "affl" not in it {
     it.affl = ()
@@ -288,7 +293,7 @@
   // Map affilations and comments to ordinals.
   let index = index-affilations(authors, affls)
 
-  set text(size: font-size.large, weight: "regular")
+  set text(size: fc.size.large, weight: "regular")
   let names = authors.map(it => {
     let affls = it.affl
       .map(it => index.affl.at(it, default: none))
@@ -305,11 +310,11 @@
   names.join([, ])
   v(-2pt)
 
-  set text(size: font-size.normal, weight: "regular")
+  set text(size: fc.size.normal, weight: "regular")
   let emails = make-emails(authors)
   emails
 
-  set text(size: font-size.normal, weight: "regular")
+  set text(size: fc.size.normal, weight: "regular")
   let affilations = index.affl.pairs().map(it => {
     let (tag, ix) = it
     let affl = affls.at(tag, default: none)
@@ -321,7 +326,7 @@
   v(8.5pt)
   affilations.join([\ ])
 
-  set text(size: font-size.normal, weight: "regular")
+  set text(size: fc.size.normal, weight: "regular")
   let comments = index.comment.pairs().map(it => {
     let (tag, ix) = it
     let affl = affls.at(tag, default: none)
@@ -334,16 +339,17 @@
   comments.join([\ ])
 }
 
-#let make-title(title, authors, affls, abstract, accepted: false) = {
+#let make-title(title, authors, affls, abstract, accepted: false,
+                fc: default-font-config) = {
   v(0.15in)  // Fixed.
   block(above: 0pt, below: 0pt, {
     align(center, {
-      set text(size: font-size.LARGE, weight: "bold", top-edge: 19pt)
+      set text(size: fc.size.LARGE, weight: "bold", top-edge: 19pt)
       title
     })
     if accepted == none or accepted {
       v(0.2in)
-      make-authors(authors, affls)
+      make-authors(authors, affls, fc: fc)
       v(-9.5pt)
     } else {
       v(0.25in + 2pt)
@@ -352,13 +358,13 @@
   })
   v(0.3in + 12.5pt)
 
-  make-abstract(abstract)
+  make-abstract(abstract, fc: fc)
 }
 
-#let make-supplementary(supplementary) = {
+#let make-supplementary(supplementary, fc: default-font-config) = {
   block(width: 100%, {
     set align(center)
-    text(size: font-size.LARGE, top-edge: 12.28pt)[*Supplementary Materials*]
+    text(size: fc.size.LARGE, top-edge: 12.28pt)[*Supplementary Materials*]
     v(-0.5pt)
     emph[The following content was not necessarily subject to peer review.]
     v(4pt)
@@ -401,6 +407,10 @@
   aux: (:),
   body,
 ) = {
+  let fc = font-config-merge(default-font-config,
+    family: aux.at("font-family", default: (:)),
+    size: aux.at("font-size", default: (:)))
+
   // Deconstruct authors for convenience.
   let (authors, affls) = if authors.len() == 2 {
     authors
@@ -474,7 +484,7 @@
     header-ascent: 24pt - 0.35pt / 2,
   )
 
-  set text(size: 10pt, font: font-face.serif, top-edge: 11pt)
+  set text(size: fc.size.normal, font: fc.family.serif, top-edge: 11pt)
   set par(justify: true, leading: 1pt, spacing: 5pt)
 
   let lineno(accepted, aux, body) = {
@@ -503,7 +513,7 @@
     separator: line(length: 2in, stroke: 0.42pt)
   )
   show footnote.entry: it => {
-    set text(size: font-size.footnote, top-edge: 8pt)
+    set text(size: fc.size.footnote, top-edge: 8pt)
     set par(justify: true, leading: 1.5pt, spacing: 1.5pt)
     set par.line(numbering: none)
     it
@@ -515,10 +525,10 @@
 
   // Headings.
   set heading(numbering: "1.1")
-  show heading.where(level: 1): h1
-  show heading.where(level: 2): h2
-  show heading.where(level: 3): h3
-  show heading.where(level: 4): h4
+  show heading.where(level: 1): h1.with(fc: fc)
+  show heading.where(level: 2): h2.with(fc: fc)
+  show heading.where(level: 3): h3.with(fc: fc)
+  show heading.where(level: 4): h4.with(fc: fc)
 
   // Set up equations.
   set math.equation(numbering: "(1)")
@@ -583,8 +593,9 @@
   }
 
   make-cover(
-    title, authors, keywords, summary, contributions, accepted: accepted)
-  make-title(title, authors, affls, abstract, accepted: accepted)
+    title, authors, keywords, summary, contributions,
+    accepted: accepted, fc: fc)
+  make-title(title, authors, affls, abstract, accepted: accepted, fc: fc)
   body
 
   if appendix != none {
@@ -600,7 +611,7 @@
 
   if supplementary != none {
     pagebreak(weak: true)
-    make-supplementary(supplementary)
+    make-supplementary(supplementary, fc: fc)
   }
 }
 
